@@ -1,6 +1,5 @@
 package com.techarium.techarium.platform;
 
-import com.techarium.techarium.Constants;
 import com.techarium.techarium.Techarium;
 import com.techarium.techarium.platform.services.IRegistryHelper;
 import net.minecraft.resources.ResourceLocation;

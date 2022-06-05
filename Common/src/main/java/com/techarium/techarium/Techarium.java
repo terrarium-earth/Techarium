@@ -11,14 +11,14 @@ import net.minecraft.world.level.block.Blocks;
 
 public class Techarium {
 
-    public static final String MOD_ID = "techarium";
-    public static final String MOD_NAME = "Techarium";
-    public static CreativeModeTab TAB = CommonServices.REGISTRY.registerCreativeTab(new ResourceLocation(MOD_ID, "tab"), () -> new ItemStack(Blocks.DIAMOND_BLOCK));
+	public static final String MOD_ID = "techarium";
+	public static final String MOD_NAME = "Techarium";
+	public static CreativeModeTab TAB = CommonServices.REGISTRY.registerCreativeTab(new ResourceLocation(MOD_ID, "tab"), () -> new ItemStack(Blocks.DIAMOND_BLOCK));
 
-    public static void init() {
-        TechariumBlocks.register();
-        TechariumItems.register();
-        TechariumBlockEntities.register();
-    }
+	public static void init() {
+		TechariumBlocks.register();
+		TechariumItems.register();
+		TechariumBlockEntities.register();
+	}
 
 }
