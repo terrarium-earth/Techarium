@@ -1,10 +1,11 @@
 package com.techarium.techarium;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import com.techarium.techarium.platform.ForgeRegistryHelper;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(Constants.MOD_ID)
+@Mod(Techarium.MOD_ID)
 public class TechariumForge {
     
     public TechariumForge() {
@@ -15,19 +16,12 @@ public class TechariumForge {
     
         // Use Forge to bootstrap the Common mod.
         Constants.LOG.info("Hello Forge world!");
-        CommonClass.init();
+        Techarium.init();
     
-        // Some code like events require special initialization from the
-        // loader specific code.
-        MinecraftForge.EVENT_BUS.addListener(this::onItemTooltip);
-        
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+        ForgeRegistryHelper.BLOCKS.register(bus);
+        ForgeRegistryHelper.ITEMS.register(bus);
+        ForgeRegistryHelper.BLOCK_ENTITIES.register(bus);
     }
-    
-    // This method exists as a wrapper for the code in the Common project.
-    // It takes Forge's event object and passes the parameters along to
-    // the Common listener.
-    private void onItemTooltip(ItemTooltipEvent event) {
-        
-        CommonClass.onItemTooltip(event.getItemStack(), event.getFlags(), event.getToolTip());
-    }
+
 }

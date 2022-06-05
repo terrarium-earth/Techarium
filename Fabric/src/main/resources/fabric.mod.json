@@ -2,7 +2,6 @@
     "schemaVersion": 1,
     "id": "techarium",
     "version": "${version}",
-  
     "name": "Techarium",
     "description": "ditto",
     "authors": [
@@ -12,20 +11,15 @@
       "homepage": "https://fabricmc.net/",
       "sources": "https://github.com/FabricMC/fabric-example-mod"
     },
-  
     "license": "MIT",
-    "icon": "assets/modid/icon.png",
-  
+    "icon": "assets/techarium/icon.png",
     "environment": "*",
     "entrypoints": {
       "main": [
         "com.techarium.techarium.TechariumFabric"
       ]
     },
-    "mixins": [
-      "modid.mixins.json"
-    ],
-  
+    "mixins": [],
     "depends": {
       "fabricloader": ">=0.13",
       "fabric": "*",
