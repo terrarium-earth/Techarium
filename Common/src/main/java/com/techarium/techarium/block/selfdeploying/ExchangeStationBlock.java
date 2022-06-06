@@ -1,6 +1,6 @@
-package com.techarium.techarium.block;
+package com.techarium.techarium.block.selfdeploying;
 
-import com.techarium.techarium.blockentity.ExchangeStationBlockEntity;
+import com.techarium.techarium.blockentity.selfdeploying.ExchangeStationBlockEntity;
 import com.techarium.techarium.util.BlockRegion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;

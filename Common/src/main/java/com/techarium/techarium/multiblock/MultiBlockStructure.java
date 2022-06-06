@@ -1,7 +1,9 @@
 package com.techarium.techarium.multiblock;
 
-import com.techarium.techarium.block.SelfDeployingBlock;
-import com.techarium.techarium.blockentity.SelfDeployingBlockEntity;
+import com.techarium.techarium.block.multiblock.MultiBlockCoreBlock;
+import com.techarium.techarium.block.multiblock.MultiBlockElementBlock;
+import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
+import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -19,8 +21,8 @@ import java.util.Map;
  */
 public class MultiBlockStructure {
 
-	private final Map<BlockPos, MultiBlockBaseElement> positions;
-	private MultiBlockBaseCore core;
+	private final Map<BlockPos, MultiBlockElementBlock> positions;
+	private MultiBlockCoreBlock core;
 	private SelfDeployingBlock selfDeployingBlock;
 
 	private MultiBlockStructure() {
@@ -42,7 +44,7 @@ public class MultiBlockStructure {
 			// if somehow the core in world doesn't match the multiblock core it's not valid
 			return false;
 		}
-		for (Map.Entry<BlockPos, MultiBlockBaseElement> entry : this.positions.entrySet()) {
+		for (Map.Entry<BlockPos, MultiBlockElementBlock> entry : this.positions.entrySet()) {
 			// first rotate the offset, so we're in the same direction as the core block
 			BlockPos offset = rotate(entry.getKey(), direction);
 			// now we check if the block at this position in the world match.
@@ -103,7 +105,7 @@ public class MultiBlockStructure {
 
 		private final MultiBlockStructure structure = new MultiBlockStructure();
 
-		public MultiBlockStructure.Builder setCore(MultiBlockBaseCore core) {
+		public MultiBlockStructure.Builder setCore(MultiBlockCoreBlock core) {
 			this.structure.core = core;
 			return this;
 		}
@@ -113,15 +115,15 @@ public class MultiBlockStructure {
 			return this;
 		}
 
-		public MultiBlockStructure.Builder addElement(BlockPos position, MultiBlockBaseElement element) {
+		public MultiBlockStructure.Builder addElement(BlockPos position, MultiBlockElementBlock element) {
 			this.structure.positions.put(position, element);
 			return this;
 		}
 
-		public MultiBlockStructure.Builder addElements(BlockPos position, MultiBlockBaseElement element, Object... positionsAndElements) {
+		public MultiBlockStructure.Builder addElements(BlockPos position, MultiBlockElementBlock element, Object... positionsAndElements) {
 			this.structure.positions.put(position, element);
 			for (int i = 0; i < positionsAndElements.length; i += 2) {
-				this.structure.positions.put((BlockPos) positionsAndElements[i], (MultiBlockBaseElement) positionsAndElements[i + 1]);
+				this.structure.positions.put((BlockPos) positionsAndElements[i], (MultiBlockElementBlock) positionsAndElements[i + 1]);
 			}
 			return this;
 		}

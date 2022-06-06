@@ -1,5 +1,8 @@
-package com.techarium.techarium.multiblock;
+package com.techarium.techarium.blockentity.multiblock;
 
+import com.techarium.techarium.block.multiblock.MultiBlockCoreBlock;
+import com.techarium.techarium.multiblock.MultiBlockRegistry;
+import com.techarium.techarium.multiblock.MultiBlockStructure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -12,13 +15,13 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import java.util.function.Supplier;
 
 /**
- * A BlockEntity for the {@link MultiBlockBaseCore}
+ * A BlockEntity for the {@link MultiBlockCoreBlock}
  */
-public abstract class MultiBlockBaseTile extends BlockEntity {
+public abstract class MultiBlockCoreBlockEntity extends BlockEntity {
 
 	private MultiBlockStructure multiblock;
 
-	public MultiBlockBaseTile(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+	public MultiBlockCoreBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 		this.multiblock = MultiBlockRegistry.getOrSet(this.getMultiBlockStructureId(), this.getDefaultMultiBlockStructure());
 	}
@@ -33,12 +36,12 @@ public abstract class MultiBlockBaseTile extends BlockEntity {
 		}
 	}
 
-	public void tick(Level level, BlockPos pos, BlockState state, MultiBlockBaseTile tile) {
+	public void tick(Level level, BlockPos pos, BlockState state, MultiBlockCoreBlockEntity tile) {
 		if (level.getGameTime()%5==0) {
 			if (tile.multiblock.isValidStructure(pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), level)) {
-				level.setBlock(pos, state.setValue(MultiBlockBaseCore.READY, true), 3);
+				level.setBlock(pos, state.setValue(MultiBlockCoreBlock.READY, true), 3);
 			} else {
-				level.setBlock(pos, state.setValue(MultiBlockBaseCore.READY, false), 3);
+				level.setBlock(pos, state.setValue(MultiBlockCoreBlock.READY, false), 3);
 			}
 		}
 	}

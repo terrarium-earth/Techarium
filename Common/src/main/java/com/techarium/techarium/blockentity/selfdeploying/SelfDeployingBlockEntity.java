@@ -1,11 +1,11 @@
-package com.techarium.techarium.blockentity;
+package com.techarium.techarium.blockentity.selfdeploying;
 
-import com.techarium.techarium.block.SelfDeployingSlaveBlock;
+import com.techarium.techarium.block.selfdeploying.SelfDeployingSlaveBlock;
+import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,7 +21,7 @@ import java.util.Map;
 
 /**
  * A Block Entity that will deploy itself in the world with an animation.
- * See {@link com.techarium.techarium.block.SelfDeployingBlock} for the associated block.
+ * See {@link SelfDeployingBlock} for the associated block.
  */
 public abstract class SelfDeployingBlockEntity extends BlockEntity implements IAnimatable {
 

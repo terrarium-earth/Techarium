@@ -1,6 +1,5 @@
-package com.techarium.techarium.blockentity;
+package com.techarium.techarium.blockentity.multiblock;
 
-import com.techarium.techarium.multiblock.MultiBlockBaseTile;
 import com.techarium.techarium.multiblock.MultiBlockStructure;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
@@ -9,7 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.function.Supplier;
 
-public class CommunicationDeviceCoreBlockEntity extends MultiBlockBaseTile {
+public class CommunicationDeviceCoreBlockEntity extends MultiBlockCoreBlockEntity {
 
 
 	public CommunicationDeviceCoreBlockEntity(BlockPos pos, BlockState state) {

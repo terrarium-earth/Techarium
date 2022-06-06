@@ -2,7 +2,7 @@ package com.techarium.techarium.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.techarium.techarium.blockentity.ExchangeStationBlockEntity;
+import com.techarium.techarium.blockentity.selfdeploying.ExchangeStationBlockEntity;
 import com.techarium.techarium.client.model.ExchangeStationModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;

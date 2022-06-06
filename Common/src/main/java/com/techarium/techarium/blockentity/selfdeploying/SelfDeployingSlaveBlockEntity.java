@@ -1,4 +1,4 @@
-package com.techarium.techarium.blockentity;
+package com.techarium.techarium.blockentity.selfdeploying;
 
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import net.minecraft.core.BlockPos;
@@ -12,7 +12,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 /**
  * A slave block used to fill the air in the world. It will proxy received calls to its master.
- * See {@link com.techarium.techarium.blockentity.SelfDeployingSlaveBlockEntity}, the master block entity
+ * See {@link SelfDeployingSlaveBlockEntity}, the master block entity
  */
 public class SelfDeployingSlaveBlockEntity extends BlockEntity {
 

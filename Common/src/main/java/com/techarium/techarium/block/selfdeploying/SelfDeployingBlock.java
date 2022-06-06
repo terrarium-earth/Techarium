@@ -1,8 +1,8 @@
-package com.techarium.techarium.block;
+package com.techarium.techarium.block.selfdeploying;
 
-import com.techarium.techarium.blockentity.SelfDeployingBlockEntity;
-import com.techarium.techarium.multiblock.MultiBlockBaseCore;
-import com.techarium.techarium.multiblock.MultiBlockBaseElement;
+import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingBlockEntity;
+import com.techarium.techarium.block.multiblock.MultiBlockCoreBlock;
+import com.techarium.techarium.block.multiblock.MultiBlockElementBlock;
 import com.techarium.techarium.util.BlockRegion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -101,7 +101,7 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 			for (int y = region.yOffset; y < region.ySize - region.yOffset; y++) {
 				for (int z = region.zOffset; z < region.zSize - region.zOffset; z++) {
 					BlockState state = world.getBlockState(pos.offset(x, y, z));
-					if (!(state.getMaterial().isReplaceable() || state.getBlock() instanceof MultiBlockBaseCore || state.getBlock() instanceof MultiBlockBaseElement)) {
+					if (!(state.getMaterial().isReplaceable() || state.getBlock() instanceof MultiBlockCoreBlock || state.getBlock() instanceof MultiBlockElementBlock)) {
 						return false;
 					}
 				}

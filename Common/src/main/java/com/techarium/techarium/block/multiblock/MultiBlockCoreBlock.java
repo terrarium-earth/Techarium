@@ -1,5 +1,6 @@
-package com.techarium.techarium.multiblock;
+package com.techarium.techarium.block.multiblock;
 
+import com.techarium.techarium.blockentity.multiblock.MultiBlockCoreBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,11 +21,11 @@ import net.minecraft.world.phys.BlockHitResult;
 /**
  * A Core Block for a multiblock structure.
  */
-public abstract class MultiBlockBaseCore extends Block implements EntityBlock {
+public abstract class MultiBlockCoreBlock extends Block implements EntityBlock {
 
 	public static BooleanProperty READY = BooleanProperty.create("ready");
 
-	public MultiBlockBaseCore(Properties properties) {
+	public MultiBlockCoreBlock(Properties properties) {
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any()
 				.setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
@@ -46,7 +47,7 @@ public abstract class MultiBlockBaseCore extends Block implements EntityBlock {
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!level.isClientSide && player instanceof ServerPlayer) {
 			BlockEntity be = level.getBlockEntity(pos);
-			if (be instanceof MultiBlockBaseTile mbe) {
+			if (be instanceof MultiBlockCoreBlockEntity mbe) {
 				mbe.onActivated(state, level, pos, player, hand);
 			}
 		}

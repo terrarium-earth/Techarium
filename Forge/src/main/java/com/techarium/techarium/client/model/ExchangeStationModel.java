@@ -1,7 +1,7 @@
 package com.techarium.techarium.client.model;
 
 import com.techarium.techarium.Techarium;
-import com.techarium.techarium.blockentity.ExchangeStationBlockEntity;
+import com.techarium.techarium.blockentity.selfdeploying.ExchangeStationBlockEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 

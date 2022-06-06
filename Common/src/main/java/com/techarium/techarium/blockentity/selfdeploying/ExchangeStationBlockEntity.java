@@ -1,6 +1,6 @@
-package com.techarium.techarium.blockentity;
+package com.techarium.techarium.blockentity.selfdeploying;
 
-import com.techarium.techarium.block.SelfDeployingSlaveBlock;
+import com.techarium.techarium.block.selfdeploying.SelfDeployingSlaveBlock;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
 import net.minecraft.core.BlockPos;
