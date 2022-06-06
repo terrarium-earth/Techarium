@@ -80,14 +80,11 @@ public class MultiBlockStructure {
 	 * @param level   the level.
 	 * @param state   the blockstate of the core block.
 	 * @param corePos the position of the core block.
-	 * @return if the multiblock was deployed
 	 */
-	public boolean deploy(Level level, BlockState state, BlockPos corePos) {
-		if (!this.selfDeployingBlock.canBePlaced(level, corePos)) {
-		// TODO: 06/06/2022 @Ketheroth implement canBePlaced correctly
-			return false;
+	public void deploy(Level level, BlockState state, BlockPos corePos) {
+		if (!this.canDeploy(level, state, corePos)) {
+			return;
 		}
-		System.out.println("deploying");
 		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 		for (BlockPos pos : this.positions.keySet()) {
 			// replace multiblock with air so the self-deploying block can safely replace them.
@@ -98,7 +95,28 @@ public class MultiBlockStructure {
 		if (level.getBlockEntity(corePos) instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
 			selfDeployingBlockEntity.deploy();
 		}
-		return true;
+	}
+
+	/**
+	 * Determine if the structure can be replaced by the deploying block and it can be deployed.
+	 *
+	 * @param level   the level of the multiblock.
+	 * @param state   the blockstate of the multiblock core.
+	 * @param corePos the position of the multiblock core.
+	 * @return if the structure can be deployed.
+	 */
+	public boolean canDeploy(Level level, BlockState state, BlockPos corePos) {
+		return this.selfDeployingBlock.canBePlaced(level, corePos);
+	}
+
+	/**
+	 * Display an outline around blocks that obstruct the self-deploying block to be deployed.
+	 *
+	 * @param level the level of the multiblock.
+	 * @param pos   the position of the multiblock core.
+	 */
+	public void showObstructingBlocks(Level level, BlockPos pos) {
+		this.selfDeployingBlock.showObstructingBlocks(level, pos);
 	}
 
 	public static class Builder {

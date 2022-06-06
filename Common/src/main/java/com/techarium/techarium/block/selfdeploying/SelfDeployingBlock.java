@@ -1,9 +1,10 @@
 package com.techarium.techarium.block.selfdeploying;
 
-import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingBlockEntity;
 import com.techarium.techarium.block.multiblock.MultiBlockCoreBlock;
 import com.techarium.techarium.block.multiblock.MultiBlockElementBlock;
+import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingBlockEntity;
 import com.techarium.techarium.util.BlockRegion;
+import com.techarium.techarium.util.RenderUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -95,8 +96,8 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 	 * @return true if the block can be placed.
 	 */
 	public boolean canBePlaced(Level world, BlockPos pos) {
-		// TODO: 06/06/2022 @Ketheroth find a proper way to do that. add orientation according the core direction. (move to MultiBlockStructure ?)
-		BlockRegion region = getBlockSize();
+		// TODO @Ketheroth: 06/06/2022 find a proper way to do that. add orientation according the core direction. (move to MultiBlockStructure ?)
+		BlockRegion region = this.getBlockSize();
 		for (int x = region.xOffset; x < region.xSize - region.xOffset; x++) {
 			for (int y = region.yOffset; y < region.ySize - region.yOffset; y++) {
 				for (int z = region.zOffset; z < region.zSize - region.zOffset; z++) {
@@ -108,6 +109,27 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Display an outline around blocks that obstruct this block to be deployed.
+	 * This must be called only client-side.
+	 *
+	 * @param level the level of the block.
+	 * @param pos   the position of the block.
+	 */
+	public void showObstructingBlocks(Level level, BlockPos pos) {
+		BlockRegion region = this.getBlockSize();
+		for (int x = region.xOffset; x < region.xSize - region.xOffset; x++) {
+			for (int y = region.yOffset; y < region.ySize - region.yOffset; y++) {
+				for (int z = region.zOffset; z < region.zSize - region.zOffset; z++) {
+					BlockState state = level.getBlockState(pos.offset(x, y, z));
+					if (!(state.getMaterial().isReplaceable() || state.getBlock() instanceof MultiBlockCoreBlock || state.getBlock() instanceof MultiBlockElementBlock)) {
+						RenderUtil.displayRedOutline(x, y, z);
+					}
+				}
+			}
+		}
 	}
 
 	/**

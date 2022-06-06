@@ -7,7 +7,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * Determine a region of block
  */
 public class BlockRegion {
-	// TODO: 06/06/2022 @Ketheroth possibly change this so we can have regions with random shapes instead of only cuboid
+	// TODO @Ketheroth: 06/06/2022 possibly change this so we can have regions with random shapes instead of only cuboid
 
 	public static BlockRegion FULL_BLOCK = new BlockRegion(1, 1, 1);
 

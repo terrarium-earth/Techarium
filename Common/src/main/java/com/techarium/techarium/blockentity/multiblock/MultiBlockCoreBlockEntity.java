@@ -32,14 +32,23 @@ public abstract class MultiBlockCoreBlockEntity extends BlockEntity {
 
 	public void onActivated(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
 		if (this.multiblock.isValidStructure(pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), level)) {
-			this.multiblock.deploy(level, state, pos);
+			if (this.multiblock.canDeploy(level, state, pos)) {
+				this.multiblock.deploy(level, state, pos);
+			}
 		}
 	}
 
 	public void tick(Level level, BlockPos pos, BlockState state, MultiBlockCoreBlockEntity tile) {
-		if (level.getGameTime()%5==0) {
+		if (level.getGameTime() % 5 == 0) {
 			if (tile.multiblock.isValidStructure(pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), level)) {
-				level.setBlock(pos, state.setValue(MultiBlockCoreBlock.READY, true), 3);
+				if (this.multiblock.canDeploy(level, state, pos)) {
+					level.setBlock(pos, state.setValue(MultiBlockCoreBlock.READY, true), 3);
+				} else {
+					if (level.isClientSide) {
+						this.multiblock.showObstructingBlocks(level, pos);
+						// TODO @Ketheroth: 06/06/2022 once this works, make it display only for a few seconds and then show again when block is right-clicked
+					}
+				}
 			} else {
 				level.setBlock(pos, state.setValue(MultiBlockCoreBlock.READY, false), 3);
 			}

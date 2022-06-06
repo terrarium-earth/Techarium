@@ -28,7 +28,7 @@ public class ExchangeStationBlockEntity extends SelfDeployingBlockEntity {
 
 	@Override
 	protected <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> event) {
-		// TODO: 06/06/2022 @Ketheroth ask what is the use of isOpening in the old code base
+		// TODO @Ketheroth: 06/06/2022 ask what is the use of isOpening in the old code base
 			event.getController().setAnimation(new AnimationBuilder()
 							.addAnimation("exchange_station.deploy", false)
 							.addAnimation("exchange_station.idle", true));
