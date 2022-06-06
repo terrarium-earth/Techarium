@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import org.jetbrains.annotations.Nullable;
 
 public class CommunicationDeviceCoreBlock extends MultiBlockBaseCore {
 
@@ -20,13 +19,11 @@ public class CommunicationDeviceCoreBlock extends MultiBlockBaseCore {
 		super(BlockBehaviour.Properties.of(Material.METAL));
 	}
 
-	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new CommunicationDeviceCoreBlockEntity(pos, state);
 	}
 
-	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
 		return blockEntityType == TechariumBlockEntities.COMMUNICATION_DEVICE_CORE.get() ? (level1, pos, state1, be) -> ((MultiBlockBaseTile) be).tick(level1, pos, state1, (MultiBlockBaseTile) be) : null;

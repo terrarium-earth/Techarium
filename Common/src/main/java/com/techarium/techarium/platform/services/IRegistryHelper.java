@@ -9,7 +9,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
@@ -25,7 +24,7 @@ public interface IRegistryHelper {
 
 	@FunctionalInterface
 	interface BlockEntityFactory<T extends BlockEntity> {
-		@NotNull T create(BlockPos blockPos, BlockState blockState);
+		T create(BlockPos blockPos, BlockState blockState);
 	}
 
 	CreativeModeTab registerCreativeTab(ResourceLocation tab, Supplier<ItemStack> icon);

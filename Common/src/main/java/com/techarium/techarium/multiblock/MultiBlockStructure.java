@@ -1,5 +1,7 @@
 package com.techarium.techarium.multiblock;
 
+import com.techarium.techarium.block.SelfDeployingBlock;
+import com.techarium.techarium.blockentity.SelfDeployingBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -19,9 +21,7 @@ public class MultiBlockStructure {
 
 	private final Map<BlockPos, MultiBlockBaseElement> positions;
 	private MultiBlockBaseCore core;
-	private Block selfDeployingBlock;// TODO @Ketheroth: 04/06/2022 refactor code so we can have the class something like SelfDeployingBlock
-
-	// TODO @Ketheroth: 04/06/2022 add a way to reform the structure after the self-deployed block is destroyed ??
+	private SelfDeployingBlock selfDeployingBlock;
 
 	private MultiBlockStructure() {
 		this.positions = new HashMap<>();
@@ -78,22 +78,25 @@ public class MultiBlockStructure {
 	 * @param level   the level.
 	 * @param state   the blockstate of the core block.
 	 * @param corePos the position of the core block.
+	 * @return if the multiblock was deployed
 	 */
-	public void deploy(Level level, BlockState state, BlockPos corePos) {
+	public boolean deploy(Level level, BlockState state, BlockPos corePos) {
+		if (!this.selfDeployingBlock.canBePlaced(level, corePos)) {
+		// TODO: 06/06/2022 @Ketheroth implement canBePlaced correctly
+			return false;
+		}
 		System.out.println("deploying");
 		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 		for (BlockPos pos : this.positions.keySet()) {
+			// replace multiblock with air so the self-deploying block can safely replace them.
 			BlockPos levelPos = corePos.offset(rotate(pos, direction));
 			level.setBlock(levelPos, Blocks.AIR.defaultBlockState(), 3);
 		}
 		level.setBlock(corePos, this.selfDeployingBlock.defaultBlockState(), 3);
-//		if (level.getBlockEntity(corePos) instanceof DeployMasterTile<?> master) {
-//			master.placeSlaves();
-//			 TODO: 04/06/2022 @Ketheroth when there is a good way to have a SelfDeployingBlockEntity use that instead
-//			System.out.println("placing slaves");
-//		} else {
-//			System.out.println("smtg went wrong " + level.getBlockEntity(corePos).getClass());
-//		}
+		if (level.getBlockEntity(corePos) instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
+			selfDeployingBlockEntity.deploy();
+		}
+		return true;
 	}
 
 	public static class Builder {
@@ -105,7 +108,7 @@ public class MultiBlockStructure {
 			return this;
 		}
 
-		public MultiBlockStructure.Builder setSelfDeployingBlock(Block selfDeployingBlock) {
+		public MultiBlockStructure.Builder setSelfDeployingBlock(SelfDeployingBlock selfDeployingBlock) {
 			this.structure.selfDeployingBlock = selfDeployingBlock;
 			return this;
 		}
