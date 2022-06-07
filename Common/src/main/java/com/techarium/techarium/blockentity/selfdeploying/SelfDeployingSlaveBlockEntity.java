@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
- * A slave block used to fill the air in the world. It will proxy received calls to its master.
- * See {@link SelfDeployingSlaveBlockEntity}, the master block entity
+ * A slave block used to fill the air in the world. It will proxy received calls to its master.<br>
+ * See {@link SelfDeployingSlaveBlockEntity}, the master block entity.
  */
 public class SelfDeployingSlaveBlockEntity extends BlockEntity {
 

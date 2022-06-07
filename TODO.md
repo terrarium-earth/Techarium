@@ -4,8 +4,9 @@
 - [ ] move be/mbs packages
 - [ ] save master position in nbt so it's here after reload
 - [ ] fix block model xray
-- [ ] change voxel shape of master so its (1,1,1) because the slaves are here to proxycall
 - [ ] when a deployed block is removed, do the thing adrian said https://discord.com/channels/880995984426020885/980249463652225075/983159642425262141
+- [ ] display the outline of obstructing blocks.
+- [ ] be able to place a self-deploying block where it can't deploy. it should be in an "undeployed" state
 
 
 ## Fabric

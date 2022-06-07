@@ -11,7 +11,8 @@ public class TechariumItems {
 
 	public static final Supplier<Item> COMMUNICATION_DEVICE_CORE = CommonServices.REGISTRY.registerItem("com_device_core", () -> new BlockItem(TechariumBlocks.COMMUNICATION_DEVICE_CORE.get(), new Item.Properties().tab(Techarium.TAB)));
 	public static final Supplier<Item> COMMUNICATION_DEVICE_ELEMENT = CommonServices.REGISTRY.registerItem("com_device_element", () -> new BlockItem(TechariumBlocks.COMMUNICATION_DEVICE_ELEMENT.get(), new Item.Properties().tab(Techarium.TAB)));
-	public static final Supplier<Item> EXCHANGE_STATION = CommonServices.REGISTRY.registerItem("exchange_station", () -> new BlockItem(TechariumBlocks.EXCHANGE_STATION.get(), new Item.Properties().tab(Techarium.TAB)));
+
+	public static final Supplier<Item> EXCHANGE_STATION = Techarium.DEBUG_MODE ? CommonServices.REGISTRY.registerItem("exchange_station", () -> new BlockItem(TechariumBlocks.EXCHANGE_STATION.get(), new Item.Properties().tab(Techarium.TAB))) : () -> null;
 
 	public static void register() {}
 

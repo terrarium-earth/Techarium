@@ -27,8 +27,8 @@ public class ExchangeStationBlock extends SelfDeployingBlock {
 //	}
 
 	@Override
-	public BlockRegion getBlockSize() {
-		return new BlockRegion(1, 3, 1);
+	public BlockRegion getDeployedSize() {
+		return new BlockRegion(1, 3, 1);// TODO @Ketheroth: 07/06/2022 replace 3 by 2 when the tests are ok
 	}
 
 }

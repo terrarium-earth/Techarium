@@ -27,9 +27,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * A class for blocks that are deployed after placed in the world.
- * See {@link SelfDeployingBlockEntity} for the block entity associated. This block entity take care of the deployment.
- * See {@link SelfDeployingSlaveBlock} for the block used by this block to maintain its state in the world and "claim" the positions.
+ * A class for blocks that are deployed after placed in the world.<br>
+ * See {@link SelfDeployingBlockEntity} for the block entity associated. This block entity take care of the deployment.<br>
+ * See {@link SelfDeployingSlaveBlock} for the block used by this block to maintain its state in the world and "claim" the positions.<br>
+ * <br>
+ * Child classes should override {@link SelfDeployingBlock#getDeployedSize()} to change the size of the deployed block. Default is (1,1,1).
  */
 public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 
@@ -40,13 +42,13 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public RenderShape getRenderShape(BlockState state) {
-		return RenderShape.ENTITYBLOCK_ANIMATED;
+	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+		return this.getDeployedSize().toVoxelShape();
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		return this.getBlockSize().toVoxelShape();
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.ENTITYBLOCK_ANIMATED;
 	}
 
 	@Override
@@ -97,7 +99,7 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 	 */
 	public boolean canBePlaced(Level world, BlockPos pos) {
 		// TODO @Ketheroth: 06/06/2022 find a proper way to do that. add orientation according the core direction. (move to MultiBlockStructure ?)
-		BlockRegion region = this.getBlockSize();
+		BlockRegion region = this.getDeployedSize();
 		for (int x = region.xOffset; x < region.xSize - region.xOffset; x++) {
 			for (int y = region.yOffset; y < region.ySize - region.yOffset; y++) {
 				for (int z = region.zOffset; z < region.zSize - region.zOffset; z++) {
@@ -119,7 +121,7 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 	 * @param pos   the position of the block.
 	 */
 	public void showObstructingBlocks(Level level, BlockPos pos) {
-		BlockRegion region = this.getBlockSize();
+		BlockRegion region = this.getDeployedSize();
 		for (int x = region.xOffset; x < region.xSize - region.xOffset; x++) {
 			for (int y = region.yOffset; y < region.ySize - region.yOffset; y++) {
 				for (int z = region.zOffset; z < region.zSize - region.zOffset; z++) {
@@ -135,7 +137,7 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 	/**
 	 * @return the size of the block after deployment.
 	 */
-	public BlockRegion getBlockSize() {
+	public BlockRegion getDeployedSize() {
 		return BlockRegion.FULL_BLOCK;
 	}
 

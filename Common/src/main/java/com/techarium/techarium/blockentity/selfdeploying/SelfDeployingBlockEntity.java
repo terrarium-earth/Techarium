@@ -20,8 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A Block Entity that will deploy itself in the world with an animation.
- * See {@link SelfDeployingBlock} for the associated block.
+ * A Block Entity that will deploy itself in the world with an animation.<br>
+ * See {@link SelfDeployingBlock} for the associated block.<br>
+ * <br>
+ * Child class should override {@link SelfDeployingBlockEntity#getMachineSlaveLocations()} to determine the location of the slave blocks. Default implementation is there is no slaves.
+ * These locations should match the BlockRegion given by {@link SelfDeployingBlock#getDeployedSize()}.
  */
 public abstract class SelfDeployingBlockEntity extends BlockEntity implements IAnimatable {
 
@@ -37,7 +40,7 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 	/**
 	 * Deploy the block.
-	 * Default implementation place the slaves blocks and set opening at true.
+	 * Default implementation place the slaves blocks.
 	 */
 	public void deploy() {
 		if (this.level != null) {
@@ -45,7 +48,6 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 				this.level.setBlock(entry.getKey(), entry.getValue().defaultBlockState(), 3);
 				BlockEntity blockEntity = level.getBlockEntity(entry.getKey());
 				if (blockEntity instanceof SelfDeployingSlaveBlockEntity slaveBlockEntity) {
-					System.out.println("set mpos to " + this.worldPosition);
 					slaveBlockEntity.setMasterPosition(this.worldPosition);
 				}
 			}
@@ -85,7 +87,7 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 	@Override
 	public void registerControllers(AnimationData animationData) {
-		animationData.addAnimationController(new AnimationController<>(this, "controller", 0, this::animationPredicate));
+		animationData.addAnimationController(new AnimationController<>(this, "controller", 10, this::animationPredicate));
 	}
 
 	protected abstract <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> event);

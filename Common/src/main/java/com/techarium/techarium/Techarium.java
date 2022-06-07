@@ -15,6 +15,8 @@ public class Techarium {
 	public static final String MOD_NAME = "Techarium";
 	public static CreativeModeTab TAB = CommonServices.REGISTRY.registerCreativeTab(new ResourceLocation(MOD_ID, "tab"), () -> new ItemStack(Blocks.DIAMOND_BLOCK));
 
+	public static final boolean DEBUG_MODE = true;  // if we want debug items/blocks
+
 	public static void init() {
 		TechariumBlocks.register();
 		TechariumItems.register();

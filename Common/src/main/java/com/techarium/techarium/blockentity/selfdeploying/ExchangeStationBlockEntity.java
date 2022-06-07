@@ -41,7 +41,6 @@ public class ExchangeStationBlockEntity extends SelfDeployingBlockEntity {
 
 	@Override
 	public Map<BlockPos, SelfDeployingSlaveBlock> getMachineSlaveLocations() {
-		System.out.println("world pos " + this.worldPosition);
 		return Map.of(this.worldPosition.above(), TechariumBlocks.SELF_DEPLOYING_SLAVE.get());
 	}
 

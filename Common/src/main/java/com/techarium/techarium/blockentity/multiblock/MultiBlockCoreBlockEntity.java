@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import java.util.function.Supplier;
 
 /**
- * A BlockEntity for the {@link MultiBlockCoreBlock}
+ * A BlockEntity for the {@link MultiBlockCoreBlock}.
  */
 public abstract class MultiBlockCoreBlockEntity extends BlockEntity {
 
