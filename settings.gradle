@@ -12,5 +12,5 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'Techarium 1.18.2'
+rootProject.name = 'Techarium 1.19'
 include("Common", "Fabric", "Forge")

@@ -6,7 +6,6 @@ import com.techarium.techarium.blockentity.selfdeploying.ExchangeStationBlockEnt
 import com.techarium.techarium.client.model.ExchangeStationModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.renderers.geo.GeoBlockRenderer;
 
@@ -14,8 +13,8 @@ import javax.annotation.Nullable;
 
 public class ExchangeStationRenderer extends GeoBlockRenderer<ExchangeStationBlockEntity>
 {
-	public ExchangeStationRenderer(BlockEntityRendererProvider.Context rendererDispatcherIn) {
-		super(rendererDispatcherIn, new ExchangeStationModel());
+	public ExchangeStationRenderer() {
+		super(new ExchangeStationModel());
 	}
 
 	@Override
@@ -23,7 +22,7 @@ public class ExchangeStationRenderer extends GeoBlockRenderer<ExchangeStationBlo
 									@Nullable MultiBufferSource renderTypeBuffer,
 									@Nullable VertexConsumer vertexBuilder, int packedLightIn,
 									ResourceLocation textureLocation) {
-		return RenderType.entityCutoutNoCull(this.getTextureLocation(animatable));
+		return RenderType.entityCutoutNoCull(this.getTextureResource(animatable));
 	}
 
 }

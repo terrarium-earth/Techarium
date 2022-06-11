@@ -75,7 +75,7 @@ sourceSets.main.resources.srcDir 'src/generated/resources'
 dependencies {
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 	compileOnly project(":Common")
-	implementation fg.deobf("software.bernie.geckolib:geckolib-1.18-forge:${geckolib_forge_version}")
+	implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.19:${geckolib_forge_version}")
 }
 
 tasks.withType(JavaCompile) {
