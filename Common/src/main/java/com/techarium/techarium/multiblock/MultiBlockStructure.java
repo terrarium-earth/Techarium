@@ -4,8 +4,11 @@ import com.techarium.techarium.block.multiblock.MultiBlockCoreBlock;
 import com.techarium.techarium.block.multiblock.MultiBlockElementBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingBlockEntity;
+import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingMultiBlockBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.Containers;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -88,13 +91,40 @@ public class MultiBlockStructure {
 		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 		for (BlockPos pos : this.positions.keySet()) {
 			// replace multiblock with air so the self-deploying block can safely replace them.
-			BlockPos levelPos = corePos.offset(rotate(pos, direction));
+			BlockPos levelPos = corePos.offset(this.rotate(pos, direction));
 			level.setBlock(levelPos, Blocks.AIR.defaultBlockState(), 3);
 		}
 		level.setBlock(corePos, this.selfDeployingBlock.defaultBlockState(), 3);
-		if (level.getBlockEntity(corePos) instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
+		if (level.getBlockEntity(corePos) instanceof SelfDeployingMultiBlockBlockEntity selfDeployingBlockEntity) {
 			selfDeployingBlockEntity.deploy();
+			selfDeployingBlockEntity.setLinkedMultiBlock(this);
 		}
+	}
+
+	/**
+	 * Place the blocks of this structure in the world.
+	 * This should be called from a self-deploying block being destructed.
+	 *
+	 * @param level      the world
+	 * @param state      the state of the core block of the self-deploying block
+	 * @param corePos    the position of the core block of the self-deployed block
+	 * @param initiator  the position of the block that initiated the removal of the self-deployed block
+	 * @param dropBlocks determine if the blocks of this multiblock should be dropped in the world instead of placed in the world.
+	 */
+	public void undeploy(Level level, BlockState state, BlockPos corePos, BlockPos initiator, boolean dropBlocks) {
+		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+		for (Map.Entry<BlockPos, MultiBlockElementBlock> entry : this.positions.entrySet()) {
+			BlockPos pos = corePos.offset(this.rotate(entry.getKey(), direction));
+			level.setBlock(pos, entry.getValue().defaultBlockState(), 3);
+			if (dropBlocks) {
+				level.destroyBlock(pos, true);
+			}
+		}
+		level.setBlock(corePos, this.core.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, direction), 3);
+		if (dropBlocks) {
+			level.destroyBlock(corePos, true);
+		}
+		level.destroyBlock(initiator, true);
 	}
 
 	/**
@@ -103,7 +133,7 @@ public class MultiBlockStructure {
 	 * @param level   the level of the multiblock.
 	 * @param state   the blockstate of the multiblock core.
 	 * @param corePos the position of the multiblock core.
-	 * @return if the structure can be deployed.
+	 * @return true if the structure can be deployed.
 	 */
 	public boolean canDeploy(Level level, BlockState state, BlockPos corePos) {
 		return this.selfDeployingBlock.canBePlaced(level, corePos);

@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,12 +31,10 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 	private final Map<BlockPos, SelfDeployingSlaveBlock> slaves;
 	private AnimationFactory factory = new AnimationFactory(this);
-//	protected boolean isOpening;
 
 	public SelfDeployingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 		this.slaves = this.getMachineSlaveLocations();
-//		this.isOpening = true;
 	}
 
 	/**
@@ -57,14 +56,23 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 	/**
 	 * Undeploy the block.
 	 * Default implementation remove the slaves blocks alongside the master.
+	 *
+	 * @param removeSelf        determine if this block should remove itself
+	 * @param restoreMultiBlock determine if the multiblock associated (if any) should be restored in the world.
+	 * @param oldState          the state of the core block before it was removed
+	 * @param initiator         the position of the block that initiated the removal of the self-deployed block
 	 */
-	public void undeploy() {
-		// TODO @Ketheroth: 04/06/2022 add a way to reform the structure after the self-deployed block is destroyed ??
+	public void undeploy(boolean removeSelf, boolean restoreMultiBlock, BlockState oldState, BlockPos initiator) {
 		if (level != null) {
-			level.destroyBlock(this.worldPosition, true);
+			this.level.removeBlockEntity(this.worldPosition);  // state changed but not yet the block entity so we do it now
+			if (removeSelf) {
+				// called from Block#onRemove, the state have already been changed. This is mainly used for when it is called from elsewhere.
+				level.setBlock(this.worldPosition, Blocks.AIR.defaultBlockState(), 3);
+			}
+			// TODO @Ketheroth: 11/06/2022 drop content if there is an inventory
 			for (BlockPos pos : slaves.keySet()) {
-				if (level.getBlockEntity(pos) instanceof SelfDeployingSlaveBlockEntity) {
-					level.destroyBlock(pos, false);
+				if (level.getBlockState(pos).getBlock() instanceof SelfDeployingSlaveBlock) {
+					level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
 				}
 			}
 		}
@@ -87,7 +95,7 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 	@Override
 	public void registerControllers(AnimationData animationData) {
-		animationData.addAnimationController(new AnimationController<>(this, "controller", 10, this::animationPredicate));
+		animationData.addAnimationController(new AnimationController<>(this, "controller", 0, this::animationPredicate));
 	}
 
 	protected abstract <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> event);

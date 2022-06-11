@@ -5,12 +5,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -33,14 +33,11 @@ public class SelfDeployingSlaveBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (oldState.getBlock() != newState.getBlock()) {
-			BlockEntity blockEntity = level.getBlockEntity(pos);
-			if (blockEntity instanceof SelfDeployingSlaveBlockEntity selfDeployingSlaveBlockEntity) {
-				selfDeployingSlaveBlockEntity.onRemove(oldState, level, pos, newState, isMoving);
-			}
+	public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
+		super.playerDestroy(level, player, pos, state, blockEntity, stack);
+		if (blockEntity instanceof SelfDeployingSlaveBlockEntity selfDeployingSlaveBlockEntity) {
+			selfDeployingSlaveBlockEntity.playerDestroy(level, player, pos, state, blockEntity, stack);
 		}
-		super.onRemove(oldState, level, pos, newState, isMoving);
 	}
 
 	@Override
@@ -49,8 +46,8 @@ public class SelfDeployingSlaveBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public boolean canBeReplaced(BlockState $$0, Fluid $$1) {
-		return super.canBeReplaced($$0, $$1);
+	protected void spawnDestroyParticles(Level level, Player player, BlockPos pos, BlockState state) {
+		// we don't want particles
 	}
 
 }

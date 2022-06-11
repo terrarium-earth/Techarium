@@ -3,6 +3,7 @@ package com.techarium.techarium.block.selfdeploying;
 import com.techarium.techarium.block.multiblock.MultiBlockCoreBlock;
 import com.techarium.techarium.block.multiblock.MultiBlockElementBlock;
 import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingBlockEntity;
+import com.techarium.techarium.registry.TechariumItems;
 import com.techarium.techarium.util.BlockRegion;
 import com.techarium.techarium.util.RenderUtil;
 import net.minecraft.core.BlockPos;
@@ -71,14 +72,12 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 	}
 
 	@Override
-	public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (oldState.getBlock() != newState.getBlock()) {
-			BlockEntity blockEntity = level.getBlockEntity(pos);
-			if (blockEntity instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
-				selfDeployingBlockEntity.undeploy();
-			}
+	public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
+		super.playerDestroy(level, player, pos, state, blockEntity, stack);
+		if (blockEntity instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
+			// default : the machine is removed and if it was from a multiblock the multiblock is restored
+			selfDeployingBlockEntity.undeploy(false, !(stack.is(TechariumItems.TECH_TOOL.get()) || player.isShiftKeyDown()), state, pos);
 		}
-		super.onRemove(oldState, level, pos, newState, isMoving);
 	}
 
 	@Override

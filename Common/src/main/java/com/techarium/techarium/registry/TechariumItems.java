@@ -14,6 +14,11 @@ public class TechariumItems {
 
 	public static final Supplier<Item> EXCHANGE_STATION = Techarium.DEBUG_MODE ? CommonServices.REGISTRY.registerItem("exchange_station", () -> new BlockItem(TechariumBlocks.EXCHANGE_STATION.get(), new Item.Properties().tab(Techarium.TAB))) : () -> null;
 
+	/**
+	 * This is a placeholder item for a tool.
+	 */
+	public static final Supplier<Item> TECH_TOOL = CommonServices.REGISTRY.registerItem("tech_tool", () -> new Item(new Item.Properties().tab(Techarium.TAB)));
+
 	public static void register() {}
 
 }

@@ -15,7 +15,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import java.util.Map;
 
-public class ExchangeStationBlockEntity extends SelfDeployingBlockEntity {
+public class ExchangeStationBlockEntity extends SelfDeployingMultiBlockBlockEntity {
 
 	public ExchangeStationBlockEntity(BlockPos pos, BlockState state) {
 		super(TechariumBlockEntities.EXCHANGE_STATION.get(), pos, state);
@@ -29,13 +29,9 @@ public class ExchangeStationBlockEntity extends SelfDeployingBlockEntity {
 	@Override
 	protected <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> event) {
 		// TODO @Ketheroth: 06/06/2022 ask what is the use of isOpening in the old code base
-			event.getController().setAnimation(new AnimationBuilder()
-							.addAnimation("exchange_station.deploy", false)
-							.addAnimation("exchange_station.idle", true));
-//		if (this.isOpening) {
-//		} else {
-//			event.getController().setAnimation(new AnimationBuilder().addAnimation("exchange_station.idle", true));
-//		}
+		event.getController().setAnimation(new AnimationBuilder()
+				.addAnimation("exchange_station.deploy", false)
+				.addAnimation("exchange_station.idle", true));
 		return PlayState.CONTINUE;
 	}
 
