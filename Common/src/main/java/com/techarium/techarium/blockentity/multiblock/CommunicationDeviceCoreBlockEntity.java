@@ -10,19 +10,14 @@ import java.util.function.Supplier;
 
 public class CommunicationDeviceCoreBlockEntity extends MultiBlockCoreBlockEntity {
 
-
 	public CommunicationDeviceCoreBlockEntity(BlockPos pos, BlockState state) {
 		super(TechariumBlockEntities.COMMUNICATION_DEVICE_CORE.get(), pos, state);
 	}
 
 	@Override
-	public String getMultiBlockStructureId() {
-		return "com_device";
-	}
-
-	@Override
 	public Supplier<MultiBlockStructure> getDefaultMultiBlockStructure() {
 		return () -> new MultiBlockStructure.Builder()
+				.setId("com_device")
 				.setSelfDeployingBlock(TechariumBlocks.EXCHANGE_STATION.get())
 				.setCore(TechariumBlocks.COMMUNICATION_DEVICE_CORE.get())
 				.addElement(new BlockPos(0, 1, 0), TechariumBlocks.COMMUNICATION_DEVICE_ELEMENT.get())

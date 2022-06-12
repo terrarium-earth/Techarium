@@ -3,6 +3,7 @@ package com.techarium.techarium.blockentity.selfdeploying;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -30,6 +31,7 @@ public class SelfDeployingSlaveBlockEntity extends BlockEntity {
 
 	/**
 	 * When the slave block is used, proxy the call to the block at master position.
+	 *
 	 * @return the result of the interaction with the master block
 	 */
 	public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
@@ -49,6 +51,25 @@ public class SelfDeployingSlaveBlockEntity extends BlockEntity {
 			// default : the machine is removed and if it was from a multiblock the multiblock is restored
 			selfDeployingBlockEntity.undeploy(true, !(stack.is(TechariumItems.TECH_TOOL.get()) || player.isShiftKeyDown()), level.getBlockState(this.masterPosition), pos);
 		}
+	}
+
+	@Override
+	protected void saveAdditional(CompoundTag tag) {
+		CompoundTag pos = new CompoundTag();
+		pos.putInt("x", this.masterPosition.getX());
+		pos.putInt("y", this.masterPosition.getY());
+		pos.putInt("z", this.masterPosition.getZ());
+		tag.put("master", pos);
+	}
+
+	@Override
+	public void load(CompoundTag tag) {
+		CompoundTag master = (CompoundTag) tag.get("master");
+		this.masterPosition = new BlockPos(
+				master.getInt("x"),
+				master.getInt("y"),
+				master.getInt("z")
+		);
 	}
 
 }

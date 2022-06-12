@@ -28,10 +28,8 @@ public abstract class MultiBlockCoreBlockEntity extends BlockEntity {
 
 	public MultiBlockCoreBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		this.multiblock = MultiBlockRegistry.getOrSet(this.getMultiBlockStructureId(), this.getDefaultMultiBlockStructure());
+		this.multiblock = MultiBlockRegistry.registerOnce(this.getDefaultMultiBlockStructure());
 	}
-
-	public abstract String getMultiBlockStructureId();
 
 	public abstract Supplier<MultiBlockStructure> getDefaultMultiBlockStructure();
 

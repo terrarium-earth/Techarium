@@ -25,10 +25,19 @@ public class MultiBlockStructure {
 	private final Map<BlockPos, MultiBlockElementBlock> positions;
 	private MultiBlockCoreBlock core;
 	private SelfDeployingBlock selfDeployingBlock;
+	private String id;
 
 	private MultiBlockStructure() {
 		this.positions = new HashMap<>();
 		this.core = null;
+		this.id = "";
+	}
+
+	/**
+	 * @return the id of this structure.
+	 */
+	public String getId() {
+		return this.id;
 	}
 
 	/**
@@ -149,6 +158,11 @@ public class MultiBlockStructure {
 	public static class Builder {
 
 		private final MultiBlockStructure structure = new MultiBlockStructure();
+
+		public MultiBlockStructure.Builder setId(String id) {
+			this.structure.id = id;
+			return this;
+		}
 
 		public MultiBlockStructure.Builder setCore(MultiBlockCoreBlock core) {
 			this.structure.core = core;

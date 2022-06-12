@@ -11,27 +11,36 @@ public class MultiBlockRegistry {
 	/**
 	 * Register a multiblock structure. If there was already a multiblock associated to the id, the old multiblock is replaced with the new.
 	 *
-	 * @param id        the id of the multiblock structure.
 	 * @param structure the multiblock structure to associate with the id.
 	 * @return the previous multiblock associated with the id, or null if there was none.
 	 */
-	public static MultiBlockStructure register(String id, MultiBlockStructure structure) {
-		return MULTIBLOCK_STRUCTURES.put(id, structure);
+	public static MultiBlockStructure register(MultiBlockStructure structure) {
+		return MULTIBLOCK_STRUCTURES.put(structure.getId(), structure);
 	}
 
 	/**
-	 * Get the multiblock structure associated with the id if present.
-	 * if there is no multiblock associated, associate the given multiblock to the id and return this one.
+	 * Register the multiblock only if it wasn't registered before.
+	 * It is registered with the id of the given multiblock.
 	 *
-	 * @param id        the id of the multiblock to get.
-	 * @param structure the structure to associate the id if there were none.
-	 * @return the multiblock associated to the id.
+	 * @param structureSupplier the structure to register.
+	 * @return the multiblock registered to the id of the given multiblock.
 	 */
-	public static MultiBlockStructure getOrSet(String id, Supplier<MultiBlockStructure> structure) {
-		if (!MULTIBLOCK_STRUCTURES.containsKey(id)) {
-			MULTIBLOCK_STRUCTURES.put(id, structure.get());
+	public static MultiBlockStructure registerOnce(Supplier<MultiBlockStructure> structureSupplier) {
+		MultiBlockStructure structure = structureSupplier.get();
+		if (!MULTIBLOCK_STRUCTURES.containsKey(structure.getId())) {
+			MULTIBLOCK_STRUCTURES.put(structure.getId(), structure);
 		}
-		return MULTIBLOCK_STRUCTURES.get(id);
+		return MULTIBLOCK_STRUCTURES.get(structure.getId());
+	}
+
+	/**
+	 * Get the multiblock structure associated with the id.
+	 *
+	 * @param id the id of the multiblock to get.
+	 * @return the multiblock associated to the id or null if none.
+	 */
+	public static MultiBlockStructure get(String id) {
+		return MULTIBLOCK_STRUCTURES.getOrDefault(id, EMPTY);
 	}
 
 	public static final MultiBlockStructure EMPTY = new MultiBlockStructure.Builder().build();
