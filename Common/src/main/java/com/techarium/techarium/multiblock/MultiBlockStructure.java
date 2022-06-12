@@ -3,12 +3,9 @@ package com.techarium.techarium.multiblock;
 import com.techarium.techarium.block.multiblock.MultiBlockCoreBlock;
 import com.techarium.techarium.block.multiblock.MultiBlockElementBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
-import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingBlockEntity;
 import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingMultiBlockBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.Containers;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -16,6 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -140,13 +138,12 @@ public class MultiBlockStructure {
 	}
 
 	/**
-	 * Display an outline around blocks that obstruct the self-deploying block to be deployed.
-	 *
 	 * @param level the level of the multiblock.
 	 * @param pos   the position of the multiblock core.
+	 * @return a list of the blocks that obstruct the self-deploying block to be deployed.
 	 */
-	public void showObstructingBlocks(Level level, BlockPos pos) {
-		this.selfDeployingBlock.showObstructingBlocks(level, pos);
+	public List<BlockPos> getObstructingBlocks(Level level, BlockPos pos) {
+		return this.selfDeployingBlock.getObstructingBlocks(level, pos);
 	}
 
 	public static class Builder {

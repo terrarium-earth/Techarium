@@ -10,12 +10,12 @@
 
 
 ## Fabric
-- [ ] replace geckolib-core with its full implementation when on 1.19 and add the models/renderers
+- [x] replace geckolib-core with its full implementation when on 1.19 and add the models/renderers
 
 
 # Notes
 
-### on removing block
+### On removing block
 
 SelfDeployingBlock :
 - remove itself then the slaves
@@ -23,3 +23,18 @@ SelfDeployingBlock :
 SelfDeployingSlaveBlock :
 - if block at master pos is good, proxy removal to it
 - else remove itself
+
+### On displaying an overlay to the obstructing blocks
+
+(tested only in forge)
+right now, there is an overlay, but it is limited : the overlay is displayed forever.  
+I wish it would stay ~1 second and then disappear. It would be shown again if the player right click the core.
+
+The code is ugly cause I need somehow to have the PoseStack of the rendering thread, I can't just create a new one.
+So I store every position where there is a core obstructed to be rendered in a static list (I don't like that).
+
+I tried to create a timer that save the last clicked time and with a check `System.currentTimeMillis() - timer` remove the core pos from the list.
+Unfortunately the timer is not synced to the client (or server, didn't check which side) and the timer isn't reset after a click.
+So this fucks everything cause the player can't reset it. (And I don't want to send a packet every second to say "hey reset timer pls").
+
+So, well, this should be looked at in the future.

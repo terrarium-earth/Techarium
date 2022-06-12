@@ -5,7 +5,6 @@ import com.techarium.techarium.block.multiblock.MultiBlockElementBlock;
 import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingBlockEntity;
 import com.techarium.techarium.registry.TechariumItems;
 import com.techarium.techarium.util.BlockRegion;
-import com.techarium.techarium.util.RenderUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -26,6 +25,9 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class for blocks that are deployed after placed in the world.<br>
@@ -113,24 +115,25 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 	}
 
 	/**
-	 * Display an outline around blocks that obstruct this block to be deployed.
-	 * This must be called only client-side.
-	 *
-	 * @param level the level of the block.
-	 * @param pos   the position of the block.
+	 * @param level the level of the multiblock.
+	 * @param pos   the position of the multiblock core.
+	 * @return a list of the blocks that obstruct the self-deploying block to be deployed.
 	 */
-	public void showObstructingBlocks(Level level, BlockPos pos) {
+	public List<BlockPos> getObstructingBlocks(Level level, BlockPos pos) {
+		List<BlockPos> positions = new ArrayList<>();
 		BlockRegion region = this.getDeployedSize();
 		for (int x = region.xOffset; x < region.xSize - region.xOffset; x++) {
 			for (int y = region.yOffset; y < region.ySize - region.yOffset; y++) {
 				for (int z = region.zOffset; z < region.zSize - region.zOffset; z++) {
-					BlockState state = level.getBlockState(pos.offset(x, y, z));
+					BlockPos offset = pos.offset(x, y, z);
+					BlockState state = level.getBlockState(offset);
 					if (!(state.getMaterial().isReplaceable() || state.getBlock() instanceof MultiBlockCoreBlock || state.getBlock() instanceof MultiBlockElementBlock)) {
-						RenderUtil.displayRedOutline(x, y, z);
+						positions.add(offset);
 					}
 				}
 			}
 		}
+		return positions;
 	}
 
 	/**
