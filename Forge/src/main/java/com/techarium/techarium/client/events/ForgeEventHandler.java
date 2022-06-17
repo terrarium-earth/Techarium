@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 
 
 @Mod.EventBusSubscriber(modid = Techarium.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
-public class RenderLevelLastHandler {
+public class ForgeEventHandler {
 
 	@SubscribeEvent
 	public static void onRenderLevelLast(RenderLevelLastEvent event) {

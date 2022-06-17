@@ -1,5 +1,11 @@
 package com.techarium.techarium.platform.services;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+
+import java.util.function.Consumer;
+
 public interface IPlatformHelper {
 
 	/**
@@ -23,5 +29,14 @@ public interface IPlatformHelper {
 	 * @return True if in a development environment, false otherwise.
 	 */
 	boolean isDevelopmentEnvironment();
+
+	/**
+	 * Open a gui.
+	 *
+	 * @param player    the player.
+	 * @param provider  the menu provider.
+	 * @param extraData extra data to send to the client.
+	 */
+	void openGui(ServerPlayer player, MenuProvider provider, Consumer<FriendlyByteBuf> extraData);
 
 }

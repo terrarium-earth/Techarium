@@ -4,6 +4,7 @@ import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
 import com.techarium.techarium.registry.TechariumItems;
+import com.techarium.techarium.registry.TechariumMenuTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -21,6 +22,7 @@ public class Techarium {
 		TechariumBlocks.register();
 		TechariumItems.register();
 		TechariumBlockEntities.register();
+		TechariumMenuTypes.register();
 	}
 
 }

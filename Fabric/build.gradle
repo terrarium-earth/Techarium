@@ -17,6 +17,7 @@ dependencies {
 }
 
 loom {
+	accessWidenerPath = file('src/main/resources/techarium_fabric.accesswidener')
 	runs {
 		client {
 			client()

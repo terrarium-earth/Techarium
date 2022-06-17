@@ -9,7 +9,7 @@ public class ExchangeStationModel extends AnimatedGeoModel<ExchangeStationBlockE
 
 	@Override
 	public ResourceLocation getModelResource(ExchangeStationBlockEntity object) {
-		return new ResourceLocation(Techarium.MOD_ID, "geo/exchange_station/exchange_station.geo.json");
+		return new ResourceLocation(Techarium.MOD_ID, "geo/exchange_station.geo.json");
 	}
 
 	@Override

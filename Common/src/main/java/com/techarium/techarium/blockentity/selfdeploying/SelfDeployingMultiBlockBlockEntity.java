@@ -30,13 +30,13 @@ public abstract class SelfDeployingMultiBlockBlockEntity extends SelfDeployingBl
 
 	@Override
 	protected void saveAdditional(CompoundTag tag) {
+		// TODO @Ketheroth: 17/06/2022 change the way multiblock are registered cause right now, they are registered after the tag are read
 		tag.putString("multiblock", this.linkedMultiBlock.getId());
 	}
 
 	@Override
 	public void load(CompoundTag tag) {
 		this.linkedMultiBlock = MultiBlockRegistry.get(tag.getString("multiblock"));
-		System.out.println("loading multiblock " + this.linkedMultiBlock.getId());
 	}
 
 }

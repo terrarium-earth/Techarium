@@ -2,6 +2,9 @@ package com.techarium.techarium.platform.services;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,9 +25,20 @@ public interface IRegistryHelper {
 
 	<E extends BlockEntity> BlockEntityType<E> createBlockEntityType(BlockEntityFactory<E> factory, Block... blocks);
 
+	<E extends AbstractContainerMenu> Supplier<MenuType<E>> registerMenuType(String id, MenuTypeFactory<E> factory);
+
 	@FunctionalInterface
 	interface BlockEntityFactory<T extends BlockEntity> {
+
 		T create(BlockPos blockPos, BlockState blockState);
+
+	}
+
+	@FunctionalInterface
+	interface MenuTypeFactory<T extends AbstractContainerMenu> {
+
+		T create(int id, Inventory inventory, BlockPos pos);
+
 	}
 
 	CreativeModeTab registerCreativeTab(ResourceLocation tab, Supplier<ItemStack> icon);

@@ -966,7 +966,7 @@
 				},
 				"holo": {
 					"rotation": {
-						"vector": [0, "158+query.anim_time*50", 0]
+						"vector": [0, "query.anim_time*50", 0]
 					},
 					"position": {
 						"vector": [0, 1, 0],

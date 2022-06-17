@@ -155,6 +155,16 @@ public class MultiBlockStructure {
 		return this.selfDeployingBlock.getObstructingBlocks(level, pos);
 	}
 
+	@Override
+	public String toString() {
+		return "MultiBlockStructure{" +
+				"id='" + id + '\'' +
+				", positions=" + positions.entrySet().stream().map(entry -> "" + entry.getKey().toString() + "->" + entry.getValue() + ",").toList() +
+				", core=" + core +
+				", selfDeployingBlock=" + selfDeployingBlock +
+				'}';
+	}
+
 	public static class Builder {
 
 		private final MultiBlockStructure structure = new MultiBlockStructure();

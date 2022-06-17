@@ -19,10 +19,11 @@ import net.minecraft.world.phys.BlockHitResult;
  */
 public class SelfDeployingSlaveBlockEntity extends BlockEntity {
 
-	private BlockPos masterPosition = new BlockPos(0, 0, 0);
+	private BlockPos masterPosition;
 
 	public SelfDeployingSlaveBlockEntity(BlockPos pos, BlockState state) {
 		super(TechariumBlockEntities.SELF_DEPLOYING_SLAVE.get(), pos, state);
+		this.masterPosition = new BlockPos(0, 0, 0);
 	}
 
 	public void setMasterPosition(BlockPos position) {
@@ -35,15 +36,11 @@ public class SelfDeployingSlaveBlockEntity extends BlockEntity {
 	 * @return the result of the interaction with the master block
 	 */
 	public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (level.isClientSide) {
-			// we do nothing in the client cause the master position is not present
-			return InteractionResult.SUCCESS;
-		}
 		BlockEntity blockEntity = level.getBlockEntity(this.masterPosition);
 		if (blockEntity instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
 			return selfDeployingBlockEntity.onUse(player, hand);
 		}
-		return InteractionResult.PASS;
+		return InteractionResult.SUCCESS;
 	}
 
 	public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
