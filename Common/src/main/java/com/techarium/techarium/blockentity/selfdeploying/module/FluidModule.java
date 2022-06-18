@@ -1,5 +1,6 @@
 package com.techarium.techarium.blockentity.selfdeploying.module;
 
+import com.techarium.techarium.platform.CommonServices;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -9,80 +10,164 @@ import net.minecraft.world.level.material.Fluids;
 /**
  * A module that store a fluid.
  */
-// TODO @Ketheroth: 17/06/2022 change class to used milli-buckets instead of buckets
-// TODO @Ketheroth: 17/06/2022 rework module a little so some methods of this class are moved to the interface
-public class FluidModule implements InventoryModule<Fluid> {
+public class FluidModule {
+
+	public static final FluidModule EMPTY = new FluidModule(0);
 
 	private Fluid fluid;
-	private int size;
-	private int amount;
+	private int maxBucket;
+	private long milliBuckets;
 
-	public FluidModule(int size) {
-		this.size = size;
+	public FluidModule(int maxBucket) {
+		this.maxBucket = maxBucket;
+		this.milliBuckets = 0;
 		this.fluid = Fluids.EMPTY;
-		this.amount = 0;
 	}
 
-	public FluidModule(Fluid fluid, int size) {
-		this.fluid = fluid;
-		this.size = size;
-		this.amount = 0;
-	}
-
-	@Override
-	public ModuleType getType() {
-		return ModuleType.FLUID;
-	}
-
-	@Override
-	public int getSize() {
-		return this.size;
-	}
-
-	public int getAmount() {
-		return this.amount;
-	}
-
-	@Override
-	public Fluid get(int id) {
-		return 0 <= id && id < amount ? this.fluid : Fluids.EMPTY;
-	}
-
-	@Override
-	public Fluid add(Fluid value) {
-		if (this.fluid.isSame(Fluids.EMPTY)) {
-			this.fluid = value;
-		}
-		if (this.fluid.isSame(value)/* && this.amount < this.size*/) {
-			this.amount++;
-			return Fluids.EMPTY;
-		}
-		return value;
-	}
-
-	@Override
+	/**
+	 * Load the module from the tag.
+	 *
+	 * @param tag the tag to load the module from.
+	 */
 	public void load(CompoundTag tag) {
-		this.amount = tag.getInt("amount");
-		this.size = tag.getInt("size");
+		this.milliBuckets = tag.getLong("milliBuckets");
+		this.maxBucket = tag.getInt("maxBucket");
 		this.fluid = Registry.FLUID.get(new ResourceLocation(tag.getString("fluid")));
 	}
 
-	@Override
+	/**
+	 * Save the module to the tag.
+	 *
+	 * @param tag the tag to save the module to.
+	 */
 	public void save(CompoundTag tag) {
-		InventoryModule.super.save(tag);
-		tag.putInt("amount", this.amount);
+		tag.putLong("milliBuckets", this.milliBuckets);
+		tag.putInt("maxBucket", this.maxBucket);
 		tag.putString("fluid", Registry.FLUID.getKey(this.fluid).toString());
 	}
 
-	public String getFluid() {
-		return Registry.FLUID.getKey(this.fluid).toString();
+	/**
+	 * Add a certain amount of a fluid.
+	 *
+	 * @param fluid  the fluid to add.
+	 * @param amount the amount to add.
+	 * @return how much couldn't be added.
+	 */
+	public long add(Fluid fluid, long amount) {
+		if (this.isEmpty()) {
+			this.fluid = fluid;
+			this.milliBuckets = amount;
+			return 0;
+		}
+		if (!this.fluid.isSame(fluid)) {
+			return amount;
+		}
+		long possible = maxBucket * CommonServices.PLATFORM.getBucketVolume() - this.milliBuckets;
+		if (possible < amount) {
+			this.milliBuckets += possible;
+			return amount - possible;
+		}
+		this.milliBuckets += amount;
+		return 0;
 	}
 
-	public void remove(int amount) {
-		this.amount -= amount;
-		if (this.amount < 0) {
-			this.amount = 0;
+	/**
+	 * Add one bucket of a fluid.
+	 *
+	 * @param fluid the fluid to add.
+	 * @return how much couldn't be added.
+	 */
+	public long add(Fluid fluid) {
+		return this.add(fluid, CommonServices.PLATFORM.getBucketVolume());
+	}
+
+	/**
+	 * Retrieve a certain amount of a fluid.
+	 *
+	 * @param fluid  the fluid to retrieve.
+	 * @param amount the amount to retrieve.
+	 * @return how much could be retrieved.
+	 */
+	public long retrieve(Fluid fluid, long amount) {
+		if (this.isEmpty()) {
+			return 0;
 		}
+		if (!this.fluid.isSame(fluid)) {
+			return 0;
+		}
+		if (this.milliBuckets <= amount) {
+			long removed = this.milliBuckets;
+			this.milliBuckets = 0;
+			this.fluid = Fluids.EMPTY;
+			return removed;
+		}
+		this.milliBuckets -= amount;
+		return amount;
+	}
+
+	/**
+	 * Retrieve one bucket of a fluid.
+	 *
+	 * @param fluid the fluid to retrieve.
+	 * @return how much could be retrieved.
+	 */
+	public long retrieve(Fluid fluid) {
+		return this.retrieve(fluid, CommonServices.PLATFORM.getBucketVolume());
+	}
+
+	/**
+	 * Retrieve one bucket of the current fluid.
+	 *
+	 * @return how much could be retrieved.
+	 */
+	public long retrieve() {
+		return this.retrieve(this.fluid, CommonServices.PLATFORM.getBucketVolume());
+	}
+
+	/**
+	 * @return the current fluid.
+	 */
+	public Fluid currentFluid() {
+		return this.fluid;
+	}
+
+	/**
+	 * @return the current amount of fluid.
+	 */
+	public long currentAmount() {
+		return this.milliBuckets;
+	}
+
+	/**
+	 * @return the amount of bucket it can contain.
+	 */
+	public int maxBucket() {
+		return this.maxBucket;
+	}
+
+	/**
+	 * @return if the tank is empty.
+	 */
+	public boolean isEmpty() {
+		return this.milliBuckets == 0 || this.fluid.isSame(Fluids.EMPTY);
+	}
+
+	/**
+	 * @param amount the amount of bucket.
+	 * @return true if amount bucket can be retrieved.
+	 */
+	public boolean canRetrieveBucket(int amount) {
+		return this.milliBuckets / CommonServices.PLATFORM.getBucketVolume() >= amount;
+	}
+
+	/**
+	 * @param amount the amount of bucket.
+	 * @return true if amount bucket can be added.
+	 */
+	public boolean canAddBucket(int amount) {
+		long maxVolume = CommonServices.PLATFORM.getBucketVolume() * this.maxBucket;
+		long volumeToAdd = CommonServices.PLATFORM.getBucketVolume() * amount;
+		return maxVolume - milliBuckets >= volumeToAdd;
 	}
 
 }

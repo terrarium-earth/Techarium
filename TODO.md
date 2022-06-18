@@ -7,7 +7,7 @@
 - [x] when a deployed block is removed, do the thing adrian said https://discord.com/channels/880995984426020885/980249463652225075/983159642425262141
 - [ ] display the outline of obstructing blocks.
 - [ ] be able to place a self-deploying block where it can't deploy. it should be in an "undeployed" state
-- [ ] energy/fluid/gas input output
+- [ ] energy/fluid/gas input output (should defer to modloader)
 - [ ] block harvest levels
 - [ ] self-deploying block (or slave) removed in creative doesn't remove the other blocks of the machine.
 
@@ -26,7 +26,7 @@ SelfDeployingSlaveBlock :
 - if block at master pos is good, proxy removal to it
 - else remove itself
 
-### On displaying an overlay to the obstructing blocks
+### On displaying an overlay of the obstructing blocks
 
 (tested only in forge)
 right now, there is an overlay, but it is limited : the overlay is displayed forever.  

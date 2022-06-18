@@ -1,29 +1,29 @@
 package com.techarium.techarium.blockentity.selfdeploying;
 
+import com.techarium.techarium.Techarium;
 import com.techarium.techarium.block.inventory.BotariumMenu;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingSlaveBlock;
 import com.techarium.techarium.blockentity.selfdeploying.module.FluidModule;
-import com.techarium.techarium.blockentity.selfdeploying.module.InventoryModule;
 import com.techarium.techarium.blockentity.selfdeploying.module.ItemModule;
-import com.techarium.techarium.blockentity.selfdeploying.module.ModuleType;
 import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MobBucketItem;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -31,7 +31,6 @@ import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithModules {
@@ -52,21 +51,40 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithModules {
 
 	private boolean handleBucketUse(ServerPlayer player) {
 		Item item = player.getMainHandItem().getItem();
-		if (item == Items.WATER_BUCKET) {
-			// TODO @Ketheroth: 17/06/2022 find a proper way to obtain the fluid from the bucket (defer to modloader ?)
-			// TODO @Ketheroth: 17/06/2022 add more check (same fluid & not full)
-			this.getFluidInput().add(Fluids.WATER);
-			player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getMainHandItem(), player, new ItemStack(Items.BUCKET)));
-			this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
-			return true;
-		} else if (item == Items.BUCKET) {
-			this.getFluidInput().remove(1);
-			// TODO @Ketheroth: 17/06/2022 determine the fluid according to the fluid present in the module
-			player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getMainHandItem(), player, new ItemStack(Items.WATER_BUCKET)));
-			this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
-			return true;
+		if (!(item instanceof BucketItem) || item instanceof MobBucketItem) {
+			// TODO @anyone: 18/06/2022 change this to allow other portable tank (like mekanism tank)
+			return false;
 		}
-		return false;
+		FluidModule fluidInput = this.getFluidInput();
+		if (item == Items.BUCKET) {
+			if (fluidInput.isEmpty()) {
+				return false;
+			}
+			if (!fluidInput.canRetrieveBucket(1)) {
+				return false;
+			}
+			Fluid fluid = fluidInput.currentFluid();
+			fluidInput.retrieve(fluid);
+			Techarium.LOGGER.info("filling bucket with " + fluid.getBucket());
+			player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getMainHandItem(), player, new ItemStack(fluid.getBucket())));
+			this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
+		} else {
+			Fluid fluid = CommonServices.PLATFORM.determineFluidFromItem(player.getMainHandItem());
+			Techarium.LOGGER.info("fluid from bucket is " + fluid);
+			if (!fluid.isSame(Fluids.EMPTY)) {
+				if (fluidInput.isEmpty() || fluidInput.currentFluid().isSame(fluid)) {
+					if (!fluidInput.canAddBucket(1)) {
+						return false;
+					}
+					fluidInput.add(fluid);
+					player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getMainHandItem(), player, new ItemStack(Items.BUCKET)));
+					this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
+				} else {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 	@Override
@@ -94,39 +112,18 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithModules {
 	}
 
 	@Override
-	public Map<String, InventoryModule<?>> defaultModules() {
-		HashMap<String, InventoryModule<?>> map = new HashMap<>();
-		map.put("inventory_input", new ItemModule(2, this));
-		map.put("inventory_output", new ItemModule(4, this));
-		map.put("fluid_input", new FluidModule(12));
-		return map;
+	protected ItemModule createItemInput() {
+		return new ItemModule(2, this);
 	}
 
 	@Override
-	public InventoryModule<?> createFromTag(CompoundTag tag, ModuleType type) {
-		if (type == ModuleType.ITEM) {
-			ItemModule module = new ItemModule(tag.getInt("size"), this);
-			module.load(tag);
-			return module;
-		}
-		if (type == ModuleType.FLUID) {
-			FluidModule module = new FluidModule(tag.getInt("size"));
-			module.load(tag);
-			return module;
-		}
-		return InventoryModule.EMPTY;
+	protected ItemModule createItemOutput() {
+		return new ItemModule(4, this);
 	}
 
-	public SimpleContainer getInput() {
-		return (SimpleContainer) this.getModule("inventory_input");
-	}
-
-	public SimpleContainer getOutput() {
-		return (SimpleContainer) this.getModule("inventory_output");
-	}
-
-	public FluidModule getFluidInput() {
-		return (FluidModule) this.getModule("fluid_input");
+	@Override
+	protected FluidModule createFluidInput() {
+		return new FluidModule(12);
 	}
 
 }

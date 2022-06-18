@@ -1,13 +1,11 @@
 package com.techarium.techarium.blockentity.selfdeploying;
 
-import com.techarium.techarium.blockentity.selfdeploying.module.InventoryModule;
-import com.techarium.techarium.blockentity.selfdeploying.module.ModuleType;
+import com.techarium.techarium.blockentity.selfdeploying.module.FluidModule;
+import com.techarium.techarium.blockentity.selfdeploying.module.ItemModule;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingSlaveBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -122,20 +120,51 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 	// TODO @Ketheroth: 17/06/2022 see if I should extends this class in SelfDeployingMultiBlockBlockEntity
 	public static abstract class WithModules extends SelfDeployingBlockEntity implements MenuProvider {
 
-
-		private final Map<String, InventoryModule<?>> modules;
+		private final ItemModule itemInput;
+		private final ItemModule itemOutput;
+		private final FluidModule fluidInput;
 
 		public WithModules(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 			super(type, pos, state);
-			modules = this.defaultModules();
+			itemInput = this.createItemInput();
+			itemOutput = this.createItemOutput();
+			fluidInput = this.createFluidInput();
 		}
 
-		public abstract Map<String, InventoryModule<?>> defaultModules();
+		/**
+		 * Default implementation : empty item module
+		 * @return the item input of the machine.
+		 */
+		protected ItemModule createItemInput() {
+			return ItemModule.EMPTY;
+		}
 
-		public abstract InventoryModule<?> createFromTag(CompoundTag tag, ModuleType type);
+		/**
+		 * Default implementation : empty item module
+		 * @return the item output of the machine.
+		 */
+		protected ItemModule createItemOutput() {
+			return ItemModule.EMPTY;
+		}
 
-		public InventoryModule<?> getModule(String name) {
-			return this.modules.get(name);
+		/**
+		 * Default implementation : empty fluid module
+		 * @return the fluid input of the machine.
+		 */
+		protected FluidModule createFluidInput() {
+			return FluidModule.EMPTY;
+		}
+
+		public ItemModule getItemInput() {
+			return this.itemInput;
+		}
+
+		public ItemModule getItemOutput() {
+			return this.itemOutput;
+		}
+
+		public FluidModule getFluidInput() {
+			return this.fluidInput;
 		}
 
 		@Nullable
@@ -151,26 +180,16 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 		@Override
 		protected void saveAdditional(CompoundTag tag) {
-			ListTag list = new ListTag();
-			for (Map.Entry<String, InventoryModule<?>> entry : modules.entrySet()) {
-				CompoundTag compound = new CompoundTag();
-				compound.putString("name", entry.getKey());
-				entry.getValue().save(compound);
-				list.add(compound);
-			}
-			tag.putInt("size", this.modules.size());
-			tag.put("modules", list);
+			this.itemInput.save(tag);
+			this.itemOutput.save(tag);
+			this.fluidInput.save(tag);
 		}
 
 		@Override
 		public void load(CompoundTag tag) {
-			ListTag list = tag.getList("modules", Tag.TAG_COMPOUND);
-			int size = tag.getInt("size");
-			for (int i = 0; i < size; i++) {
-				CompoundTag compound = list.getCompound(i);
-				InventoryModule<?> module = this.createFromTag(compound, ModuleType.valueOf(compound.getString("type")));
-				this.modules.put(compound.getString("name"), module);
-			}
+			this.itemInput.load(tag);
+			this.itemOutput.load(tag);
+			this.fluidInput.load(tag);
 		}
 
 	}

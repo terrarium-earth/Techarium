@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.techarium.techarium.Techarium;
 import com.techarium.techarium.block.inventory.BotariumMenu;
+import com.techarium.techarium.platform.CommonServices;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -31,13 +32,16 @@ public class BotariumScreen extends AbstractContainerScreen<BotariumMenu> {
 		super.render(poseStack, mouseX, mouseY, partialTicks);
 		this.renderFluid(poseStack, mouseX, mouseY, partialTicks);
 		this.renderTooltip(poseStack, mouseX, mouseY);
+		// TODO @anyone: 18/06/2022 add fluid tooltip (name+amount)
 	}
 
 	private void renderFluid(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
 		int relX = (this.width - this.imageWidth) / 2;
 		int relY = (this.height - this.imageHeight) / 2;
 		if (this.menu.getFluidAmount() > 0) {
-			int fluidAmount = this.menu.getFluidAmount() % (GAUGE_HEIGHT / PX_PER_BUCKET + 1);  // TODO: 17/06/2022 limit to max instead of mod max
+			// TODO @anyone: 17/06/2022 limit to max instead of modulo max
+			// TODO @anyone: 18/06/2022 render more precisely (mb instead of bucket)
+			int fluidAmount = (int) (this.menu.getFluidAmount() / CommonServices.PLATFORM.getBucketVolume()) % (GAUGE_HEIGHT / PX_PER_BUCKET + 1);
 			int color = argbToInt(255, 0, 0, 255);
 			for (int i = 0; i < fluidAmount; i++) {
 				int y = GAUGE_BOTTOM - (i + 1) * PX_PER_BUCKET;

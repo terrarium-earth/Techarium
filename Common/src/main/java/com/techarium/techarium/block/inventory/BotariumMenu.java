@@ -1,6 +1,7 @@
 package com.techarium.techarium.block.inventory;
 
 import com.techarium.techarium.blockentity.selfdeploying.BotariumBlockEntity;
+import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumMenuTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.Container;
@@ -27,8 +28,8 @@ public class BotariumMenu extends AbstractContainerMenu {
 		this.playerInventory = playerInventory;
 		this.botarium = (BotariumBlockEntity) this.player.level.getBlockEntity(this.pos);
 
-		this.input = this.botarium.getInput();
-		this.output = this.botarium.getOutput();
+		this.input = this.botarium.getItemInput();
+		this.output = this.botarium.getItemOutput();
 
 		this.addSlot(new Slot(input, 0, 49, 35));
 		this.addSlot(new Slot(input, 1, 49, 67));
@@ -92,8 +93,8 @@ public class BotariumMenu extends AbstractContainerMenu {
 		return player.distanceToSqr(this.pos.getX(), this.pos.getY(), this.pos.getZ()) <= 16.0D;
 	}
 
-	public int getFluidAmount() {
-		return this.botarium.getFluidInput().getAmount();
+	public long getFluidAmount() {
+		return this.botarium.getFluidInput().currentAmount();
 	}
 
 	private static class OutputSlot extends Slot {

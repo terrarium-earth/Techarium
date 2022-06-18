@@ -3,6 +3,8 @@ package com.techarium.techarium.platform.services;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.function.Consumer;
 
@@ -38,5 +40,12 @@ public interface IPlatformHelper {
 	 * @param extraData extra data to send to the client.
 	 */
 	void openGui(ServerPlayer player, MenuProvider provider, Consumer<FriendlyByteBuf> extraData);
+
+	Fluid determineFluidFromItem(ItemStack stack);
+
+	/**
+	 * @return the volume of a bucket. Yes it is not the same between Forge and Fabric.
+	 */
+	long getBucketVolume();
 
 }
