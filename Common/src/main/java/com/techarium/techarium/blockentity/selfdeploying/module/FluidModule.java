@@ -167,7 +167,7 @@ public class FluidModule {
 	public boolean canAddBucket(int amount) {
 		long maxVolume = CommonServices.PLATFORM.getBucketVolume() * this.maxBucket;
 		long volumeToAdd = CommonServices.PLATFORM.getBucketVolume() * amount;
-		return maxVolume - milliBuckets >= volumeToAdd;
+		return maxVolume - this.milliBuckets >= volumeToAdd;
 	}
 
 }

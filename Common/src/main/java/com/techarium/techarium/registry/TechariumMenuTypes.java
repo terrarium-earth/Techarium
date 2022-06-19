@@ -1,7 +1,7 @@
 package com.techarium.techarium.registry;
 
-import com.techarium.techarium.block.inventory.BotariumMenu;
-import com.techarium.techarium.block.inventory.ExchangeStationMenu;
+import com.techarium.techarium.inventory.BotariumMenu;
+import com.techarium.techarium.inventory.ExchangeStationMenu;
 import com.techarium.techarium.platform.CommonServices;
 import net.minecraft.world.inventory.MenuType;
 

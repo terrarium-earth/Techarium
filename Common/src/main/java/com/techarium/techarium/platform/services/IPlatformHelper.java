@@ -1,6 +1,8 @@
 package com.techarium.techarium.platform.services;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.item.ItemStack;
@@ -41,11 +43,27 @@ public interface IPlatformHelper {
 	 */
 	void openGui(ServerPlayer player, MenuProvider provider, Consumer<FriendlyByteBuf> extraData);
 
+	// TODO @Ketheroth: 18/06/2022 move fluid methods in subclass
+
 	Fluid determineFluidFromItem(ItemStack stack);
 
 	/**
 	 * @return the volume of a bucket. Yes it is not the same between Forge and Fabric.
 	 */
 	long getBucketVolume();
+
+	TextureAtlasSprite getStillTexture(Fluid fluid);
+
+	int getFluidColor(Fluid fluid);
+
+	/**
+	 * Convert an amount in the smallest unit (mB or droplet) of a fluid to kekie-buckets (millibucket in disguise)
+	 *
+	 * @param amount the amount to convert
+	 * @return the amount converted in kekie-bucket
+	 */
+	long toKekieBucket(long amount);
+
+	Component getFluidName(Fluid fluid);
 
 }

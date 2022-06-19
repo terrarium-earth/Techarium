@@ -117,7 +117,6 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 	 * A self-deploying block entity with inventory modules.
 	 */
 	// TODO @Ketheroth: 17/06/2022 see if I can/should move this in the super-class
-	// TODO @Ketheroth: 17/06/2022 see if I should extends this class in SelfDeployingMultiBlockBlockEntity
 	public static abstract class WithModules extends SelfDeployingBlockEntity implements MenuProvider {
 
 		private final ItemModule itemInput;
@@ -180,16 +179,22 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 		@Override
 		protected void saveAdditional(CompoundTag tag) {
-			this.itemInput.save(tag);
-			this.itemOutput.save(tag);
-			this.fluidInput.save(tag);
+			CompoundTag tagItemInput = new CompoundTag();
+			this.itemInput.save(tagItemInput);
+			tag.put("itemInput", tagItemInput);
+			CompoundTag tagItemOutput = new CompoundTag();
+			this.itemOutput.save(tagItemOutput);
+			tag.put("itemOutput", tagItemOutput);
+			CompoundTag tagFluidInput = new CompoundTag();
+			this.fluidInput.save(tagFluidInput);
+			tag.put("fluidInput", tagFluidInput);
 		}
 
 		@Override
 		public void load(CompoundTag tag) {
-			this.itemInput.load(tag);
-			this.itemOutput.load(tag);
-			this.fluidInput.load(tag);
+			this.itemInput.load(tag.getCompound("itemInput"));
+			this.itemOutput.load(tag.getCompound("itemOutput"));
+			this.fluidInput.load(tag.getCompound("fluidInput"));
 		}
 
 	}

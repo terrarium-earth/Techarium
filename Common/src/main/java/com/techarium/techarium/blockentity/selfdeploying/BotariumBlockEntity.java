@@ -1,7 +1,6 @@
 package com.techarium.techarium.blockentity.selfdeploying;
 
-import com.techarium.techarium.Techarium;
-import com.techarium.techarium.block.inventory.BotariumMenu;
+import com.techarium.techarium.inventory.BotariumMenu;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingSlaveBlock;
 import com.techarium.techarium.blockentity.selfdeploying.module.FluidModule;
 import com.techarium.techarium.blockentity.selfdeploying.module.ItemModule;
@@ -65,15 +64,14 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithModules {
 			}
 			Fluid fluid = fluidInput.currentFluid();
 			fluidInput.retrieve(fluid);
-			Techarium.LOGGER.info("filling bucket with " + fluid.getBucket());
 			player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getMainHandItem(), player, new ItemStack(fluid.getBucket())));
 			this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
 		} else {
 			Fluid fluid = CommonServices.PLATFORM.determineFluidFromItem(player.getMainHandItem());
-			Techarium.LOGGER.info("fluid from bucket is " + fluid);
 			if (!fluid.isSame(Fluids.EMPTY)) {
 				if (fluidInput.isEmpty() || fluidInput.currentFluid().isSame(fluid)) {
-					if (!fluidInput.canAddBucket(1)) {
+					boolean canAdd = fluidInput.canAddBucket(1);
+					if (!canAdd) {
 						return false;
 					}
 					fluidInput.add(fluid);

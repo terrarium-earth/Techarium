@@ -1,7 +1,8 @@
 package com.techarium.techarium.blockentity.selfdeploying;
 
-import com.techarium.techarium.block.inventory.ExchangeStationMenu;
+import com.techarium.techarium.inventory.ExchangeStationMenu;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingSlaveBlock;
+import com.techarium.techarium.blockentity.selfdeploying.module.ItemModule;
 import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
@@ -59,6 +60,16 @@ public class ExchangeStationBlockEntity extends SelfDeployingMultiBlockBlockEnti
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
 		return new ExchangeStationMenu(id, inventory, player, this.worldPosition);
+	}
+
+	@Override
+	protected ItemModule createItemInput() {
+		return new ItemModule(1, this);
+	}
+
+	@Override
+	protected ItemModule createItemOutput() {
+		return new ItemModule(1, this);
 	}
 
 }

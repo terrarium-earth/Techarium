@@ -1,32 +1,24 @@
-package com.techarium.techarium.block.inventory;
+package com.techarium.techarium.inventory;
 
 import com.techarium.techarium.blockentity.selfdeploying.BotariumBlockEntity;
-import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumMenuTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 
-public class BotariumMenu extends AbstractContainerMenu {
+public class BotariumMenu extends MachineMenu {
 
-	private final BlockPos pos;
-	private final Player player;
-	private final Inventory playerInventory;
 	private final SimpleContainer input;
 	private final SimpleContainer output;
 	private final BotariumBlockEntity botarium;
 
 	public BotariumMenu(int id, Inventory playerInventory, Player player, BlockPos pos) {
-		super(TechariumMenuTypes.BOTARIUM.get(), id);
-		this.pos = pos;
-		this.player = player;
-		this.playerInventory = playerInventory;
-		this.botarium = (BotariumBlockEntity) this.player.level.getBlockEntity(this.pos);
+		super(TechariumMenuTypes.BOTARIUM.get(), id, pos);
+		this.botarium = (BotariumBlockEntity) player.level.getBlockEntity(this.pos);
 
 		this.input = this.botarium.getItemInput();
 		this.output = this.botarium.getItemOutput();
@@ -41,11 +33,11 @@ public class BotariumMenu extends AbstractContainerMenu {
 
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {
-				this.addSlot(new Slot(this.playerInventory, 9 + y * 9 + x, 7 + 18 * x, 103 + 18 * y));
+				this.addSlot(new Slot(playerInventory, 9 + y * 9 + x, 7 + 18 * x, 103 + 18 * y));
 			}
 		}
 		for (int x = 0; x < 9; x++) {
-			this.addSlot(new Slot(this.playerInventory, x, 7 + 18 * x, 160));
+			this.addSlot(new Slot(playerInventory, x, 7 + 18 * x, 160));
 		}
 	}
 
@@ -88,26 +80,13 @@ public class BotariumMenu extends AbstractContainerMenu {
 		return itemstack;
 	}
 
-	@Override
-	public boolean stillValid(Player player) {
-		return player.distanceToSqr(this.pos.getX(), this.pos.getY(), this.pos.getZ()) <= 16.0D;
-	}
 
 	public long getFluidAmount() {
 		return this.botarium.getFluidInput().currentAmount();
 	}
 
-	private static class OutputSlot extends Slot {
-
-		public OutputSlot(Container container, int index, int x, int y) {
-			super(container, index, x, y);
-		}
-
-		@Override
-		public boolean mayPlace(ItemStack stack) {
-			return false;
-		}
-
+	public Fluid getFluid() {
+		return this.botarium.getFluidInput().currentFluid();
 	}
 
 }

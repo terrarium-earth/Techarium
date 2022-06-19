@@ -1,21 +1,27 @@
 package com.techarium.techarium.platform;
 
 import com.techarium.techarium.platform.services.IPlatformHelper;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -46,6 +52,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 	public void openGui(ServerPlayer player, MenuProvider provider, Consumer<FriendlyByteBuf> extraData) {
 		ExtendedScreenHandlerFactory factory = new ExtendedScreenHandlerFactory() {
 			private final MenuProvider prov = provider;
+
 			@Nullable
 			@Override
 			public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
@@ -80,6 +87,27 @@ public class FabricPlatformHelper implements IPlatformHelper {
 	@Override
 	public long getBucketVolume() {
 		return FluidConstants.BUCKET;
+	}
+
+	@Override
+	public TextureAtlasSprite getStillTexture(Fluid fluid) {
+		ResourceLocation texture = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidSprites(null, null, fluid.defaultFluidState())[0].getName();
+		return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
+	}
+
+	@Override
+	public int getFluidColor(Fluid fluid) {
+		return FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidColor(null, null, fluid.defaultFluidState());
+	}
+
+	@Override
+	public long toKekieBucket(long amount) {
+		return amount / 1000;
+	}
+
+	@Override
+	public Component getFluidName(Fluid fluid) {
+		return FluidVariantAttributes.getName(FluidVariant.of(fluid));
 	}
 
 }
