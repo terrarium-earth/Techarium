@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 public class TechariumBlockEntities {
 
-	public static final Supplier<BlockEntityType<MultiBlockCoreBlockEntity>> COMMUNICATION_DEVICE_CORE = CommonServices.REGISTRY.registerBlockEntity("com_device_codre",
+	public static final Supplier<BlockEntityType<MultiBlockCoreBlockEntity>> COMMUNICATION_DEVICE_CORE = CommonServices.REGISTRY.registerBlockEntity("com_device_core",
 			() -> CommonServices.REGISTRY.createBlockEntityType(CommunicationDeviceCoreBlockEntity::new, TechariumBlocks.COMMUNICATION_DEVICE_CORE.get()));
 	public static final Supplier<BlockEntityType<SelfDeployingSlaveBlockEntity>> SELF_DEPLOYING_SLAVE = CommonServices.REGISTRY.registerBlockEntity("self_deploying_slave",
 			() -> CommonServices.REGISTRY.createBlockEntityType(SelfDeployingSlaveBlockEntity::new, TechariumBlocks.SELF_DEPLOYING_SLAVE.get()));

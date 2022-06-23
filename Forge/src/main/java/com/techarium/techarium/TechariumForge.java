@@ -17,6 +17,7 @@ public class TechariumForge {
 		ForgeRegistryHelper.ITEMS.register(bus);
 		ForgeRegistryHelper.BLOCK_ENTITIES.register(bus);
 		ForgeRegistryHelper.CONTAINERS.register(bus);
+		ForgeRegistryHelper.MULTIBLOCK_STRUCTURES.register(bus);
 		GeckoLib.initialize();
 	}
 

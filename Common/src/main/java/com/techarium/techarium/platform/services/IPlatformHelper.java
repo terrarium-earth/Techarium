@@ -43,27 +43,34 @@ public interface IPlatformHelper {
 	 */
 	void openGui(ServerPlayer player, MenuProvider provider, Consumer<FriendlyByteBuf> extraData);
 
-	// TODO @Ketheroth: 18/06/2022 move fluid methods in subclass
-
-	Fluid determineFluidFromItem(ItemStack stack);
+	FluidHelper getFluidHelper();
 
 	/**
-	 * @return the volume of a bucket. Yes it is not the same between Forge and Fabric.
+	 * A simple interface to regroup fluid helper methods
 	 */
-	long getBucketVolume();
+	interface FluidHelper {
 
-	TextureAtlasSprite getStillTexture(Fluid fluid);
+		Fluid determineFluidFromItem(ItemStack stack);
 
-	int getFluidColor(Fluid fluid);
+		/**
+		 * @return the volume of a bucket. Yes it is not the same between Forge and Fabric.
+		 */
+		long getBucketVolume();
 
-	/**
-	 * Convert an amount in the smallest unit (mB or droplet) of a fluid to kekie-buckets (millibucket in disguise)
-	 *
-	 * @param amount the amount to convert
-	 * @return the amount converted in kekie-bucket
-	 */
-	long toKekieBucket(long amount);
+		TextureAtlasSprite getStillTexture(Fluid fluid);
 
-	Component getFluidName(Fluid fluid);
+		int getFluidColor(Fluid fluid);
+
+		/**
+		 * Convert an amount in the smallest unit (mB or droplet) of a fluid to kekie-buckets (millibucket in disguise)
+		 *
+		 * @param amount the amount to convert
+		 * @return the amount converted in kekie-bucket
+		 */
+		long toKekieBucket(long amount);
+
+		Component getFluidName(Fluid fluid);
+
+	}
 
 }

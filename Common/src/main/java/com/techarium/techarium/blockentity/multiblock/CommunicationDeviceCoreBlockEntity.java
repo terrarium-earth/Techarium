@@ -1,12 +1,9 @@
 package com.techarium.techarium.blockentity.multiblock;
 
-import com.techarium.techarium.multiblock.MultiBlockStructure;
 import com.techarium.techarium.registry.TechariumBlockEntities;
-import com.techarium.techarium.registry.TechariumBlocks;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-
-import java.util.function.Supplier;
 
 public class CommunicationDeviceCoreBlockEntity extends MultiBlockCoreBlockEntity {
 
@@ -15,13 +12,8 @@ public class CommunicationDeviceCoreBlockEntity extends MultiBlockCoreBlockEntit
 	}
 
 	@Override
-	public Supplier<MultiBlockStructure> getDefaultMultiBlockStructure() {
-		return () -> new MultiBlockStructure.Builder()
-				.setId("com_device")
-				.setSelfDeployingBlock(TechariumBlocks.EXCHANGE_STATION.get())
-				.setCore(TechariumBlocks.COMMUNICATION_DEVICE_CORE.get())
-				.addElement(new BlockPos(0, 1, 0), TechariumBlocks.COMMUNICATION_DEVICE_ELEMENT.get())
-				.build();
+	public ResourceLocation getMultiBlockStructureId() {
+		return new ResourceLocation("techarium", "exchange_station");
 	}
 
 }

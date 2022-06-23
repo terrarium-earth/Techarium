@@ -27,4 +27,5 @@ public class ModEventHandler {
 		MenuScreens.register(TechariumMenuTypes.BOTARIUM.get(), BotariumScreen::new);
 		MenuScreens.register(TechariumMenuTypes.EXCHANGE_STATION.get(), ExchangeStationScreen::new);
 	}
+
 }

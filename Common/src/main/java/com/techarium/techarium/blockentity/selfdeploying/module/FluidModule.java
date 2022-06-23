@@ -62,7 +62,7 @@ public class FluidModule {
 		if (!this.fluid.isSame(fluid)) {
 			return amount;
 		}
-		long possible = maxBucket * CommonServices.PLATFORM.getBucketVolume() - this.milliBuckets;
+		long possible = maxBucket * CommonServices.PLATFORM.getFluidHelper().getBucketVolume() - this.milliBuckets;
 		if (possible < amount) {
 			this.milliBuckets += possible;
 			return amount - possible;
@@ -78,7 +78,7 @@ public class FluidModule {
 	 * @return how much couldn't be added.
 	 */
 	public long add(Fluid fluid) {
-		return this.add(fluid, CommonServices.PLATFORM.getBucketVolume());
+		return this.add(fluid, CommonServices.PLATFORM.getFluidHelper().getBucketVolume());
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class FluidModule {
 	 * @return how much could be retrieved.
 	 */
 	public long retrieve(Fluid fluid) {
-		return this.retrieve(fluid, CommonServices.PLATFORM.getBucketVolume());
+		return this.retrieve(fluid, CommonServices.PLATFORM.getFluidHelper().getBucketVolume());
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class FluidModule {
 	 * @return how much could be retrieved.
 	 */
 	public long retrieve() {
-		return this.retrieve(this.fluid, CommonServices.PLATFORM.getBucketVolume());
+		return this.retrieve(this.fluid, CommonServices.PLATFORM.getFluidHelper().getBucketVolume());
 	}
 
 	/**
@@ -157,7 +157,7 @@ public class FluidModule {
 	 * @return true if amount bucket can be retrieved.
 	 */
 	public boolean canRetrieveBucket(int amount) {
-		return this.milliBuckets / CommonServices.PLATFORM.getBucketVolume() >= amount;
+		return this.milliBuckets / CommonServices.PLATFORM.getFluidHelper().getBucketVolume() >= amount;
 	}
 
 	/**
@@ -165,8 +165,8 @@ public class FluidModule {
 	 * @return true if amount bucket can be added.
 	 */
 	public boolean canAddBucket(int amount) {
-		long maxVolume = CommonServices.PLATFORM.getBucketVolume() * this.maxBucket;
-		long volumeToAdd = CommonServices.PLATFORM.getBucketVolume() * amount;
+		long maxVolume = CommonServices.PLATFORM.getFluidHelper().getBucketVolume() * this.maxBucket;
+		long volumeToAdd = CommonServices.PLATFORM.getFluidHelper().getBucketVolume() * amount;
 		return maxVolume - this.milliBuckets >= volumeToAdd;
 	}
 

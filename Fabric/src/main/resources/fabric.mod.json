@@ -22,7 +22,9 @@
         "com.techarium.techarium.TechariumFabricClient"
       ]
     },
-    "mixins": [],
+    "mixins": [
+        "techarium.mixins.json"
+    ],
     "accessWidener": "techarium_fabric.accesswidener",
     "depends": {
       "fabricloader": ">=0.14",

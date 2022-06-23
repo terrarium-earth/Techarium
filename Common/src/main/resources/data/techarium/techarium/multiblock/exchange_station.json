@@ -1,0 +1,14 @@
+{
+  "core": "techarium:com_device_core",
+  "deployed": "techarium:exchange_station",
+  "elements": [
+    {
+      "block": "techarium:com_device_element",
+      "pos": [
+        0,
+        1,
+        0
+      ]
+    }
+  ]
+}

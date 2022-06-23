@@ -73,41 +73,55 @@ public class FabricPlatformHelper implements IPlatformHelper {
 	}
 
 	@Override
-	public Fluid determineFluidFromItem(ItemStack stack) {
-		Storage<FluidVariant> storage = ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM);
-		if (storage == null) {
+	public FluidHelper getFluidHelper() {
+		return FabricFluidHelper.INSTANCE;
+	}
+
+	public static class FabricFluidHelper implements FluidHelper {
+
+		public static final FabricFluidHelper INSTANCE = new FabricFluidHelper();
+
+		private FabricFluidHelper() {
+		}
+
+		@Override
+		public Fluid determineFluidFromItem(ItemStack stack) {
+			Storage<FluidVariant> storage = ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM);
+			if (storage == null) {
+				return Fluids.EMPTY;
+			}
+			for (StorageView<FluidVariant> storageView : storage) {
+				return storageView.getResource().getFluid();
+			}
 			return Fluids.EMPTY;
 		}
-		for (StorageView<FluidVariant> storageView : storage) {
-			return storageView.getResource().getFluid();
+
+		@Override
+		public long getBucketVolume() {
+			return FluidConstants.BUCKET;
 		}
-		return Fluids.EMPTY;
-	}
 
-	@Override
-	public long getBucketVolume() {
-		return FluidConstants.BUCKET;
-	}
+		@Override
+		public TextureAtlasSprite getStillTexture(Fluid fluid) {
+			ResourceLocation texture = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidSprites(null, null, fluid.defaultFluidState())[0].getName();
+			return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
+		}
 
-	@Override
-	public TextureAtlasSprite getStillTexture(Fluid fluid) {
-		ResourceLocation texture = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidSprites(null, null, fluid.defaultFluidState())[0].getName();
-		return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
-	}
+		@Override
+		public int getFluidColor(Fluid fluid) {
+			return FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidColor(null, null, fluid.defaultFluidState());
+		}
 
-	@Override
-	public int getFluidColor(Fluid fluid) {
-		return FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidColor(null, null, fluid.defaultFluidState());
-	}
+		@Override
+		public long toKekieBucket(long amount) {
+			return amount / 1000;
+		}
 
-	@Override
-	public long toKekieBucket(long amount) {
-		return amount / 1000;
-	}
+		@Override
+		public Component getFluidName(Fluid fluid) {
+			return FluidVariantAttributes.getName(FluidVariant.of(fluid));
+		}
 
-	@Override
-	public Component getFluidName(Fluid fluid) {
-		return FluidVariantAttributes.getName(FluidVariant.of(fluid));
 	}
 
 }

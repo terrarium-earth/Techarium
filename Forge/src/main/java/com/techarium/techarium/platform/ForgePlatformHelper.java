@@ -12,8 +12,9 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -47,38 +48,52 @@ public class ForgePlatformHelper implements IPlatformHelper {
 	}
 
 	@Override
-	public Fluid determineFluidFromItem(ItemStack stack) {
-		FluidStack fluidStack = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
-		if (fluidStack.isEmpty()) {
-			return Fluids.EMPTY;
+	public FluidHelper getFluidHelper() {
+		return ForgeFluidHelper.INSTANCE;
+	}
+
+	public static class ForgeFluidHelper implements FluidHelper {
+
+		public static final ForgeFluidHelper INSTANCE = new ForgeFluidHelper();
+
+		private ForgeFluidHelper() {
 		}
-		return fluidStack.getFluid();
-	}
 
-	@Override
-	public long getBucketVolume() {
-		return FluidAttributes.BUCKET_VOLUME;
-	}
+		@Override
+		public Fluid determineFluidFromItem(ItemStack stack) {
+			FluidStack fluidStack = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
+			if (fluidStack.isEmpty()) {
+				return Fluids.EMPTY;
+			}
+			return fluidStack.getFluid();
+		}
 
-	@Override
-	public TextureAtlasSprite getStillTexture(Fluid fluid) {
-		ResourceLocation texture = fluid.getAttributes().getStillTexture();
-		return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
-	}
+		@Override
+		public long getBucketVolume() {
+			return FluidType.BUCKET_VOLUME;
+		}
 
-	@Override
-	public int getFluidColor(Fluid fluid) {
-		return fluid.getAttributes().getColor();
-	}
+		@Override
+		public TextureAtlasSprite getStillTexture(Fluid fluid) {
+			ResourceLocation texture = RenderProperties.get(fluid).getStillTexture();
+			return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
+		}
 
-	@Override
-	public long toKekieBucket(long amount) {
-		return amount;
-	}
+		@Override
+		public int getFluidColor(Fluid fluid) {
+			return RenderProperties.get(fluid).getColorTint();
+		}
 
-	@Override
-	public Component getFluidName(Fluid fluid) {
-		return fluid.getAttributes().getDisplayName(new FluidStack(fluid, 1));
+		@Override
+		public long toKekieBucket(long amount) {
+			return amount;
+		}
+
+		@Override
+		public Component getFluidName(Fluid fluid) {
+			return fluid.getFluidType().getDescription();
+		}
+
 	}
 
 }

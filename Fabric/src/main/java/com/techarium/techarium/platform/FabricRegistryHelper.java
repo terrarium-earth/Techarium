@@ -1,25 +1,41 @@
 package com.techarium.techarium.platform;
 
+import com.mojang.serialization.Lifecycle;
 import com.techarium.techarium.Techarium;
+import com.techarium.techarium.multiblock.MultiBlockStructure;
 import com.techarium.techarium.platform.services.IRegistryHelper;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.WritableRegistry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
+import javax.annotation.Nonnull;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class FabricRegistryHelper implements IRegistryHelper {
+
+	public static final MappedRegistry<MultiBlockStructure> MULTIBLOCK_STRUCTURES = FabricRegistryBuilder.createSimple(MultiBlockStructure.class, new ResourceLocation(Techarium.MOD_ID, Techarium.MOD_ID + "/multiblock")).buildAndRegister();
+
+	static {
+		// register our own datapack registries to the builtin registries.
+		((WritableRegistry) BuiltinRegistries.REGISTRY).register(MULTIBLOCK_STRUCTURES.key(), MULTIBLOCK_STRUCTURES, Lifecycle.experimental());
+	}
 
 	@Override
 	public <T extends Item> Supplier<T> registerItem(String id, Supplier<T> item) {
@@ -48,6 +64,31 @@ public class FabricRegistryHelper implements IRegistryHelper {
 	public <E extends AbstractContainerMenu> Supplier<MenuType<E>> registerMenuType(String id, MenuTypeFactory<E> factory) {
 		MenuType<E> entry = Registry.register(Registry.MENU, new ResourceLocation(Techarium.MOD_ID, id), new ExtendedScreenHandlerType<>((windowId, inventory, buf) -> factory.create(windowId, inventory, buf.readBlockPos())));
 		return () -> entry;
+	}
+
+	@Nonnull
+	@Override
+	public MultiBlockStructure getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId) {
+		if (level == null) {
+			return MultiBlockStructure.EMPTY;
+		}
+		Optional<? extends Registry<MultiBlockStructure>> registry = level.registryAccess().registry(MULTIBLOCK_STRUCTURES.key());
+		if (registry.isPresent()) {
+			MultiBlockStructure multiBlockStructure = registry.get().get(multiBlockStructureId);
+			return multiBlockStructure != null ? multiBlockStructure : MultiBlockStructure.EMPTY;
+		}
+		return MultiBlockStructure.EMPTY;
+	}
+
+	@Override
+	public void printMultiblocks(Level level) {
+		if (level != null) {
+			System.out.println("print");
+			level.registryAccess().registry(MULTIBLOCK_STRUCTURES.key()).ifPresent(registry -> {
+				System.out.println("keys " + registry.keySet());
+			});
+			System.out.println("end print");
+		}
 	}
 
 	@Override

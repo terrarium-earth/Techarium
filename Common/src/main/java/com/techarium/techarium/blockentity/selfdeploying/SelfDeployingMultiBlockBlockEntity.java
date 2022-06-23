@@ -1,9 +1,10 @@
 package com.techarium.techarium.blockentity.selfdeploying;
 
-import com.techarium.techarium.multiblock.MultiBlockRegistry;
 import com.techarium.techarium.multiblock.MultiBlockStructure;
+import com.techarium.techarium.platform.CommonServices;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -38,7 +39,7 @@ public abstract class SelfDeployingMultiBlockBlockEntity extends SelfDeployingBl
 	@Override
 	public void load(CompoundTag tag) {
 		super.load(tag);
-		this.linkedMultiBlock = MultiBlockRegistry.get(tag.getString("multiblock"));
+		this.linkedMultiBlock = CommonServices.REGISTRY.getMultiBlockStructure(this.level, new ResourceLocation("techarium", tag.getString("multiblock")));
 	}
 
 }

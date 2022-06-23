@@ -1,5 +1,6 @@
 package com.techarium.techarium.platform.services;
 
+import com.techarium.techarium.multiblock.MultiBlockStructure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -8,11 +9,14 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public interface IRegistryHelper {
@@ -26,6 +30,11 @@ public interface IRegistryHelper {
 	<E extends BlockEntity> BlockEntityType<E> createBlockEntityType(BlockEntityFactory<E> factory, Block... blocks);
 
 	<E extends AbstractContainerMenu> Supplier<MenuType<E>> registerMenuType(String id, MenuTypeFactory<E> factory);
+
+	@Nonnull
+	MultiBlockStructure getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId);
+
+	void printMultiblocks(Level level);
 
 	@FunctionalInterface
 	interface BlockEntityFactory<T extends BlockEntity> {

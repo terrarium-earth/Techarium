@@ -1,17 +1,22 @@
 package com.techarium.techarium.multiblock;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.techarium.techarium.block.multiblock.MultiBlockCoreBlock;
 import com.techarium.techarium.block.multiblock.MultiBlockElementBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingMultiBlockBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +27,45 @@ import java.util.Map;
  */
 public class MultiBlockStructure {
 
+	public static final MultiBlockStructure EMPTY = new MultiBlockStructure.Builder().setId("empty").build();
+
+	// TODO @Ketheroth: 19/06/2022 remove map, embrace list
 	private final Map<BlockPos, MultiBlockElementBlock> positions;
+	private List<MBElement> elements;
 	private MultiBlockCoreBlock core;
 	private SelfDeployingBlock selfDeployingBlock;
 	private String id;
 
+	private record MBElement(BlockPos pos, ResourceLocation block) {
+		private static final Codec<MBElement> CODED = RecordCodecBuilder.create(instance -> instance.group(
+				BlockPos.CODEC.fieldOf("pos").forGetter(MBElement::pos),
+				ResourceLocation.CODEC.fieldOf("block").forGetter(MBElement::block)
+		).apply(instance, MBElement::new));
+
+	}
+
+	public static final Codec<MultiBlockStructure> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			ResourceLocation.CODEC.fieldOf("core").forGetter(multiBlockStructure -> toRL(multiBlockStructure.core)),
+			ResourceLocation.CODEC.fieldOf("deployed").forGetter(multiBlockStructure -> toRL(multiBlockStructure.selfDeployingBlock)),
+			Codec.list(MBElement.CODED).fieldOf("elements").forGetter(multiBlockStructure -> multiBlockStructure.elements)
+	).apply(instance, (core, deployed, elements) -> {
+		System.out.println("creating from codec");
+		return new Builder()
+				.setCore((MultiBlockCoreBlock) toBlock(core))
+				.setSelfDeployingBlock((SelfDeployingBlock) toBlock(deployed))
+				.addAllElements(elements)
+				.build();
+	}));
+
+	private static ResourceLocation toRL(Block block) {
+		return Registry.BLOCK.getKey(block);
+	}
+	private static Block toBlock(ResourceLocation rl) {
+		return Registry.BLOCK.get(rl);
+	}
+
 	private MultiBlockStructure() {
+		this.elements = new ArrayList<>();
 		this.positions = new HashMap<>();
 		this.core = null;
 		this.id = "";
@@ -159,6 +197,7 @@ public class MultiBlockStructure {
 	public String toString() {
 		return "MultiBlockStructure{" +
 				"id='" + id + '\'' +
+				", elements=" + elements.stream().map(Record::toString).toList()+
 				", positions=" + positions.entrySet().stream().map(entry -> "" + entry.getKey().toString() + "->" + entry.getValue() + ",").toList() +
 				", core=" + core +
 				", selfDeployingBlock=" + selfDeployingBlock +
@@ -197,7 +236,18 @@ public class MultiBlockStructure {
 			return this;
 		}
 
+		public MultiBlockStructure.Builder addAllElements(List<MBElement> elements) {
+			for (MBElement element : elements) {
+				this.structure.positions.put(element.pos, (MultiBlockElementBlock) toBlock(element.block));
+			}
+			return this;
+		}
+
 		public MultiBlockStructure build() {
+			for (Map.Entry<BlockPos, MultiBlockElementBlock> entry : this.structure.positions.entrySet()) {
+				this.structure.elements.add(new MBElement(entry.getKey(), toRL(entry.getValue())));
+			}
+			System.out.println("building " + this.structure);
 			return this.structure;
 		}
 

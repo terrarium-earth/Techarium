@@ -67,7 +67,7 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithModules {
 			player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getMainHandItem(), player, new ItemStack(fluid.getBucket())));
 			this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
 		} else {
-			Fluid fluid = CommonServices.PLATFORM.determineFluidFromItem(player.getMainHandItem());
+			Fluid fluid = CommonServices.PLATFORM.getFluidHelper().determineFluidFromItem(player.getMainHandItem());
 			if (!fluid.isSame(Fluids.EMPTY)) {
 				if (fluidInput.isEmpty() || fluidInput.currentFluid().isSame(fluid)) {
 					boolean canAdd = fluidInput.canAddBucket(1);

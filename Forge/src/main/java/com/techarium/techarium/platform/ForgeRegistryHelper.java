@@ -1,20 +1,31 @@
 package com.techarium.techarium.platform;
 
 import com.techarium.techarium.Techarium;
+import com.techarium.techarium.multiblock.MultiBlockStructure;
 import com.techarium.techarium.platform.services.IRegistryHelper;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegistryBuilder;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ForgeRegistryHelper implements IRegistryHelper {
@@ -23,6 +34,9 @@ public class ForgeRegistryHelper implements IRegistryHelper {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Techarium.MOD_ID);
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Techarium.MOD_ID);
 	public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Techarium.MOD_ID);
+
+	public static final DeferredRegister<MultiBlockStructure> MULTIBLOCK_STRUCTURES = DeferredRegister.create(new ResourceLocation(Techarium.MOD_ID, "multiblock"), Techarium.MOD_ID);
+	public static final Supplier<IForgeRegistry<MultiBlockStructure>> MULTIBLOCK_STRUCTURE_REGISTRY = MULTIBLOCK_STRUCTURES.makeRegistry(() -> new RegistryBuilder<MultiBlockStructure>().dataPackRegistry(MultiBlockStructure.CODEC));
 
 	@Override
 	public <T extends Item> Supplier<T> registerItem(String id, Supplier<T> item) {
@@ -47,6 +61,27 @@ public class ForgeRegistryHelper implements IRegistryHelper {
 	@Override
 	public <E extends AbstractContainerMenu> Supplier<MenuType<E>> registerMenuType(String id, MenuTypeFactory<E> factory) {
 		return CONTAINERS.register(id, () -> IForgeMenuType.create((windowId, inv, data) -> factory.create(windowId, inv, data.readBlockPos())));
+	}
+
+	@Nonnull
+	@Override
+	public MultiBlockStructure getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId) {
+		Optional<? extends Registry<MultiBlockStructure>> registry = level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey());
+		if (registry.isPresent()) {
+			MultiBlockStructure multiBlockStructure = registry.get().get(multiBlockStructureId);
+			return multiBlockStructure != null ? multiBlockStructure : MultiBlockStructure.EMPTY;
+		}
+		return MultiBlockStructure.EMPTY;
+	}
+
+	public void printMultiblocks(Level level) {
+		if (level != null) {
+			System.out.println("ra " + RegistryAccess.REGISTRIES.keySet());
+			System.out.println("bi " + BuiltinRegistries.REGISTRY.keySet());
+			level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey()).ifPresent(registry -> {
+				System.out.println("keys " + registry.keySet());
+			});
+		}
 	}
 
 	@Override
