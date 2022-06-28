@@ -1,6 +1,8 @@
 package com.techarium.techarium.registry;
 
+import com.techarium.techarium.Techarium;
 import com.techarium.techarium.blockentity.multiblock.CommunicationDeviceCoreBlockEntity;
+import com.techarium.techarium.blockentity.multiblock.TestStationCoreBlockEntity;
 import com.techarium.techarium.blockentity.selfdeploying.BotariumBlockEntity;
 import com.techarium.techarium.blockentity.selfdeploying.ExchangeStationBlockEntity;
 import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingSlaveBlockEntity;
@@ -20,6 +22,9 @@ public class TechariumBlockEntities {
 			() -> CommonServices.REGISTRY.createBlockEntityType(ExchangeStationBlockEntity::new, TechariumBlocks.EXCHANGE_STATION.get()));
 	public static final Supplier<BlockEntityType<BotariumBlockEntity>> BOTARIUM = CommonServices.REGISTRY.registerBlockEntity("botarium",
 			() -> CommonServices.REGISTRY.createBlockEntityType(BotariumBlockEntity::new, TechariumBlocks.BOTARIUM.get()));
+
+	public static final Supplier<BlockEntityType<MultiBlockCoreBlockEntity>> TEST_STATION_CORE = Techarium.DEBUG_MODE ? CommonServices.REGISTRY.registerBlockEntity("test_station",
+			() -> CommonServices.REGISTRY.createBlockEntityType(TestStationCoreBlockEntity::new, TechariumBlocks.TEST_STATION_CORE.get())) : () -> null;
 
 	public static void register() {}
 

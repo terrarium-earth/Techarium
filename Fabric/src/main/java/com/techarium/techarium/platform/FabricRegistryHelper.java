@@ -39,19 +39,19 @@ public class FabricRegistryHelper implements IRegistryHelper {
 
 	@Override
 	public <T extends Item> Supplier<T> registerItem(String id, Supplier<T> item) {
-		T entry = Registry.register(Registry.ITEM, new ResourceLocation(Techarium.MOD_ID, id), item.get());
+		T entry = Registry.register(Registry.ITEM, Techarium.resourceLocation(id), item.get());
 		return () -> entry;
 	}
 
 	@Override
 	public <T extends Block> Supplier<T> registerBlock(String id, Supplier<T> block) {
-		T entry = Registry.register(Registry.BLOCK, new ResourceLocation(Techarium.MOD_ID, id), block.get());
+		T entry = Registry.register(Registry.BLOCK, Techarium.resourceLocation(id), block.get());
 		return () -> entry;
 	}
 
 	@Override
 	public <E extends BlockEntity, T extends BlockEntityType<E>> Supplier<T> registerBlockEntity(String id, Supplier<T> blockEntity) {
-		T entry = Registry.register(Registry.BLOCK_ENTITY_TYPE, new ResourceLocation(Techarium.MOD_ID, id), blockEntity.get());
+		T entry = Registry.register(Registry.BLOCK_ENTITY_TYPE, Techarium.resourceLocation(id), blockEntity.get());
 		return () -> entry;
 	}
 

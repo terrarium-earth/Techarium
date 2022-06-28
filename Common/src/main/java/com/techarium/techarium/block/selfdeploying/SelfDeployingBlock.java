@@ -1,10 +1,9 @@
 package com.techarium.techarium.block.selfdeploying;
 
-import com.techarium.techarium.block.multiblock.MultiBlockCoreBlock;
-import com.techarium.techarium.block.multiblock.MultiBlockElementBlock;
 import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingBlockEntity;
 import com.techarium.techarium.registry.TechariumItems;
 import com.techarium.techarium.util.BlockRegion;
+import com.techarium.techarium.util.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -92,20 +91,23 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 	}
 
 	/**
-	 * Determine if the block can be placed according to its size after deployment.
+	 * Determine if the block can be deployed according to its size after deployment.
 	 *
-	 * @param world the world.
+	 * @param level the level.
 	 * @param pos   the position of the block.
+	 * @param state the state of the block.
 	 * @return true if the block can be placed.
 	 */
-	public boolean canBePlaced(Level world, BlockPos pos) {
-		// TODO @Ketheroth: 06/06/2022 find a proper way to do that. add orientation according the core direction. (move to MultiBlockStructure ?)
+	public boolean canDeploy(Level level, BlockPos pos, BlockState state) {
+		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 		BlockRegion region = this.getDeployedSize();
 		for (int x = region.xOffset; x < region.xSize - region.xOffset; x++) {
 			for (int y = region.yOffset; y < region.ySize - region.yOffset; y++) {
 				for (int z = region.zOffset; z < region.zSize - region.zOffset; z++) {
-					BlockState state = world.getBlockState(pos.offset(x, y, z));
-					if (!(state.getMaterial().isReplaceable() || state.getBlock() instanceof MultiBlockCoreBlock || state.getBlock() instanceof MultiBlockElementBlock)) {
+					BlockPos offset = new BlockPos(x, y, z);
+					BlockPos rotated = MathUtils.rotate(offset, direction);
+					BlockState blockState = level.getBlockState(pos.offset(rotated));
+					if (!(blockState.getMaterial().isReplaceable() || blockState.getBlock() instanceof SelfDeployingBlock)) {
 						return false;
 					}
 				}
@@ -121,14 +123,17 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 	 */
 	public List<BlockPos> getObstructingBlocks(Level level, BlockPos pos) {
 		List<BlockPos> positions = new ArrayList<>();
+		BlockState state = level.getBlockState(pos);
+		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 		BlockRegion region = this.getDeployedSize();
 		for (int x = region.xOffset; x < region.xSize - region.xOffset; x++) {
 			for (int y = region.yOffset; y < region.ySize - region.yOffset; y++) {
 				for (int z = region.zOffset; z < region.zSize - region.zOffset; z++) {
-					BlockPos offset = pos.offset(x, y, z);
-					BlockState state = level.getBlockState(offset);
-					if (!(state.getMaterial().isReplaceable() || state.getBlock() instanceof MultiBlockCoreBlock || state.getBlock() instanceof MultiBlockElementBlock)) {
-						positions.add(offset);
+					BlockPos offset = new BlockPos(x, y, z);
+					BlockPos rotated = MathUtils.rotate(offset, direction);
+					BlockState blockState = level.getBlockState(pos.offset(rotated));
+					if (!(blockState.getMaterial().isReplaceable() || blockState.getBlock() instanceof SelfDeployingBlock)) {
+						positions.add(rotated);
 					}
 				}
 			}

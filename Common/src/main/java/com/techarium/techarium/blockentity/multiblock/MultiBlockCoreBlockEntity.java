@@ -31,15 +31,15 @@ public abstract class MultiBlockCoreBlockEntity extends BlockEntity {
 
 	public MultiBlockCoreBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		this.multiblock = null;  // can't retrieve the multiblock yet because the level isn't set.
+		this.multiblock = null;  // can't retrieve the multiblock because the level isn't set yet.
 	}
 
 	public abstract ResourceLocation getMultiBlockStructureId();
 
 	public void onActivated(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
 		if (this.multiblock.isValidStructure(pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), level)) {
-			if (this.multiblock.canDeploy(level, state, pos)) {
-				this.multiblock.deploy(level, state, pos);
+			if (this.multiblock.canConvert(level, state, pos)) {
+				this.multiblock.convert(level, state, pos);
 			}
 			if (!CORE_WITH_OBSTRUCTION.contains(pos)) {
 				CORE_WITH_OBSTRUCTION.add(pos);
@@ -54,10 +54,9 @@ public abstract class MultiBlockCoreBlockEntity extends BlockEntity {
 		}
 
 		if (level.getGameTime() % 5 == 0) {
-			CommonServices.REGISTRY.printMultiblocks(level);
 			if (this.multiblock != MultiBlockStructure.EMPTY) {
 				if (tile.multiblock.isValidStructure(pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), level)) {
-					if (this.multiblock.canDeploy(level, state, pos)) {
+					if (this.multiblock.canConvert(level, state, pos)) {
 						CORE_WITH_OBSTRUCTION.remove(pos);
 						level.setBlock(pos, state.setValue(MultiBlockCoreBlock.READY, true), 3);
 					} else {
@@ -73,6 +72,9 @@ public abstract class MultiBlockCoreBlockEntity extends BlockEntity {
 	}
 
 	public List<BlockPos> getObstructingBlocks(Level level, BlockPos pos) {
+		if (this.multiblock == null) {
+			return List.of();
+		}
 		return this.multiblock.getObstructingBlocks(level, pos);
 	}
 

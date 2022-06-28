@@ -5,7 +5,7 @@
 - [x] save master position in nbt so it's here after reload
 - [ ] fix block model xray
 - [x] when a deployed block is removed, do the thing adrian said https://discord.com/channels/880995984426020885/980249463652225075/983159642425262141
-- [ ] display the outline of obstructing blocks.
+- [ ] display the outline of obstructing blocks (and rework it (make it display for undeployed rather than multiblock can't deploy)).
 - [ ] be able to place a self-deploying block where it can't deploy. it should be in an "undeployed" state
 - [ ] energy/fluid/gas input output (should defer to modloader)
 - [ ] block harvest levels

@@ -28,4 +28,8 @@ public class Techarium {
 		TechariumMenuTypes.register();
 	}
 
+	public static ResourceLocation resourceLocation(String path) {
+		return new ResourceLocation(Techarium.MOD_ID, path);
+	}
+
 }

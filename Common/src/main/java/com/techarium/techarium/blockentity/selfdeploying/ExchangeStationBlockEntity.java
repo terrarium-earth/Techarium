@@ -1,5 +1,6 @@
 package com.techarium.techarium.blockentity.selfdeploying;
 
+import com.techarium.techarium.Techarium;
 import com.techarium.techarium.inventory.ExchangeStationMenu;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingSlaveBlock;
 import com.techarium.techarium.blockentity.selfdeploying.module.ItemModule;
@@ -8,6 +9,7 @@ import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -70,6 +72,11 @@ public class ExchangeStationBlockEntity extends SelfDeployingMultiBlockBlockEnti
 	@Override
 	protected ItemModule createItemOutput() {
 		return new ItemModule(1, this);
+	}
+
+	@Override
+	public ResourceLocation getMultiBlockStructureId() {
+		return Techarium.resourceLocation("exchange_station");
 	}
 
 }

@@ -3,9 +3,10 @@ package com.techarium.techarium.multiblock;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.techarium.techarium.block.multiblock.MultiBlockCoreBlock;
-import com.techarium.techarium.block.multiblock.MultiBlockElementBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingMultiBlockBlockEntity;
+import com.techarium.techarium.util.BlockRegion;
+import com.techarium.techarium.util.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -24,19 +25,34 @@ import java.util.Map;
 /**
  * Define a multiblock structure.
  * Positions of the elements are considered offset from the core position, with the core oriented toward south, and in the minecraft axis (south:+z, east:+x).
+ * <br>
+ * Instances of this class are created via datapack.
  */
 public class MultiBlockStructure {
 
-	public static final MultiBlockStructure EMPTY = new MultiBlockStructure.Builder().setId("empty").build();
+	public static final MultiBlockStructure EMPTY = new MultiBlockStructure.Builder().build();
+	public static final Codec<MultiBlockStructure> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			ResourceLocation.CODEC.fieldOf("core").forGetter(multiBlockStructure -> toRL(multiBlockStructure.core)),
+			ResourceLocation.CODEC.fieldOf("deployed").forGetter(multiBlockStructure -> toRL(multiBlockStructure.selfDeployingBlock)),
+			Codec.list(MBElement.CODED).fieldOf("elements").forGetter(multiBlockStructure -> convertMapToList(multiBlockStructure.positions))
+	).apply(instance, (core, deployed, elements) -> new Builder()
+			.setCore((MultiBlockCoreBlock) toBlock(core))
+			.setSelfDeployingBlock((SelfDeployingBlock) toBlock(deployed))
+			.addElements(elements)
+			.build()));
 
-	// TODO @Ketheroth: 19/06/2022 remove map, embrace list
-	private final Map<BlockPos, MultiBlockElementBlock> positions;
-	private List<MBElement> elements;
+	private final Map<BlockPos, Block> positions;
 	private MultiBlockCoreBlock core;
 	private SelfDeployingBlock selfDeployingBlock;
-	private String id;
 
+	/**
+	 * Simple class to serialize easily an element of the multiblock.
+	 *
+	 * @param pos   the position of the element.
+	 * @param block the element.
+	 */
 	private record MBElement(BlockPos pos, ResourceLocation block) {
+
 		private static final Codec<MBElement> CODED = RecordCodecBuilder.create(instance -> instance.group(
 				BlockPos.CODEC.fieldOf("pos").forGetter(MBElement::pos),
 				ResourceLocation.CODEC.fieldOf("block").forGetter(MBElement::block)
@@ -44,38 +60,21 @@ public class MultiBlockStructure {
 
 	}
 
-	public static final Codec<MultiBlockStructure> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			ResourceLocation.CODEC.fieldOf("core").forGetter(multiBlockStructure -> toRL(multiBlockStructure.core)),
-			ResourceLocation.CODEC.fieldOf("deployed").forGetter(multiBlockStructure -> toRL(multiBlockStructure.selfDeployingBlock)),
-			Codec.list(MBElement.CODED).fieldOf("elements").forGetter(multiBlockStructure -> multiBlockStructure.elements)
-	).apply(instance, (core, deployed, elements) -> {
-		System.out.println("creating from codec");
-		return new Builder()
-				.setCore((MultiBlockCoreBlock) toBlock(core))
-				.setSelfDeployingBlock((SelfDeployingBlock) toBlock(deployed))
-				.addAllElements(elements)
-				.build();
-	}));
+	private static List<MBElement> convertMapToList(Map<BlockPos, Block> positions) {
+		return positions.entrySet().stream().collect(ArrayList::new, (acc, entry) -> acc.add(new MBElement(entry.getKey(), toRL(entry.getValue()))), ArrayList::addAll);
+	}
 
 	private static ResourceLocation toRL(Block block) {
 		return Registry.BLOCK.getKey(block);
 	}
+
 	private static Block toBlock(ResourceLocation rl) {
 		return Registry.BLOCK.get(rl);
 	}
 
 	private MultiBlockStructure() {
-		this.elements = new ArrayList<>();
 		this.positions = new HashMap<>();
 		this.core = null;
-		this.id = "";
-	}
-
-	/**
-	 * @return the id of this structure.
-	 */
-	public String getId() {
-		return this.id;
 	}
 
 	/**
@@ -92,9 +91,9 @@ public class MultiBlockStructure {
 			// if somehow the core in world doesn't match the multiblock core it's not valid
 			return false;
 		}
-		for (Map.Entry<BlockPos, MultiBlockElementBlock> entry : this.positions.entrySet()) {
+		for (Map.Entry<BlockPos, Block> entry : this.positions.entrySet()) {
 			// first rotate the offset, so we're in the same direction as the core block
-			BlockPos offset = rotate(entry.getKey(), direction);
+			BlockPos offset = MathUtils.rotate(entry.getKey(), direction);
 			// now we check if the block at this position in the world match.
 			BlockPos levelPos = core.offset(offset);
 			Block block = level.getBlockState(levelPos).getBlock();
@@ -105,22 +104,7 @@ public class MultiBlockStructure {
 		return true;
 	}
 
-	/**
-	 * Rotate the position from the south direction.
-	 *
-	 * @param pos       the position to rotate.
-	 * @param direction the destination direction of the position.
-	 * @return the new position after rotation.
-	 */
-	private BlockPos rotate(BlockPos pos, Direction direction) {
-		// maths are from wikipedia : Rotation_matrix
-		return switch (direction) {
-			case EAST -> new BlockPos(pos.getZ(), pos.getY(), -pos.getX());  // 270
-			case WEST -> new BlockPos(-pos.getZ(), pos.getY(), pos.getX());  // 90
-			case NORTH -> new BlockPos(-pos.getX(), pos.getY(), -pos.getZ());  // 180
-			default -> pos;
-		};
-	}
+
 
 	/**
 	 * Replace the blocks of the structure with the self-deploying blocks.
@@ -129,20 +113,19 @@ public class MultiBlockStructure {
 	 * @param state   the blockstate of the core block.
 	 * @param corePos the position of the core block.
 	 */
-	public void deploy(Level level, BlockState state, BlockPos corePos) {
-		if (!this.canDeploy(level, state, corePos)) {
+	public void convert(Level level, BlockState state, BlockPos corePos) {
+		if (!this.canConvert(level, state, corePos)) {
 			return;
 		}
 		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
 		for (BlockPos pos : this.positions.keySet()) {
 			// replace multiblock with air so the self-deploying block can safely replace them.
-			BlockPos levelPos = corePos.offset(this.rotate(pos, direction));
+			BlockPos levelPos = corePos.offset(MathUtils.rotate(pos, direction));
 			level.setBlock(levelPos, Blocks.AIR.defaultBlockState(), 3);
 		}
 		level.setBlock(corePos, this.selfDeployingBlock.defaultBlockState(), 3);
 		if (level.getBlockEntity(corePos) instanceof SelfDeployingMultiBlockBlockEntity selfDeployingBlockEntity) {
 			selfDeployingBlockEntity.deploy();
-			selfDeployingBlockEntity.setLinkedMultiBlock(this);
 		}
 	}
 
@@ -156,10 +139,10 @@ public class MultiBlockStructure {
 	 * @param initiator  the position of the block that initiated the removal of the self-deployed block
 	 * @param dropBlocks determine if the blocks of this multiblock should be dropped in the world instead of placed in the world.
 	 */
-	public void undeploy(Level level, BlockState state, BlockPos corePos, BlockPos initiator, boolean dropBlocks) {
+	public void revert(Level level, BlockState state, BlockPos corePos, BlockPos initiator, boolean dropBlocks) {
 		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-		for (Map.Entry<BlockPos, MultiBlockElementBlock> entry : this.positions.entrySet()) {
-			BlockPos pos = corePos.offset(this.rotate(entry.getKey(), direction));
+		for (Map.Entry<BlockPos, Block> entry : this.positions.entrySet()) {
+			BlockPos pos = corePos.offset(MathUtils.rotate(entry.getKey(), direction));
 			level.setBlock(pos, entry.getValue().defaultBlockState(), 3);
 			if (dropBlocks) {
 				level.destroyBlock(pos, true);
@@ -174,14 +157,29 @@ public class MultiBlockStructure {
 
 	/**
 	 * Determine if the structure can be replaced by the deploying block and it can be deployed.
+	 * The structure can convert if the deploying block replace replaceable blocks, or multiblock block
 	 *
-	 * @param level   the level of the multiblock.
-	 * @param state   the blockstate of the multiblock core.
-	 * @param corePos the position of the multiblock core.
+	 * @param level     the level of the multiblock.
+	 * @param coreState the blockstate of the multiblock core.
+	 * @param corePos   the position of the multiblock core.
 	 * @return true if the structure can be deployed.
 	 */
-	public boolean canDeploy(Level level, BlockState state, BlockPos corePos) {
-		return this.selfDeployingBlock.canBePlaced(level, corePos);
+	public boolean canConvert(Level level, BlockState coreState, BlockPos corePos) {
+		Direction direction = coreState.getValue(BlockStateProperties.HORIZONTAL_FACING);
+		BlockRegion region = this.selfDeployingBlock.getDeployedSize();
+		for (int x = region.xOffset; x < region.xSize - region.xOffset; x++) {
+			for (int y = region.yOffset; y < region.ySize - region.yOffset; y++) {
+				for (int z = region.zOffset; z < region.zSize - region.zOffset; z++) {
+					BlockPos offset = new BlockPos(x, y, z);
+					BlockPos rotated = MathUtils.rotate(offset, direction);
+					BlockState state = level.getBlockState(corePos.offset(rotated));
+					if (!(state.getMaterial().isReplaceable() || state.getBlock() instanceof MultiBlockCoreBlock || state.getBlock().equals(this.positions.get(offset)))) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -196,10 +194,8 @@ public class MultiBlockStructure {
 	@Override
 	public String toString() {
 		return "MultiBlockStructure{" +
-				"id='" + id + '\'' +
-				", elements=" + elements.stream().map(Record::toString).toList()+
+				"core=" + core +
 				", positions=" + positions.entrySet().stream().map(entry -> "" + entry.getKey().toString() + "->" + entry.getValue() + ",").toList() +
-				", core=" + core +
 				", selfDeployingBlock=" + selfDeployingBlock +
 				'}';
 	}
@@ -207,11 +203,6 @@ public class MultiBlockStructure {
 	public static class Builder {
 
 		private final MultiBlockStructure structure = new MultiBlockStructure();
-
-		public MultiBlockStructure.Builder setId(String id) {
-			this.structure.id = id;
-			return this;
-		}
 
 		public MultiBlockStructure.Builder setCore(MultiBlockCoreBlock core) {
 			this.structure.core = core;
@@ -223,30 +214,25 @@ public class MultiBlockStructure {
 			return this;
 		}
 
-		public MultiBlockStructure.Builder addElement(BlockPos position, MultiBlockElementBlock element) {
+		public MultiBlockStructure.Builder addElement(BlockPos position, Block element) {
 			this.structure.positions.put(position, element);
 			return this;
 		}
 
-		public MultiBlockStructure.Builder addElements(BlockPos position, MultiBlockElementBlock element, Object... positionsAndElements) {
-			this.structure.positions.put(position, element);
-			for (int i = 0; i < positionsAndElements.length; i += 2) {
-				this.structure.positions.put((BlockPos) positionsAndElements[i], (MultiBlockElementBlock) positionsAndElements[i + 1]);
-			}
+		public MultiBlockStructure.Builder addElement(MultiBlockStructure.MBElement element) {
+			this.structure.positions.put(element.pos, toBlock(element.block));
 			return this;
 		}
 
-		public MultiBlockStructure.Builder addAllElements(List<MBElement> elements) {
+		public MultiBlockStructure.Builder addElements(List<MBElement> elements) {
 			for (MBElement element : elements) {
-				this.structure.positions.put(element.pos, (MultiBlockElementBlock) toBlock(element.block));
+
+				this.structure.positions.put(element.pos, toBlock(element.block));
 			}
 			return this;
 		}
 
 		public MultiBlockStructure build() {
-			for (Map.Entry<BlockPos, MultiBlockElementBlock> entry : this.structure.positions.entrySet()) {
-				this.structure.elements.add(new MBElement(entry.getKey(), toRL(entry.getValue())));
-			}
 			System.out.println("building " + this.structure);
 			return this.structure;
 		}
