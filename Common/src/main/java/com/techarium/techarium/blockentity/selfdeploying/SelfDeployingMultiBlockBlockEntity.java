@@ -21,7 +21,9 @@ public abstract class SelfDeployingMultiBlockBlockEntity extends SelfDeployingBl
 	public void undeploy(boolean removeSelf, boolean restoreMultiBlock, BlockState oldState, BlockPos initiator) {
 		super.undeploy(removeSelf, restoreMultiBlock, oldState, initiator);
 		MultiBlockStructure multiBlockStructure = CommonServices.REGISTRY.getMultiBlockStructure(this.level, this.getMultiBlockStructureId());
-		multiBlockStructure.revert(this.level, oldState, this.worldPosition, initiator, !restoreMultiBlock);
+		if (multiBlockStructure != null) {
+			multiBlockStructure.revert(this.level, oldState, this.worldPosition, initiator, !restoreMultiBlock);
+		}
 	}
 
 	public abstract ResourceLocation getMultiBlockStructureId();

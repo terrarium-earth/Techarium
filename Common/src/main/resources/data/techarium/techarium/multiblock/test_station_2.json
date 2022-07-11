@@ -5,10 +5,13 @@
 			"d"
 		],
 		[
+			"d"
+		],
+		[
 			"@"
 		]
 	],
 	"keys": {
-		"d": "techarium:com_device_element"
+		"d": "minecraft:diamond_block"
 	}
 }

@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.List;
 import java.util.function.Supplier;
 
 public interface IRegistryHelper {
@@ -31,10 +31,11 @@ public interface IRegistryHelper {
 
 	<E extends AbstractContainerMenu> Supplier<MenuType<E>> registerMenuType(String id, MenuTypeFactory<E> factory);
 
-	@Nonnull
 	MultiBlockStructure getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId);
 
-	void printMultiblocks(Level level);
+	List<ResourceLocation> getMultiBlocksKeys(Level level);
+
+	ResourceLocation getMultiBlockKey(Level level, MultiBlockStructure multiBlockStructure);
 
 	@FunctionalInterface
 	interface BlockEntityFactory<T extends BlockEntity> {

@@ -2,16 +2,28 @@
 	"deployed": "techarium:exchange_station",
 	"pattern": [
 		[
-			"ed",
-			"d "
+			"d"
 		],
 		[
-			"@ ",
-			"  "
+			"d"
+		],
+		[
+			"d"
+		],
+		[
+			"d"
+		],
+		[
+			"d"
+		],
+		[
+			"d"
+		],
+		[
+			"@"
 		]
 	],
 	"keys": {
-		"e": "techarium:com_device_element",
 		"d": "minecraft:diamond_block"
 	}
 }

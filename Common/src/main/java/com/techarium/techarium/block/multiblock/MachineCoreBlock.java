@@ -1,6 +1,7 @@
 package com.techarium.techarium.block.multiblock;
 
-import com.techarium.techarium.blockentity.multiblock.MultiBlockCoreBlockEntity;
+import com.techarium.techarium.blockentity.multiblock.MachineCoreBlockEntity;
+import com.techarium.techarium.registry.TechariumBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,21 +13,26 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A Core Block for a multiblock structure.
  */
-public abstract class MultiBlockCoreBlock extends Block implements EntityBlock {
+public class MachineCoreBlock extends Block implements EntityBlock {
 
 	public static BooleanProperty READY = BooleanProperty.create("ready");
 
-	public MultiBlockCoreBlock(Properties properties) {
-		super(properties);
+	public MachineCoreBlock() {
+		super(BlockBehaviour.Properties.of(Material.METAL));
 		this.registerDefaultState(this.stateDefinition.any()
 				.setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
 				.setValue(READY, false));
@@ -47,11 +53,23 @@ public abstract class MultiBlockCoreBlock extends Block implements EntityBlock {
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
 		if (!level.isClientSide && player instanceof ServerPlayer) {
 			BlockEntity be = level.getBlockEntity(pos);
-			if (be instanceof MultiBlockCoreBlockEntity mbe) {
-				mbe.onActivated(state, level, pos, player, hand);
+			if (be instanceof MachineCoreBlockEntity mbe) {
+				return mbe.onActivated(state, level, pos, player, hand);
 			}
 		}
-		return InteractionResult.SUCCESS;
+		return InteractionResult.CONSUME;
+	}
+
+	@Nullable
+	@Override
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new MachineCoreBlockEntity(pos, state);
+	}
+
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+		return blockEntityType == TechariumBlockEntities.MACHINE_CORE.get() ? (level1, pos, state1, be) -> ((MachineCoreBlockEntity) be).tick(level1, pos, state1, (MachineCoreBlockEntity) be) : null;
 	}
 
 }

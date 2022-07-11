@@ -7,7 +7,7 @@
 			"entries": [
 				{
 					"type": "minecraft:item",
-					"name": "techarium:com_device_core"
+					"name": "techarium:machine_core"
 				}
 			],
 			"conditions": [

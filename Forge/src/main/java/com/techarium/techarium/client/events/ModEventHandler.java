@@ -5,6 +5,7 @@ import com.techarium.techarium.client.render.BotariumRenderer;
 import com.techarium.techarium.client.render.ExchangeStationRenderer;
 import com.techarium.techarium.client.screen.BotariumScreen;
 import com.techarium.techarium.client.screen.ExchangeStationScreen;
+import com.techarium.techarium.client.screen.MachineCoreScreen;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -26,6 +27,7 @@ public class ModEventHandler {
 	public static void onClientSetup(FMLClientSetupEvent event) {
 		MenuScreens.register(TechariumMenuTypes.BOTARIUM.get(), BotariumScreen::new);
 		MenuScreens.register(TechariumMenuTypes.EXCHANGE_STATION.get(), ExchangeStationScreen::new);
+		MenuScreens.register(TechariumMenuTypes.MACHINE_CORE.get(), MachineCoreScreen::new);
 	}
 
 }

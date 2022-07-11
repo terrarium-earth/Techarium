@@ -5,6 +5,7 @@ import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
 import com.techarium.techarium.registry.TechariumItems;
 import com.techarium.techarium.registry.TechariumMenuTypes;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +19,8 @@ public class Techarium {
 	public static final String MOD_NAME = "Techarium";
 	public static final Logger LOGGER = LogManager.getLogger();
 	public static CreativeModeTab TAB = CommonServices.REGISTRY.registerCreativeTab(new ResourceLocation(MOD_ID, "tab"), () -> new ItemStack(Blocks.DIAMOND_BLOCK));
+	public static final ResourceLocation FONT = Techarium.resourceLocation("techarium");
+	public static final Style STYLE = Style.EMPTY.withFont(FONT);
 
 	public static final boolean DEBUG_MODE = true;  // if we want debug items/blocks
 

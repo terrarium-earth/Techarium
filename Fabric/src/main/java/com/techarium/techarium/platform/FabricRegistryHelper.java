@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -66,29 +67,23 @@ public class FabricRegistryHelper implements IRegistryHelper {
 		return () -> entry;
 	}
 
-	@Nonnull
 	@Override
 	public MultiBlockStructure getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId) {
 		if (level == null) {
-			return MultiBlockStructure.EMPTY;
+			return null;
 		}
 		Optional<? extends Registry<MultiBlockStructure>> registry = level.registryAccess().registry(MULTIBLOCK_STRUCTURES.key());
-		if (registry.isPresent()) {
-			MultiBlockStructure multiBlockStructure = registry.get().get(multiBlockStructureId);
-			return multiBlockStructure != null ? multiBlockStructure : MultiBlockStructure.EMPTY;
-		}
-		return MultiBlockStructure.EMPTY;
+		return registry.map(multiBlockStructures -> multiBlockStructures.get(multiBlockStructureId)).orElse(null);
 	}
 
 	@Override
-	public void printMultiblocks(Level level) {
-		if (level != null) {
-			System.out.println("print");
-			level.registryAccess().registry(MULTIBLOCK_STRUCTURES.key()).ifPresent(registry -> {
-				System.out.println("keys " + registry.keySet());
-			});
-			System.out.println("end print");
-		}
+	public List<ResourceLocation> getMultiBlocksKeys(Level level) {
+		return level.registryAccess().registry(MULTIBLOCK_STRUCTURES.key()).map(multiBlockStructures -> multiBlockStructures.keySet().stream().toList()).orElseGet(List::of);
+	}
+
+	@Override
+	public ResourceLocation getMultiBlockKey(Level level, MultiBlockStructure multiBlockStructure) {
+		return level.registryAccess().registry(MULTIBLOCK_STRUCTURES.key()).map(registry ->registry.getKey(multiBlockStructure)).orElse(Techarium.resourceLocation("empty"));
 	}
 
 	@Override

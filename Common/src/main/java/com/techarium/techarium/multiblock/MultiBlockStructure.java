@@ -1,15 +1,21 @@
 package com.techarium.techarium.multiblock;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.techarium.techarium.block.multiblock.MultiBlockCoreBlock;
+import com.techarium.techarium.Techarium;
+import com.techarium.techarium.block.multiblock.MachineCoreBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingMultiBlockBlockEntity;
+import com.techarium.techarium.registry.TechariumBlocks;
 import com.techarium.techarium.util.BlockRegion;
 import com.techarium.techarium.util.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.HolderSetCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -17,7 +23,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
+import java.rmi.UnexpectedException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,38 +38,65 @@ import java.util.Map;
  */
 public class MultiBlockStructure {
 
-	public static final MultiBlockStructure EMPTY = new MultiBlockStructure.Builder().build();
+	public static final Codec<List<List<String>>> PATTERN_CODEC = Codec.STRING.listOf().listOf().comapFlatMap(MultiBlockStructure::readPattern, lists -> lists);
 	public static final Codec<MultiBlockStructure> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			ResourceLocation.CODEC.fieldOf("core").forGetter(multiBlockStructure -> toRL(multiBlockStructure.core)),
 			ResourceLocation.CODEC.fieldOf("deployed").forGetter(multiBlockStructure -> toRL(multiBlockStructure.selfDeployingBlock)),
-			Codec.list(MBElement.CODED).fieldOf("elements").forGetter(multiBlockStructure -> convertMapToList(multiBlockStructure.positions))
-	).apply(instance, (core, deployed, elements) -> new Builder()
-			.setCore((MultiBlockCoreBlock) toBlock(core))
-			.setSelfDeployingBlock((SelfDeployingBlock) toBlock(deployed))
-			.addElements(elements)
-			.build()));
+			PATTERN_CODEC.fieldOf("pattern").forGetter(MultiBlockStructure::getPattern),
+			Codec.unboundedMap(Codec.STRING, ResourceLocation.CODEC).fieldOf("keys").forGetter(MultiBlockStructure::getKeys)
+	).apply(instance, (selfDeployingBlock1, pattern1, keys1) -> {
+		MultiBlockStructure multiBlockStructure = new MultiBlockStructure(selfDeployingBlock1, pattern1, keys1);
+		System.out.println(multiBlockStructure);
+		return multiBlockStructure;
+	}));
 
 	private final Map<BlockPos, Block> positions;
-	private MultiBlockCoreBlock core;
 	private SelfDeployingBlock selfDeployingBlock;
+	private final List<List<String>> pattern;
+	private final Map<String, ResourceLocation> keys;
 
-	/**
-	 * Simple class to serialize easily an element of the multiblock.
-	 *
-	 * @param pos   the position of the element.
-	 * @param block the element.
-	 */
-	private record MBElement(BlockPos pos, ResourceLocation block) {
+	private static DataResult<List<List<String>>> readPattern(List<List<String>> pattern) {
+		if (pattern.size() == 0) {
+			return DataResult.error("Invalid size");
+		}
+		int height = pattern.get(0).size();
+		if (height == 0) {
+			return DataResult.error("Invalid size");
+		}
+		// every list must have the same size (height of the pattern)
+		for (List<String> list : pattern) {
+			if (list.size() != height) {
+				return DataResult.error("Invalid size");
+			}
+		}
 
-		private static final Codec<MBElement> CODED = RecordCodecBuilder.create(instance -> instance.group(
-				BlockPos.CODEC.fieldOf("pos").forGetter(MBElement::pos),
-				ResourceLocation.CODEC.fieldOf("block").forGetter(MBElement::block)
-		).apply(instance, MBElement::new));
-
+		int width = pattern.get(0).get(0).length();
+		if (width == 0) {
+			return DataResult.error("Invalid size");
+		}
+		// every string must have the same size (width of the pattern)
+		for (List<String> list : pattern) {
+			for (String element : list) {
+				if (element.length() != width) {
+					return DataResult.error("Invalid size");
+				}
+			}
+		}
+		for (List<String> layer : pattern) {
+			for (String line : layer) {
+				if (line.contains("@")) {
+					return DataResult.success(pattern);
+				}
+			}
+		}
+		return DataResult.error("@ is not present");
 	}
 
-	private static List<MBElement> convertMapToList(Map<BlockPos, Block> positions) {
-		return positions.entrySet().stream().collect(ArrayList::new, (acc, entry) -> acc.add(new MBElement(entry.getKey(), toRL(entry.getValue()))), ArrayList::addAll);
+	private List<List<String>> getPattern() {
+		return this.pattern;
+	}
+
+	private Map<String,ResourceLocation> getKeys() {
+		return this.keys;
 	}
 
 	private static ResourceLocation toRL(Block block) {
@@ -72,9 +107,57 @@ public class MultiBlockStructure {
 		return Registry.BLOCK.get(rl);
 	}
 
-	private MultiBlockStructure() {
+	public MultiBlockStructure(ResourceLocation selfDeployingBlock, List<List<String>> pattern, Map<String,ResourceLocation> keys) {
+		this.pattern = pattern;
+		this.selfDeployingBlock = ((SelfDeployingBlock) toBlock(selfDeployingBlock));
+		this.keys = keys;
 		this.positions = new HashMap<>();
-		this.core = null;
+		BlockPos core = BlockPos.ZERO;
+		// search core position
+		all: for (int y = 0; y < pattern.size(); y++) {
+			List<String> layer = pattern.get(y);
+			for (int z = 0; z < layer.size(); z++) {
+				String line = layer.get(z);
+				for (int x = 0; x < line.length(); x++) {
+					if (line.charAt(x) == '@') {
+
+
+						// 0,0,0 (size 3,2,2) convert to 2,0,0
+						// -> size-1-y = 3-1-0 = 2
+						// 1,0,0 (size 3,2,2) convert to 1,0,0
+						// -> size-1-y = 3-1-1 = 1
+						// 2,0,0 (size 3,2,2) convert to 0,0,0
+						// -> 3-1-2 = 0
+						//:ok_hand: let's go
+
+						// YES IT FUCKING WORKS
+
+						core = new BlockPos(x, pattern.size() - 1 - y, z);
+						break all;
+					}
+				}
+			}
+		}
+		// determine offsets from core
+		for (int y = pattern.size() - 1; y >= 0; y--) {
+			List<String> layer = pattern.get(y);
+			for (int z = 0; z < layer.size(); z++) {
+				String line = layer.get(z);
+				for (int x = 0; x < line.length(); x++) {
+					String element = "" +line.charAt(x);
+					if (keys.containsKey(element)) {
+						this.positions.put(new BlockPos(x - core.getX(), pattern.size() - 1 - y - core.getY(), z - core.getZ()), toBlock(keys.get(element)));
+					}
+				}
+			}
+		}
+		/*
+		y
+		^  z
+		| /
+		|/
+		+--->x
+		 */
 	}
 
 	/**
@@ -87,7 +170,7 @@ public class MultiBlockStructure {
 	 * @return true if there is a valid structure in the level.
 	 */
 	public boolean isValidStructure(BlockPos core, Direction direction, Level level) {
-		if (!this.core.equals(level.getBlockState(core).getBlock())) {
+		if (!TechariumBlocks.MACHINE_CORE.get().equals(level.getBlockState(core).getBlock())) {
 			// if somehow the core in world doesn't match the multiblock core it's not valid
 			return false;
 		}
@@ -148,7 +231,7 @@ public class MultiBlockStructure {
 				level.destroyBlock(pos, true);
 			}
 		}
-		level.setBlock(corePos, this.core.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, direction), 3);
+		level.setBlock(corePos, TechariumBlocks.MACHINE_CORE.get().defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, direction), 3);
 		if (dropBlocks) {
 			level.destroyBlock(corePos, true);
 		}
@@ -173,7 +256,7 @@ public class MultiBlockStructure {
 					BlockPos offset = new BlockPos(x, y, z);
 					BlockPos rotated = MathUtils.rotate(offset, direction);
 					BlockState state = level.getBlockState(corePos.offset(rotated));
-					if (!(state.getMaterial().isReplaceable() || state.getBlock() instanceof MultiBlockCoreBlock || state.getBlock().equals(this.positions.get(offset)))) {
+					if (!(state.getMaterial().isReplaceable() || state.getBlock() instanceof MachineCoreBlock || state.getBlock().equals(this.positions.get(offset)))) {
 						return false;
 					}
 				}
@@ -194,49 +277,11 @@ public class MultiBlockStructure {
 	@Override
 	public String toString() {
 		return "MultiBlockStructure{" +
-				"core=" + core +
+				"selfDeployingBlock=" + selfDeployingBlock +
 				", positions=" + positions.entrySet().stream().map(entry -> "" + entry.getKey().toString() + "->" + entry.getValue() + ",").toList() +
-				", selfDeployingBlock=" + selfDeployingBlock +
+				", keys=" + Joiner.on(",").withKeyValueSeparator("=").join(this.keys) +
+				", pattern=" + pattern +
 				'}';
-	}
-
-	public static class Builder {
-
-		private final MultiBlockStructure structure = new MultiBlockStructure();
-
-		public MultiBlockStructure.Builder setCore(MultiBlockCoreBlock core) {
-			this.structure.core = core;
-			return this;
-		}
-
-		public MultiBlockStructure.Builder setSelfDeployingBlock(SelfDeployingBlock selfDeployingBlock) {
-			this.structure.selfDeployingBlock = selfDeployingBlock;
-			return this;
-		}
-
-		public MultiBlockStructure.Builder addElement(BlockPos position, Block element) {
-			this.structure.positions.put(position, element);
-			return this;
-		}
-
-		public MultiBlockStructure.Builder addElement(MultiBlockStructure.MBElement element) {
-			this.structure.positions.put(element.pos, toBlock(element.block));
-			return this;
-		}
-
-		public MultiBlockStructure.Builder addElements(List<MBElement> elements) {
-			for (MBElement element : elements) {
-
-				this.structure.positions.put(element.pos, toBlock(element.block));
-			}
-			return this;
-		}
-
-		public MultiBlockStructure build() {
-			System.out.println("building " + this.structure);
-			return this.structure;
-		}
-
 	}
 
 }

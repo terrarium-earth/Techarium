@@ -116,6 +116,7 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 	/**
 	 * A self-deploying block entity with inventory modules.
 	 */
+	// TODO @anyone: 11/07/2022 change it, it is a wip
 	// TODO @Ketheroth: 17/06/2022 see if I can/should move this in the super-class
 	public static abstract class WithModules extends SelfDeployingBlockEntity implements MenuProvider {
 

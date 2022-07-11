@@ -2,7 +2,7 @@ package com.techarium.techarium.client.events;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.techarium.techarium.Techarium;
-import com.techarium.techarium.blockentity.multiblock.MultiBlockCoreBlockEntity;
+import com.techarium.techarium.blockentity.multiblock.MachineCoreBlockEntity;
 import com.techarium.techarium.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -27,10 +27,10 @@ public class ForgeEventHandler {
 		}
 		PoseStack pose = event.getPoseStack();
 		pose.pushPose();
-		for (BlockPos corePos : MultiBlockCoreBlockEntity.CORE_WITH_OBSTRUCTION) {
+		for (BlockPos corePos : MachineCoreBlockEntity.CORE_WITH_OBSTRUCTION) {
 			BlockEntity blockEntity = Minecraft.getInstance().level.getBlockEntity(corePos);
-			if (blockEntity instanceof MultiBlockCoreBlockEntity multiBlockCoreBlockEntity) {
-				for (BlockPos obstructingBlock : multiBlockCoreBlockEntity.getObstructingBlocks(Minecraft.getInstance().level, corePos)) {
+			if (blockEntity instanceof MachineCoreBlockEntity machineCoreBlockEntity) {
+				for (BlockPos obstructingBlock : machineCoreBlockEntity.getObstructingBlocks(Minecraft.getInstance().level, corePos)) {
 					RenderUtil.displayRedOutline(pose, obstructingBlock.getX(), obstructingBlock.getY(), obstructingBlock.getZ());
 				}
 			}

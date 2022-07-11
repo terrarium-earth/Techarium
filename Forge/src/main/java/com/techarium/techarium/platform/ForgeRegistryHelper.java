@@ -25,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -63,25 +64,20 @@ public class ForgeRegistryHelper implements IRegistryHelper {
 		return CONTAINERS.register(id, () -> IForgeMenuType.create((windowId, inv, data) -> factory.create(windowId, inv, data.readBlockPos())));
 	}
 
-	@Nonnull
 	@Override
 	public MultiBlockStructure getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId) {
 		Optional<? extends Registry<MultiBlockStructure>> registry = level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey());
-		if (registry.isPresent()) {
-			MultiBlockStructure multiBlockStructure = registry.get().get(multiBlockStructureId);
-			return multiBlockStructure != null ? multiBlockStructure : MultiBlockStructure.EMPTY;
-		}
-		return MultiBlockStructure.EMPTY;
+		return registry.map(multiBlockStructures -> multiBlockStructures.get(multiBlockStructureId)).orElse(null);
 	}
 
-	public void printMultiblocks(Level level) {
-		if (level != null) {
-			System.out.println("ra " + RegistryAccess.REGISTRIES.keySet());
-			System.out.println("bi " + BuiltinRegistries.REGISTRY.keySet());
-			level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey()).ifPresent(registry -> {
-				System.out.println("keys " + registry.keySet());
-			});
-		}
+	@Override
+	public List<ResourceLocation> getMultiBlocksKeys(Level level) {
+		return level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey()).map(multiBlockStructures -> multiBlockStructures.keySet().stream().toList()).orElseGet(List::of);
+	}
+
+	@Override
+	public ResourceLocation getMultiBlockKey(Level level, MultiBlockStructure multiBlockStructure) {
+		return level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey()).map(registry -> registry.getKey(multiBlockStructure)).orElse(Techarium.resourceLocation("empty"));
 	}
 
 	@Override
