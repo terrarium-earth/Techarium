@@ -24,7 +24,7 @@ public class Techarium {
 	public static final ResourceLocation FONT = Techarium.resourceLocation("techarium");
 	public static final Style STYLE = Style.EMPTY.withFont(FONT);
 
-	public static final boolean DEBUG_MODE = true;  // if we want debug items/blocks
+	public static final boolean DEBUG_MODE = CommonServices.PLATFORM.isDevelopmentEnvironment();  // if we want debug items/blocks
 
 	public static void init() {
 		TechariumBlocks.register();

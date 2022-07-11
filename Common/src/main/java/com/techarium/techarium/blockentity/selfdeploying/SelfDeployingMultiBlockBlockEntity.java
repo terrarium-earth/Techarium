@@ -13,6 +13,8 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public abstract class SelfDeployingMultiBlockBlockEntity extends SelfDeployingBlockEntity.WithModules {
 
+	private ResourceLocation multiblockId;
+
 	public SelfDeployingMultiBlockBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
 	}
@@ -20,12 +22,14 @@ public abstract class SelfDeployingMultiBlockBlockEntity extends SelfDeployingBl
 	@Override
 	public void undeploy(boolean removeSelf, boolean restoreMultiBlock, BlockState oldState, BlockPos initiator) {
 		super.undeploy(removeSelf, restoreMultiBlock, oldState, initiator);
-		MultiBlockStructure multiBlockStructure = CommonServices.REGISTRY.getMultiBlockStructure(this.level, this.getMultiBlockStructureId());
+		MultiBlockStructure multiBlockStructure = CommonServices.REGISTRY.getMultiBlockStructure(this.level, this.multiblockId);
 		if (multiBlockStructure != null) {
 			multiBlockStructure.revert(this.level, oldState, this.worldPosition, initiator, !restoreMultiBlock);
 		}
 	}
 
-	public abstract ResourceLocation getMultiBlockStructureId();
+	public void setDeployedFrom(ResourceLocation multiblockId) {
+		this.multiblockId = multiblockId;
+	}
 
 }

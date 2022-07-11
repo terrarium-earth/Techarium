@@ -55,7 +55,7 @@ public class ExchangeStationBlockEntity extends SelfDeployingMultiBlockBlockEnti
 
 	@Override
 	public Component getDisplayName() {
-		return Component.translatable("container.exchange_station");
+		return Techarium.translatableComponent("container.techarium.exchange_station");
 	}
 
 	@Nullable
@@ -72,11 +72,6 @@ public class ExchangeStationBlockEntity extends SelfDeployingMultiBlockBlockEnti
 	@Override
 	protected ItemModule createItemOutput() {
 		return new ItemModule(1, this);
-	}
-
-	@Override
-	public ResourceLocation getMultiBlockStructureId() {
-		return Techarium.resourceLocation("exchange_station");
 	}
 
 }

@@ -20,11 +20,6 @@ import java.util.List;
 
 public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> {
 
-
-	// TODO: 10/07/2022 increase height of the text input
-	// TODO: 10/07/2022 change height of buttons ? (kinda to small with the font)
-
-
 	private static final ResourceLocation TEXTURE = new ResourceLocation(Techarium.MOD_ID, "textures/gui/machine_core.png");
 	private static final Component SHOW_HINTS_TEXT = Component.translatable("gui.techarium.machine_core.hints");
 
@@ -160,6 +155,12 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 	}
 
 	@Override
+	public void resize(Minecraft $$0, int $$1, int $$2) {
+		super.resize($$0, $$1, $$2);
+		this.init();
+	}
+
+	@Override
 	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
 		this.renderBackground(poseStack);
 		super.render(poseStack, mouseX, mouseY, partialTicks);
@@ -169,7 +170,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 
 	@Override
 	protected void renderLabels(PoseStack poseStack, int x, int y) {
-		this.font.draw(poseStack, this.title, 7, 3, 16777215);
+		this.font.draw(poseStack, this.title, 6, 3, 16777215);
 	}
 
 	@Override

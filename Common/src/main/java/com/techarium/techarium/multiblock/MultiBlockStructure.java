@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.techarium.techarium.block.multiblock.MachineCoreBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingMultiBlockBlockEntity;
+import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlocks;
 import com.techarium.techarium.util.BlockRegion;
 import com.techarium.techarium.util.MathUtils;
@@ -181,8 +182,9 @@ public class MultiBlockStructure {
 			BlockPos levelPos = corePos.offset(MathUtils.rotate(pos, direction));
 			level.setBlock(levelPos, Blocks.AIR.defaultBlockState(), 3);
 		}
-		level.setBlock(corePos, this.selfDeployingBlock.defaultBlockState(), 3);
+		level.setBlock(corePos, this.selfDeployingBlock.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, direction), 3);
 		if (level.getBlockEntity(corePos) instanceof SelfDeployingMultiBlockBlockEntity selfDeployingBlockEntity) {
+			selfDeployingBlockEntity.setDeployedFrom(CommonServices.REGISTRY.getMultiBlockKey(level, this));
 			selfDeployingBlockEntity.deploy();
 		}
 	}

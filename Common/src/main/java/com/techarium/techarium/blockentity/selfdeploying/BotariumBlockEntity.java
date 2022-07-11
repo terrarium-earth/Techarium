@@ -1,5 +1,6 @@
 package com.techarium.techarium.blockentity.selfdeploying;
 
+import com.techarium.techarium.Techarium;
 import com.techarium.techarium.inventory.BotariumMenu;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingSlaveBlock;
 import com.techarium.techarium.blockentity.selfdeploying.module.FluidModule;
@@ -100,7 +101,7 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithModules {
 
 	@Override
 	public Component getDisplayName() {
-		return Component.translatable("container.botarium");
+		return Techarium.translatableComponent("container.techarium.botarium");
 	}
 
 	@Nullable

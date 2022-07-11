@@ -62,7 +62,7 @@ public class BotariumScreen extends AbstractContainerScreen<BotariumMenu> {
 
 	@Override
 	protected void renderLabels(PoseStack poseStack, int x, int y) {
-		// no labels
+		this.font.draw(poseStack, this.title, 13, 8, 16777215);
 	}
 
 	@Override

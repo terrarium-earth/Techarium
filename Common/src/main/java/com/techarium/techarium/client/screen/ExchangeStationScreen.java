@@ -28,7 +28,7 @@ public class ExchangeStationScreen extends AbstractContainerScreen<ExchangeStati
 
 	@Override
 	protected void renderLabels(PoseStack poseStack, int x, int y) {
-		// no labels
+		this.font.draw(poseStack, this.title, 6, 3, 16777215);
 	}
 
 	@Override
