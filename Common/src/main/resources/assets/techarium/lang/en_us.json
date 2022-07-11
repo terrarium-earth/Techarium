@@ -13,5 +13,7 @@
 	"multiblock.techarium.test_station_7": "DEF 7",
 	"multiblock.techarium.test_station_8": "Test 8",
 	"multiblock.techarium.test_station_9": "Test 9",
-	"gui.techarium.machine_core.hints": "Show Hints"
+	"multiblock.techarium.test_station_10": "Test 10",
+	"gui.techarium.machine_core.hints": "Show Hints",
+	"container.techarium.machine_core" : "Machine Core"
 }

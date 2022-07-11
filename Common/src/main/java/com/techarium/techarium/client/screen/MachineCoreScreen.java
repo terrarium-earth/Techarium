@@ -10,32 +10,29 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> {
 
 
-	// TODO: 10/07/2022 show hints button
-	// TODO: 10/07/2022 fix slider texture
 	// TODO: 10/07/2022 increase height of the text input
-	// TODO: 10/07/2022 custom font in text input ?
 	// TODO: 10/07/2022 change height of buttons ? (kinda to small with the font)
 
 
-	private static final ResourceLocation TEXTURE = new ResourceLocation(Techarium.MOD_ID, "textures/gui/machine_core_best.png");
-	private static final Component SHOW_HINTS_TEXT = Component.translatable("gui.techarium.machine_core.hints").withStyle(Style.EMPTY);
+	private static final ResourceLocation TEXTURE = new ResourceLocation(Techarium.MOD_ID, "textures/gui/machine_core.png");
+	private static final Component SHOW_HINTS_TEXT = Component.translatable("gui.techarium.machine_core.hints");
 
 	private static final int IDS_X = 17;
-	private static final int IDS_Y = 34;
+	private static final int IDS_Y = 38;
 	private static final int SCROLL_X = 119; // width 6
-	private static final int TEXT_INPUT_X = 17; // width 100
-	private static final int TEXT_INPUT_Y = 24; // height 8
+	private static final int TEXT_INPUT_X = 19; // width 100
+	private static final int TEXT_INPUT_Y = 26; // height 12
 
 	private final List<ResourceLocation> ids;
 	private final List<MultiBlockButton> buttons;
@@ -45,9 +42,8 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 
 	public MachineCoreScreen(MachineCoreMenu menu, Inventory inventory, Component title) {
 		super(menu, inventory, title);
-		this.imageWidth = 145;
-		this.imageHeight = 150;
-		// TODO: 11/07/2022 @Ketheroth should we sort the ids in alphabetical order ?
+		this.imageWidth = 165;
+		this.imageHeight = 186;
 		this.ids = this.menu.getAllMultiblockStructures();
 		this.buttons = new ArrayList<>();
 	}
@@ -56,24 +52,30 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 	protected void init() {
 		super.init();
 		this.addButtons("");
-		this.textInput = new EditBox(this.font, this.leftPos + TEXT_INPUT_X, this.topPos + TEXT_INPUT_Y, 100, 8, Component.empty());
+		this.textInput = new EditBox(this.font, this.leftPos + TEXT_INPUT_X, this.topPos + TEXT_INPUT_Y, 100, 12, Component.empty());
 		this.addWidget(this.textInput);
 		this.setInitialFocus(this.textInput);
 		this.textInput.setFocus(true);
+		this.textInput.setBordered(false);
 		this.textInput.setResponder(this::filterIds);
 		this.showHints = false;
 	}
 
+	/**
+	 * Add selectable buttons for each multiblock.
+	 *
+	 * @param filter multiblock name filter (do nothing if empty).
+	 */
 	private void addButtons(String filter) {
 		this.startIndex = 0;
-		int y = 0;
 		ResourceLocation selected = this.menu.selectedMultiblock();
+		ArrayList<MultiBlockButton> list = new ArrayList<>();
 		for (int i = 0; i < this.ids.size(); i++) {
 			ResourceLocation id = this.ids.get(i);
 			// name is created from resource location : techarium:random -> multiblock.techarium.random
-			MutableComponent name = Component.translatable("multiblock." + id.getNamespace() + "." + id.getPath().replace("/", ".")).withStyle(Techarium.STYLE);
+			MutableComponent name = Techarium.translatableComponent("multiblock." + id.getNamespace() + "." + id.getPath().replace("/", "."));
 			if (filter.isEmpty() || name.getString().toLowerCase().startsWith(filter.toLowerCase())) {
-				MultiBlockButton multiBlockButton = new MultiBlockButton(i, this.leftPos + IDS_X, this.topPos + IDS_Y + y, name, button -> {
+				MultiBlockButton multiBlockButton = new MultiBlockButton(i, this.leftPos + IDS_X, 0, name, button -> {
 					this.buttons.forEach(element -> element.selected = false);
 					this.menu.setMultiBlock(id);
 					((MultiBlockButton) button).selected = true;
@@ -81,11 +83,17 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 				if (id.equals(selected)) {
 					multiBlockButton.selected = true;
 				}
-				this.addRenderableWidget(multiBlockButton);
-				this.buttons.add(multiBlockButton);
-				y += 10;
+				list.add(multiBlockButton);
 			}
 		}
+		// sort the buttons by the translated name of the multiblocks
+		Collections.sort(list);
+		for (int i = 0; i < list.size(); i++) {
+			MultiBlockButton elem = list.get(i);
+			elem.y = this.topPos + IDS_Y + 14 * i;
+		}
+		this.buttons.addAll(list.stream().sorted().toList());
+		this.buttons.forEach(this::addRenderableWidget);
 		// hide buttons outside the area
 		for (int j = 8; j < this.buttons.size(); j++) {
 			this.buttons.get(j).visible = false;
@@ -119,7 +127,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 				this.buttons.get(startIndex - 1).visible = false;
 				this.buttons.get(startIndex + 7).visible = true;
 				for (MultiBlockButton button : this.buttons) {
-					button.y -= 10;
+					button.y -= 14;
 				}
 			}
 		} else if (delta > 0) {
@@ -129,7 +137,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 				this.buttons.get(startIndex).visible = true;
 				this.buttons.get(startIndex + 8).visible = false;
 				for (MultiBlockButton button : this.buttons) {
-					button.y += 10;
+					button.y += 14;
 				}
 			}
 		}
@@ -145,7 +153,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 				return true;
 			}
 		}
-		if (this.leftPos + 9 <= mouseX && mouseX <= this.leftPos + 23 && this.topPos + 133 <= mouseY && mouseY <= this.topPos + 147) {
+		if (this.leftPos + 9 <= mouseX && mouseX <= this.leftPos + 23 && this.topPos + 169 <= mouseY && mouseY <= this.topPos + 183) {
 			this.showHints = !this.showHints;
 		}
 		return super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -161,7 +169,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 
 	@Override
 	protected void renderLabels(PoseStack poseStack, int x, int y) {
-		// no labels
+		this.font.draw(poseStack, this.title, 7, 3, 16777215);
 	}
 
 	@Override
@@ -169,45 +177,47 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
-		if (showHints) {
-			this.blit(poseStack, this.leftPos + 9, this.topPos + 133, 0, 150, 14, 14);
-		}
-		this.font.draw(poseStack, SHOW_HINTS_TEXT, this.leftPos + 30, this.topPos + 136, 4210752);
+		// display scrollbar
 		if (this.buttons.size() > 8) {
 			int startX = this.leftPos + SCROLL_X;
 			int startY = this.topPos + IDS_Y;
-			int color = (255 << 16 | 127) << 8 | 127;
 			int scrollAmount = this.buttons.size() - 8;
-			int barSize = 80;
+			int barSize = 112;
 			int partSize = barSize / (scrollAmount + 1);
-			RenderSystem.setShaderTexture(0, TEXTURE);
-			// scroll slider 6x9
-			//blit(PoseStack pPoseStack, int pX, int pY, int pBlitOffset, float pUOffset, float pVOffset, int pUWidth, int pVHeight, int pTextureHeight, int pTextureWidth).
+			if (partSize % 2 == 1) {
+				partSize--;
+			}
 			int scrollStartY = startY + partSize * this.startIndex;
 			//blit first line
-			blit(poseStack, startX, scrollStartY, 0, 164, 6, 1);
-			int yStartOffset=1;
-			if (partSize%3 == 2) {
-				yStartOffset = 2;
-				blit(poseStack, startX, scrollStartY +1, 0, 165, 6, 3);
+			blit(poseStack, startX, scrollStartY, 14, 201, 6, 1);
+			int yStartOffset = 1;
+			// blit the middle line to fill between the start and the end
+			for (int y = scrollStartY + yStartOffset; y < startY + partSize * (this.startIndex + 1) - 3; y += 2) {
+				blit(poseStack, startX, y, 14, 202, 6, 2);
 			}
-			for (int y = scrollStartY + yStartOffset; y < startY + partSize * (this.startIndex + 1) - 2; y += 3) {
-				blit(poseStack, startX, y, 0, 165, 6, 3);
-			}
-			//blit x 3middle line to fill between the start and the end
-			//blit 2 end lines
-			blit(poseStack, startX, scrollStartY + partSize - 2, this.getBlitOffset(), 0, 171, 6, 2, 256, 256);
-//			fill(poseStack, startX, startY + partSize * this.startIndex, startX + 3, startY + partSize * this.startIndex + partSize, color);
+			// blit the 2 end lines
+			blit(poseStack, startX, scrollStartY + partSize - 3, 14, 207, 6, 3);
 		}
+		// display hint button
+		if (this.showHints) {
+			this.blit(poseStack, this.leftPos + 9, this.topPos + 169, 0, 196, 14, 14);
+		}
+		this.font.draw(poseStack, SHOW_HINTS_TEXT, this.leftPos + 31, this.topPos + 172, 4210752);
 	}
 
-	private class MultiBlockButton extends Button {
+	private static class MultiBlockButton extends Button implements Comparable<MultiBlockButton> {
 
+		/**
+		 * The index in the multiblock registry.
+		 */
 		private final int index;
+		/**
+		 * If the button is selected.
+		 */
 		private boolean selected;
 
 		public MultiBlockButton(int index, int x, int y, Component name, OnPress onPress) {
-			super(x, y, 100, 10, name, onPress);
+			super(x, y, 100, 14, name, onPress);
 			this.index = index;
 		}
 
@@ -215,9 +225,14 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 		public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 			RenderSystem.setShaderTexture(0, TEXTURE);
-			int yOffset = selected ? 183 : 173;
+			int yOffset = selected ? 224 : 210;
 			blit(poseStack, x, y, 0, yOffset, width, height);
-			drawCenteredString(poseStack, Minecraft.getInstance().font, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, 16777215);
+			Minecraft.getInstance().font.draw(poseStack, this.getMessage(), this.x + 3, this.y + 3, 16777215);
+		}
+
+		@Override
+		public int compareTo(MachineCoreScreen.MultiBlockButton other) {
+			return this.getMessage().getString().compareTo(other.getMessage().getString());
 		}
 
 	}

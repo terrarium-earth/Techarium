@@ -47,6 +47,4 @@ public class ExchangeStationMenu extends MachineMenu {
 		return ItemStack.EMPTY;
 	}
 
-
-
 }

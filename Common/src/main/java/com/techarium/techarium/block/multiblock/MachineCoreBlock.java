@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
@@ -29,13 +30,18 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MachineCoreBlock extends Block implements EntityBlock {
 
-	public static BooleanProperty READY = BooleanProperty.create("ready");
+	/**
+	 * 0 : multiblock not selected (blue)
+	 * 1 : multiblock selected but not valid (red)
+	 * 2 : multiblock selected and valid (green)
+	 */
+	public static IntegerProperty READY = IntegerProperty.create("ready", 0, 2);
 
 	public MachineCoreBlock() {
 		super(BlockBehaviour.Properties.of(Material.METAL));
 		this.registerDefaultState(this.stateDefinition.any()
 				.setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
-				.setValue(READY, false));
+				.setValue(READY, 0));
 	}
 
 	@Override

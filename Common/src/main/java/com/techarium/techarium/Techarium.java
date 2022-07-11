@@ -5,6 +5,8 @@ import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
 import com.techarium.techarium.registry.TechariumItems;
 import com.techarium.techarium.registry.TechariumMenuTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -31,8 +33,24 @@ public class Techarium {
 		TechariumMenuTypes.register();
 	}
 
+	/**
+	 * Create a resource location with techarium as namespace.
+	 *
+	 * @param path the path of the resource location.
+	 * @return the resource location.
+	 */
 	public static ResourceLocation resourceLocation(String path) {
 		return new ResourceLocation(Techarium.MOD_ID, path);
+	}
+
+	/**
+	 * Create a translatable component with the techarium font.
+	 *
+	 * @param key the translation key.
+	 * @return the component.
+	 */
+	public static MutableComponent translatableComponent(String key) {
+		return Component.translatable(key).withStyle(STYLE);
 	}
 
 }

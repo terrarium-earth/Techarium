@@ -1,11 +1,9 @@
 package com.techarium.techarium.multiblock;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.techarium.techarium.Techarium;
 import com.techarium.techarium.block.multiblock.MachineCoreBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingMultiBlockBlockEntity;
@@ -15,7 +13,6 @@ import com.techarium.techarium.util.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.HolderSetCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -23,9 +20,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-import java.rmi.UnexpectedException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +89,7 @@ public class MultiBlockStructure {
 		return this.pattern;
 	}
 
-	private Map<String,ResourceLocation> getKeys() {
+	private Map<String, ResourceLocation> getKeys() {
 		return this.keys;
 	}
 
@@ -107,31 +101,20 @@ public class MultiBlockStructure {
 		return Registry.BLOCK.get(rl);
 	}
 
-	public MultiBlockStructure(ResourceLocation selfDeployingBlock, List<List<String>> pattern, Map<String,ResourceLocation> keys) {
+	public MultiBlockStructure(ResourceLocation selfDeployingBlock, List<List<String>> pattern, Map<String, ResourceLocation> keys) {
 		this.pattern = pattern;
 		this.selfDeployingBlock = ((SelfDeployingBlock) toBlock(selfDeployingBlock));
 		this.keys = keys;
 		this.positions = new HashMap<>();
 		BlockPos core = BlockPos.ZERO;
 		// search core position
-		all: for (int y = 0; y < pattern.size(); y++) {
+		all:
+		for (int y = 0; y < pattern.size(); y++) {
 			List<String> layer = pattern.get(y);
 			for (int z = 0; z < layer.size(); z++) {
 				String line = layer.get(z);
 				for (int x = 0; x < line.length(); x++) {
 					if (line.charAt(x) == '@') {
-
-
-						// 0,0,0 (size 3,2,2) convert to 2,0,0
-						// -> size-1-y = 3-1-0 = 2
-						// 1,0,0 (size 3,2,2) convert to 1,0,0
-						// -> size-1-y = 3-1-1 = 1
-						// 2,0,0 (size 3,2,2) convert to 0,0,0
-						// -> 3-1-2 = 0
-						//:ok_hand: let's go
-
-						// YES IT FUCKING WORKS
-
 						core = new BlockPos(x, pattern.size() - 1 - y, z);
 						break all;
 					}
@@ -144,20 +127,13 @@ public class MultiBlockStructure {
 			for (int z = 0; z < layer.size(); z++) {
 				String line = layer.get(z);
 				for (int x = 0; x < line.length(); x++) {
-					String element = "" +line.charAt(x);
+					String element = "" + line.charAt(x);
 					if (keys.containsKey(element)) {
 						this.positions.put(new BlockPos(x - core.getX(), pattern.size() - 1 - y - core.getY(), z - core.getZ()), toBlock(keys.get(element)));
 					}
 				}
 			}
 		}
-		/*
-		y
-		^  z
-		| /
-		|/
-		+--->x
-		 */
 	}
 
 	/**
@@ -186,7 +162,6 @@ public class MultiBlockStructure {
 		}
 		return true;
 	}
-
 
 
 	/**

@@ -1,12 +1,12 @@
 package com.techarium.techarium.blockentity.multiblock;
 
+import com.techarium.techarium.Techarium;
 import com.techarium.techarium.block.multiblock.MachineCoreBlock;
 import com.techarium.techarium.inventory.MachineCoreMenu;
 import com.techarium.techarium.multiblock.MultiBlockStructure;
 import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -33,20 +33,6 @@ public class MachineCoreBlockEntity extends BlockEntity implements MenuProvider 
 	//  1- The level isn't set when the block entity is loaded
 	//  2- I (Ketheroth) don't want to cache the resource location until I can transform it in the multiblock structure.
 
-/*
-open gui to select the multiblock. multiblock must always be selected.
-
-multiblock not selected
- - texture : mb not selected : blue
- - on rclick : open gui
-
-multiblock selected
- - texture : mb     valid : ready state : green
-             mb not valid : not ready state : red
- - on rclick : transform multiblock
- - on shift-rclick : open gui
-*/
-
 	// TODO @anyone: 12/06/2022 change this to allow displaying for just a few seconds (see TODO.md)
 	/**
 	 * List of multiblock cores that are obstructed and can't deploy. This is used to render the obstruction overlays.
@@ -61,6 +47,10 @@ multiblock selected
 	}
 
 	public InteractionResult onActivated(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
+		// multiblock selected | multiblock valid | texture  |     rclick           | shift-rclick
+		//          yes        |        yes       |   green  | transform multiblock | open gui
+		//          yes        |        no        |   red    | nothing              | open gui
+		//          no         |      yes & no    |   blue   | open gui             | open gui
 		if (this.multiblock == null || player.isShiftKeyDown()) {
 			CommonServices.PLATFORM.openGui(((ServerPlayer) player), this, buf -> buf.writeBlockPos(this.worldPosition));
 			return InteractionResult.SUCCESS;
@@ -87,15 +77,18 @@ multiblock selected
 				if (tile.multiblock.isValidStructure(pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), level)) {
 					if (this.multiblock.canConvert(level, state, pos)) {
 						CORE_WITH_OBSTRUCTION.remove(pos);
-						level.setBlock(pos, state.setValue(MachineCoreBlock.READY, true), 3);
+						level.setBlock(pos, state.setValue(MachineCoreBlock.READY, 2), 3);
 					} else {
 						if (!CORE_WITH_OBSTRUCTION.contains(pos)) {
 							CORE_WITH_OBSTRUCTION.add(pos);
 						}
 					}
 				} else {
-					level.setBlock(pos, state.setValue(MachineCoreBlock.READY, false), 3);
+					level.setBlock(pos, state.setValue(MachineCoreBlock.READY, 1), 3);
 				}
+			} else {
+				// is it usefull ? are we in another state than 0 if we're in this if ?
+				level.setBlock(pos, state.setValue(MachineCoreBlock.READY, 0), 3);
 			}
 		}
 	}
@@ -109,7 +102,7 @@ multiblock selected
 
 	@Override
 	public Component getDisplayName() {
-		return Component.translatable("container.machine_core");
+		return Techarium.translatableComponent("container.techarium.machine_core");
 	}
 
 	@Nullable
