@@ -4,13 +4,13 @@ import com.mojang.serialization.Lifecycle;
 import com.techarium.techarium.Techarium;
 import com.techarium.techarium.multiblock.MultiBlockStructure;
 import com.techarium.techarium.platform.services.IRegistryHelper;
+import com.techarium.techarium.util.Utils;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -24,14 +24,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public class FabricRegistryHelper implements IRegistryHelper {
 
-	public static final MappedRegistry<MultiBlockStructure> MULTIBLOCK_STRUCTURES = FabricRegistryBuilder.createSimple(MultiBlockStructure.class, new ResourceLocation(Techarium.MOD_ID, Techarium.MOD_ID + "/multiblock")).buildAndRegister();
+	public static final MappedRegistry<MultiBlockStructure> MULTIBLOCK_STRUCTURES = FabricRegistryBuilder.createSimple(MultiBlockStructure.class, Utils.resourceLocation(Techarium.MOD_ID + "/multiblock")).buildAndRegister();
 
 	static {
 		// register our own datapack registries to the builtin registries.
@@ -40,19 +39,19 @@ public class FabricRegistryHelper implements IRegistryHelper {
 
 	@Override
 	public <T extends Item> Supplier<T> registerItem(String id, Supplier<T> item) {
-		T entry = Registry.register(Registry.ITEM, Techarium.resourceLocation(id), item.get());
+		T entry = Registry.register(Registry.ITEM, Utils.resourceLocation(id), item.get());
 		return () -> entry;
 	}
 
 	@Override
 	public <T extends Block> Supplier<T> registerBlock(String id, Supplier<T> block) {
-		T entry = Registry.register(Registry.BLOCK, Techarium.resourceLocation(id), block.get());
+		T entry = Registry.register(Registry.BLOCK, Utils.resourceLocation(id), block.get());
 		return () -> entry;
 	}
 
 	@Override
 	public <E extends BlockEntity, T extends BlockEntityType<E>> Supplier<T> registerBlockEntity(String id, Supplier<T> blockEntity) {
-		T entry = Registry.register(Registry.BLOCK_ENTITY_TYPE, Techarium.resourceLocation(id), blockEntity.get());
+		T entry = Registry.register(Registry.BLOCK_ENTITY_TYPE, Utils.resourceLocation(id), blockEntity.get());
 		return () -> entry;
 	}
 
@@ -77,13 +76,13 @@ public class FabricRegistryHelper implements IRegistryHelper {
 	}
 
 	@Override
-	public List<ResourceLocation> getMultiBlocksKeys(Level level) {
+	public List<ResourceLocation> getMultiBlockKeys(Level level) {
 		return level.registryAccess().registry(MULTIBLOCK_STRUCTURES.key()).map(multiBlockStructures -> multiBlockStructures.keySet().stream().toList()).orElseGet(List::of);
 	}
 
 	@Override
-	public ResourceLocation getMultiBlockKey(Level level, MultiBlockStructure multiBlockStructure) {
-		return level.registryAccess().registry(MULTIBLOCK_STRUCTURES.key()).map(registry ->registry.getKey(multiBlockStructure)).orElse(Techarium.resourceLocation("empty"));
+	public Optional<ResourceLocation> getMultiBlockKey(Level level, MultiBlockStructure multiBlockStructure) {
+		return level.registryAccess().registry(MULTIBLOCK_STRUCTURES.key()).map(registry -> registry.getKey(multiBlockStructure));
 	}
 
 	@Override

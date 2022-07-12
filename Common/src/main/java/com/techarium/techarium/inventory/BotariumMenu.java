@@ -6,6 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.FurnaceResultSlot;
+import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -26,10 +28,13 @@ public class BotariumMenu extends MachineMenu {
 		this.addSlot(new Slot(input, 0, 49, 35));
 		this.addSlot(new Slot(input, 1, 49, 67));
 
-		this.addSlot(new OutputSlot(output, 0, 83, 81));
-		this.addSlot(new OutputSlot(output, 1, 103, 81));
-		this.addSlot(new OutputSlot(output, 2, 123, 81));
-		this.addSlot(new OutputSlot(output, 3, 143, 81));
+		// TODO future:
+		// we're using FurnaceResultSlot because there is not a crafting container available
+		// when there is one, replace it with ResultSlot
+		this.addSlot(new FurnaceResultSlot(player, output, 0, 83, 81));
+		this.addSlot(new FurnaceResultSlot(player, output, 1, 103, 81));
+		this.addSlot(new FurnaceResultSlot(player, output, 2, 123, 81));
+		this.addSlot(new FurnaceResultSlot(player, output, 3, 143, 81));
 
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {
@@ -81,7 +86,7 @@ public class BotariumMenu extends MachineMenu {
 	}
 
 
-	public long getFluidAmount() {
+	public int getFluidAmount() {
 		return this.botarium.getFluidInput().currentAmount();
 	}
 

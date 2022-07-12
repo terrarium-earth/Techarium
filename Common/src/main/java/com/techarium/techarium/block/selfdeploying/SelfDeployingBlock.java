@@ -2,7 +2,6 @@ package com.techarium.techarium.block.selfdeploying;
 
 import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingBlockEntity;
 import com.techarium.techarium.registry.TechariumItems;
-import com.techarium.techarium.util.BlockRegion;
 import com.techarium.techarium.util.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -21,8 +20,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ import java.util.List;
 /**
  * A class for blocks that are deployed after placed in the world.<br>
  * See {@link SelfDeployingBlockEntity} for the block entity associated. This block entity take care of the deployment.<br>
- * See {@link SelfDeployingSlaveBlock} for the block used by this block to maintain its state in the world and "claim" the positions.<br>
+ * See {@link SelfDeployingChildBlock} for the block used by this block to maintain its state in the world and "claim" the positions.<br>
  * <br>
  * Child classes should override {@link SelfDeployingBlock#getDeployedSize()} to change the size of the deployed block. Default is (1,1,1).
  */
@@ -45,7 +46,8 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-		return this.getDeployedSize().toVoxelShape();
+		BoundingBox box = this.getDeployedSize();
+		return Shapes.box(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ());
 	}
 
 	@Override
@@ -100,10 +102,10 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 	 */
 	public boolean canDeploy(Level level, BlockPos pos, BlockState state) {
 		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-		BlockRegion region = this.getDeployedSize();
-		for (int x = region.xOffset; x < region.xSize - region.xOffset; x++) {
-			for (int y = region.yOffset; y < region.ySize - region.yOffset; y++) {
-				for (int z = region.zOffset; z < region.zSize - region.zOffset; z++) {
+		BoundingBox region = this.getDeployedSize();
+		for (int x = region.minX(); x < region.maxX(); x++) {
+			for (int y = region.minY(); y < region.maxY(); y++) {
+				for (int z = region.minZ(); z < region.maxZ(); z++) {
 					BlockPos offset = new BlockPos(x, y, z);
 					BlockPos rotated = MathUtils.rotate(offset, direction);
 					BlockState blockState = level.getBlockState(pos.offset(rotated));
@@ -125,10 +127,10 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 		List<BlockPos> positions = new ArrayList<>();
 		BlockState state = level.getBlockState(pos);
 		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-		BlockRegion region = this.getDeployedSize();
-		for (int x = region.xOffset; x < region.xSize - region.xOffset; x++) {
-			for (int y = region.yOffset; y < region.ySize - region.yOffset; y++) {
-				for (int z = region.zOffset; z < region.zSize - region.zOffset; z++) {
+		BoundingBox region = this.getDeployedSize();
+		for (int x = region.minX(); x < region.maxX(); x++) {
+			for (int y = region.minY(); y < region.maxY(); y++) {
+				for (int z = region.minZ(); z < region.maxZ(); z++) {
 					BlockPos offset = new BlockPos(x, y, z);
 					BlockPos rotated = MathUtils.rotate(offset, direction);
 					BlockState blockState = level.getBlockState(pos.offset(rotated));
@@ -144,8 +146,8 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 	/**
 	 * @return the size of the block after deployment.
 	 */
-	public BlockRegion getDeployedSize() {
-		return BlockRegion.FULL_BLOCK;
+	public BoundingBox getDeployedSize() {
+		return new BoundingBox(0, 0, 0, 1, 1, 1);
 	}
 
 }

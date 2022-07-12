@@ -11,6 +11,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MachineCoreMenu extends AbstractContainerMenu {
 
@@ -30,18 +31,18 @@ public class MachineCoreMenu extends AbstractContainerMenu {
 
 	@Override
 	public boolean stillValid(Player player) {
-		return player.distanceToSqr(this.pos.getX(), this.pos.getY(), this.pos.getZ()) <= 16.0D;
+		return player.distanceToSqr(this.pos.getX(), this.pos.getY(), this.pos.getZ()) <= 64.0D;
 	}
 
 	public List<ResourceLocation> getAllMultiblockStructures() {
-		return CommonServices.REGISTRY.getMultiBlocksKeys(this.machineCore.getLevel());
+		return CommonServices.REGISTRY.getMultiBlockKeys(this.machineCore.getLevel());
 	}
 
 	public void setMultiBlock(ResourceLocation id) {
 		this.machineCore.setMultiblock(id);
 	}
 
-	public ResourceLocation selectedMultiblock() {
+	public Optional<ResourceLocation> selectedMultiblock() {
 		return this.machineCore.selectedMultiblock();
 	}
 

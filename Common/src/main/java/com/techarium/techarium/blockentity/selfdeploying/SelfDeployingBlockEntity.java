@@ -2,7 +2,7 @@ package com.techarium.techarium.blockentity.selfdeploying;
 
 import com.techarium.techarium.blockentity.selfdeploying.module.FluidModule;
 import com.techarium.techarium.blockentity.selfdeploying.module.ItemModule;
-import com.techarium.techarium.block.selfdeploying.SelfDeployingSlaveBlock;
+import com.techarium.techarium.block.selfdeploying.SelfDeployingChildBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -25,37 +25,33 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * A Block Entity that will deploy itself in the world with an animation.<br>
  * See {@link SelfDeployingBlock} for the associated block.<br>
- * <br>
- * Child class should override {@link SelfDeployingBlockEntity#getMachineSlaveLocations()} to determine the location of the slave blocks. Default implementation is there is no slaves.
- * These locations should match the BlockRegion given by {@link SelfDeployingBlock#getDeployedSize()}.
  */
 public abstract class SelfDeployingBlockEntity extends BlockEntity implements IAnimatable {
 
-	private final Map<BlockPos, SelfDeployingSlaveBlock> slaves;
-	private AnimationFactory factory = new AnimationFactory(this);
+	private final Map<BlockPos, SelfDeployingChildBlock> children;
+	private final AnimationFactory factory = new AnimationFactory(this);
 
 	public SelfDeployingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		this.slaves = this.getMachineSlaveLocations();
+		this.children = this.getMachineChildLocations();
 	}
 
 	/**
 	 * Deploy the block.
-	 * Default implementation place the slaves blocks.
+	 * Default implementation place the children blocks.
 	 */
 	public void deploy() {
 		if (this.level != null) {
-			for (Map.Entry<BlockPos, SelfDeployingSlaveBlock> entry : slaves.entrySet()) {
+			for (Map.Entry<BlockPos, SelfDeployingChildBlock> entry : children.entrySet()) {
 				this.level.setBlock(entry.getKey(), entry.getValue().defaultBlockState(), 3);
 				BlockEntity blockEntity = level.getBlockEntity(entry.getKey());
-				if (blockEntity instanceof SelfDeployingSlaveBlockEntity slaveBlockEntity) {
-					slaveBlockEntity.setMasterPosition(this.worldPosition);
+				if (blockEntity instanceof SelfDeployingChildBlockEntity childBlockEntity) {
+					childBlockEntity.setParentPosition(this.worldPosition);
 				}
 			}
 		}
@@ -63,7 +59,7 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 	/**
 	 * Undeploy the block.
-	 * Default implementation remove the slaves blocks alongside the master.
+	 * Default implementation remove the children blocks alongside the parent.
 	 *
 	 * @param removeSelf        determine if this block should remove itself
 	 * @param restoreMultiBlock determine if the multiblock associated (if any) should be restored in the world.
@@ -78,8 +74,8 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 				level.setBlock(this.worldPosition, Blocks.AIR.defaultBlockState(), 3);
 			}
 			// TODO @Ketheroth: 11/06/2022 drop content if there is an inventory
-			for (BlockPos pos : slaves.keySet()) {
-				if (level.getBlockState(pos).getBlock() instanceof SelfDeployingSlaveBlock) {
+			for (BlockPos pos : children.keySet()) {
+				if (level.getBlockState(pos).getBlock() instanceof SelfDeployingChildBlock) {
 					level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
 				}
 			}
@@ -87,14 +83,14 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 	}
 
 	/**
-	 * Determine the locations of the slave block of this self-deploying block.
+	 * Determine the locations of the child block of this self-deploying block.
 	 * The locations are assumed to be real world position.
+	 * <br>
+	 * These locations should match the BlockRegion given by {@link SelfDeployingBlock#getDeployedSize()}.
 	 *
-	 * @return the locations of the slaves.
+	 * @return the locations of the children.
 	 */
-	public Map<BlockPos, SelfDeployingSlaveBlock> getMachineSlaveLocations() {
-		return new HashMap<>();
-	}
+	public abstract Map<BlockPos, SelfDeployingChildBlock> getMachineChildLocations();
 
 	/**
 	 * Called when the associated block is used.
@@ -133,6 +129,7 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 		/**
 		 * Default implementation : empty item module
+		 *
 		 * @return the item input of the machine.
 		 */
 		protected ItemModule createItemInput() {
@@ -141,6 +138,7 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 		/**
 		 * Default implementation : empty item module
+		 *
 		 * @return the item output of the machine.
 		 */
 		protected ItemModule createItemOutput() {
@@ -149,6 +147,7 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 		/**
 		 * Default implementation : empty fluid module
+		 *
 		 * @return the fluid input of the machine.
 		 */
 		protected FluidModule createFluidInput() {

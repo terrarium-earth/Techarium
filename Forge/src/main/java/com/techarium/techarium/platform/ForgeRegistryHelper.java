@@ -3,9 +3,8 @@ package com.techarium.techarium.platform;
 import com.techarium.techarium.Techarium;
 import com.techarium.techarium.multiblock.MultiBlockStructure;
 import com.techarium.techarium.platform.services.IRegistryHelper;
+import com.techarium.techarium.util.Utils;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -21,10 +20,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -71,13 +67,13 @@ public class ForgeRegistryHelper implements IRegistryHelper {
 	}
 
 	@Override
-	public List<ResourceLocation> getMultiBlocksKeys(Level level) {
+	public List<ResourceLocation> getMultiBlockKeys(Level level) {
 		return level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey()).map(multiBlockStructures -> multiBlockStructures.keySet().stream().toList()).orElseGet(List::of);
 	}
 
 	@Override
-	public ResourceLocation getMultiBlockKey(Level level, MultiBlockStructure multiBlockStructure) {
-		return level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey()).map(registry -> registry.getKey(multiBlockStructure)).orElse(Techarium.resourceLocation("empty"));
+	public Optional<ResourceLocation> getMultiBlockKey(Level level, MultiBlockStructure multiBlockStructure) {
+		return level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey()).map(registry -> registry.getKey(multiBlockStructure)).orElse(Utils.resourceLocation("empty"));
 	}
 
 	@Override

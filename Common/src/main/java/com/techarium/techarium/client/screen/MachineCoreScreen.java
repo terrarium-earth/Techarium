@@ -3,24 +3,25 @@ package com.techarium.techarium.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.techarium.techarium.Techarium;
+import com.techarium.techarium.client.widget.MultiBlockButton;
 import com.techarium.techarium.inventory.MachineCoreMenu;
+import com.techarium.techarium.util.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> {
 
-	private static final ResourceLocation TEXTURE = new ResourceLocation(Techarium.MOD_ID, "textures/gui/machine_core.png");
+	public static final ResourceLocation TEXTURE = new ResourceLocation(Techarium.MOD_ID, "textures/gui/machine_core.png");
 	private static final Component SHOW_HINTS_TEXT = Component.translatable("gui.techarium.machine_core.hints");
 
 	private static final int IDS_X = 17;
@@ -48,7 +49,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 		super.init();
 		this.addButtons("");
 		this.textInput = new EditBox(this.font, this.leftPos + TEXT_INPUT_X, this.topPos + TEXT_INPUT_Y, 100, 12, Component.empty());
-		this.addWidget(this.textInput);
+		this.addRenderableWidget(this.textInput);
 		this.setInitialFocus(this.textInput);
 		this.textInput.setFocus(true);
 		this.textInput.setBordered(false);
@@ -63,20 +64,22 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 	 */
 	private void addButtons(String filter) {
 		this.startIndex = 0;
-		ResourceLocation selected = this.menu.selectedMultiblock();
+		Optional<ResourceLocation> selected = this.menu.selectedMultiblock();
 		ArrayList<MultiBlockButton> list = new ArrayList<>();
 		for (int i = 0; i < this.ids.size(); i++) {
 			ResourceLocation id = this.ids.get(i);
 			// name is created from resource location : techarium:random -> multiblock.techarium.random
-			MutableComponent name = Techarium.translatableComponent("multiblock." + id.getNamespace() + "." + id.getPath().replace("/", "."));
+			MutableComponent name = Utils.translatableComponent("multiblock." + id.getNamespace() + "." + id.getPath().replace("/", "."));
 			if (filter.isEmpty() || name.getString().toLowerCase().startsWith(filter.toLowerCase())) {
-				MultiBlockButton multiBlockButton = new MultiBlockButton(i, this.leftPos + IDS_X, 0, name, button -> {
-					this.buttons.forEach(element -> element.selected = false);
+				MultiBlockButton multiBlockButton = new MultiBlockButton(i, this.leftPos + IDS_X, 0, 100, 14, name, button -> {
+					this.buttons.forEach(element -> element.setSelected(false));
 					this.menu.setMultiBlock(id);
-					((MultiBlockButton) button).selected = true;
+					((MultiBlockButton) button).setSelected(true);
 				});
-				if (id.equals(selected)) {
-					multiBlockButton.selected = true;
+				if (selected.isPresent()) {
+					if (id.equals(selected.get())) {
+						multiBlockButton.setSelected(true);
+					}
 				}
 				list.add(multiBlockButton);
 			}
@@ -105,8 +108,8 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == GLFW.GLFW_KEY_E && this.textInput.isFocused()) {
-			// I don't know why, but the screen is closed even if the text input is focused
+		if (this.minecraft.options.keyInventory.matches(keyCode, scanCode) && this.textInput.isFocused()) {
+//			 I don't know why, but the screen is closed even if the text input is focused
 			return true;
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
@@ -144,7 +147,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 		for (int i = 0; i < this.buttons.size(); i++) {
 			if (this.buttons.get(i).mouseClicked(mouseX, mouseY, mouseButton)) {
 				// when a button is clicked, send it to the server so the block-entity knows which multiblock has been selected
-				this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, this.buttons.get(i).index);
+				this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, this.buttons.get(i).getIndex());
 				return true;
 			}
 		}
@@ -158,6 +161,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 	public void resize(Minecraft $$0, int $$1, int $$2) {
 		super.resize($$0, $$1, $$2);
 		this.init();
+		// TODO @Ketheroth: 12/07/2022 fix button position after resize
 	}
 
 	@Override
@@ -204,38 +208,6 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 			this.blit(poseStack, this.leftPos + 9, this.topPos + 169, 0, 196, 14, 14);
 		}
 		this.font.draw(poseStack, SHOW_HINTS_TEXT, this.leftPos + 31, this.topPos + 172, 4210752);
-	}
-
-	private static class MultiBlockButton extends Button implements Comparable<MultiBlockButton> {
-
-		/**
-		 * The index in the multiblock registry.
-		 */
-		private final int index;
-		/**
-		 * If the button is selected.
-		 */
-		private boolean selected;
-
-		public MultiBlockButton(int index, int x, int y, Component name, OnPress onPress) {
-			super(x, y, 100, 14, name, onPress);
-			this.index = index;
-		}
-
-		@Override
-		public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-			RenderSystem.setShaderTexture(0, TEXTURE);
-			int yOffset = selected ? 224 : 210;
-			blit(poseStack, x, y, 0, yOffset, width, height);
-			Minecraft.getInstance().font.draw(poseStack, this.getMessage(), this.x + 3, this.y + 3, 16777215);
-		}
-
-		@Override
-		public int compareTo(MachineCoreScreen.MultiBlockButton other) {
-			return this.getMessage().getString().compareTo(other.getMessage().getString());
-		}
-
 	}
 
 }

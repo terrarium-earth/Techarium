@@ -32,11 +32,6 @@ import java.util.function.Consumer;
 public class FabricPlatformHelper implements IPlatformHelper {
 
 	@Override
-	public String getPlatformName() {
-		return "Fabric";
-	}
-
-	@Override
 	public boolean isModLoaded(String modId) {
 
 		return FabricLoader.getInstance().isModLoaded(modId);
@@ -97,7 +92,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 		}
 
 		@Override
-		public long getBucketVolume() {
+		public int getBucketVolume() {
 			return FluidConstants.BUCKET;
 		}
 
@@ -113,7 +108,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 		}
 
 		@Override
-		public long toKekieBucket(long amount) {
+		public int toKekieBucket(int amount) {
 			return amount / 1000;
 		}
 

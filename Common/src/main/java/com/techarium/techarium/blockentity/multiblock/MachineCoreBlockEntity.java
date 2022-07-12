@@ -1,11 +1,12 @@
 package com.techarium.techarium.blockentity.multiblock;
 
-import com.techarium.techarium.Techarium;
 import com.techarium.techarium.block.multiblock.MachineCoreBlock;
+import com.techarium.techarium.block.multiblock.MultiblockState;
 import com.techarium.techarium.inventory.MachineCoreMenu;
 import com.techarium.techarium.multiblock.MultiBlockStructure;
 import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
+import com.techarium.techarium.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A BlockEntity for the {@link MachineCoreBlock}.
@@ -46,6 +48,20 @@ public class MachineCoreBlockEntity extends BlockEntity implements MenuProvider 
 		this.multiblock = null;
 	}
 
+
+
+
+	// TODO: 11/07/2022 datapack reload
+	// TODO: 11/07/2022 machine offset from the core
+
+
+
+
+
+
+
+
+
 	public InteractionResult onActivated(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
 		// |multiblock selected | multiblock valid | texture  |     rclick           | shift-rclick|
 		// |:------------------:|:----------------:|:--------:|:--------------------:|:-----------:|
@@ -61,35 +77,27 @@ public class MachineCoreBlockEntity extends BlockEntity implements MenuProvider 
 				this.multiblock.convert(level, state, pos);
 				return InteractionResult.SUCCESS;
 			}
-			if (!CORE_WITH_OBSTRUCTION.contains(pos)) {
-				CORE_WITH_OBSTRUCTION.add(pos);
-			}
+			// TODO @Ashley: multiblock can't convert, display an overlay of the obstructing blocks. You can have the list of the obstructing blocks via MachineCoreBlockEntity#getObstructingBlocks().
 		}
 		return InteractionResult.PASS;
 	}
 
-	public void tick(Level level, BlockPos pos, BlockState state, MachineCoreBlockEntity tile) {
-		if (this.multiblock == null) {
-			return;
-		}
-
+	public void tick(Level level, BlockPos pos, BlockState state) {
 		if (level.getGameTime() % 5 == 0) {
 			if (this.multiblock != null) {
-				if (tile.multiblock.isValidStructure(pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), level)) {
+				if (this.multiblock.isValidStructure(pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), level)) {
 					if (this.multiblock.canConvert(level, state, pos)) {
-						CORE_WITH_OBSTRUCTION.remove(pos);
-						level.setBlock(pos, state.setValue(MachineCoreBlock.READY, 2), 3);
+						// TODO @Ashley: multiblock can convert now, don't display the overlay anymore
+						level.setBlock(pos, state.setValue(MachineCoreBlock.MULTIBLOCK, MultiblockState.VALID), 3);
 					} else {
-						if (!CORE_WITH_OBSTRUCTION.contains(pos)) {
-							CORE_WITH_OBSTRUCTION.add(pos);
-						}
+						// TODO @Ashley: multiblock can't convert, display an overlay of the obstructing blocks. You can have the list of the obstructing blocks via MachineCoreBlockEntity#getObstructingBlocks().
 					}
 				} else {
-					level.setBlock(pos, state.setValue(MachineCoreBlock.READY, 1), 3);
+					level.setBlock(pos, state.setValue(MachineCoreBlock.MULTIBLOCK, MultiblockState.INVALID), 3);
 				}
 			} else {
-				// is it usefull ? are we in another state than 0 if we're in this if ?
-				level.setBlock(pos, state.setValue(MachineCoreBlock.READY, 0), 3);
+				// is it useful ? are we in another state than 0 if we're in this if ?
+				level.setBlock(pos, state.setValue(MachineCoreBlock.MULTIBLOCK, MultiblockState.NONE), 3);
 			}
 		}
 	}
@@ -103,7 +111,7 @@ public class MachineCoreBlockEntity extends BlockEntity implements MenuProvider 
 
 	@Override
 	public Component getDisplayName() {
-		return Techarium.translatableComponent("container.techarium.machine_core");
+		return Utils.translatableComponent("container.techarium.machine_core");
 	}
 
 	@Nullable
@@ -116,7 +124,7 @@ public class MachineCoreBlockEntity extends BlockEntity implements MenuProvider 
 		this.multiblock = CommonServices.REGISTRY.getMultiBlockStructure(this.level, multiblockId);
 	}
 
-	public ResourceLocation selectedMultiblock() {
+	public Optional<ResourceLocation> selectedMultiblock() {
 		return CommonServices.REGISTRY.getMultiBlockKey(this.level, this.multiblock);
 	}
 

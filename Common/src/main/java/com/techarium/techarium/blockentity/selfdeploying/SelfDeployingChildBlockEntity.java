@@ -4,6 +4,7 @@ import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -14,29 +15,29 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
- * A slave block used to fill the air in the world. It will proxy received calls to its master.<br>
- * See {@link SelfDeployingSlaveBlockEntity}, the master block entity.
+ * A child block used to fill the air in the world. It will proxy received calls to its father.<br>
+ * See {@link SelfDeployingBlockEntity}, the father block entity.
  */
-public class SelfDeployingSlaveBlockEntity extends BlockEntity {
+public class SelfDeployingChildBlockEntity extends BlockEntity {
 
-	private BlockPos masterPosition;
+	private BlockPos parentPosition;
 
-	public SelfDeployingSlaveBlockEntity(BlockPos pos, BlockState state) {
-		super(TechariumBlockEntities.SELF_DEPLOYING_SLAVE.get(), pos, state);
-		this.masterPosition = new BlockPos(0, 0, 0);
+	public SelfDeployingChildBlockEntity(BlockPos pos, BlockState state) {
+		super(TechariumBlockEntities.SELF_DEPLOYING_CHILD.get(), pos, state);
+		this.parentPosition = BlockPos.ZERO;
 	}
 
-	public void setMasterPosition(BlockPos position) {
-		this.masterPosition = position;
+	public void setParentPosition(BlockPos position) {
+		this.parentPosition = position;
 	}
 
 	/**
-	 * When the slave block is used, proxy the call to the block at master position.
+	 * When the child block is used, proxy the call to the block at father position.
 	 *
-	 * @return the result of the interaction with the master block
+	 * @return the result of the interaction with the father block
 	 */
 	public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		BlockEntity blockEntity = level.getBlockEntity(this.masterPosition);
+		BlockEntity blockEntity = level.getBlockEntity(this.parentPosition);
 		if (blockEntity instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
 			return selfDeployingBlockEntity.onUse(player, hand);
 		}
@@ -44,29 +45,21 @@ public class SelfDeployingSlaveBlockEntity extends BlockEntity {
 	}
 
 	public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
-		if (level.getBlockEntity(this.masterPosition) instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
+		if (level.getBlockEntity(this.parentPosition) instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
 			// default : the machine is removed and if it was from a multiblock the multiblock is restored
-			selfDeployingBlockEntity.undeploy(true, !(stack.is(TechariumItems.TECH_TOOL.get()) || player.isShiftKeyDown()), level.getBlockState(this.masterPosition), pos);
+			selfDeployingBlockEntity.undeploy(true, !(stack.is(TechariumItems.TECH_TOOL.get()) || player.isShiftKeyDown()), level.getBlockState(this.parentPosition), pos);
 		}
 	}
 
 	@Override
 	protected void saveAdditional(CompoundTag tag) {
 		CompoundTag pos = new CompoundTag();
-		pos.putInt("x", this.masterPosition.getX());
-		pos.putInt("y", this.masterPosition.getY());
-		pos.putInt("z", this.masterPosition.getZ());
-		tag.put("master", pos);
+		tag.put("father", NbtUtils.writeBlockPos(this.parentPosition));
 	}
 
 	@Override
 	public void load(CompoundTag tag) {
-		CompoundTag master = (CompoundTag) tag.get("master");
-		this.masterPosition = new BlockPos(
-				master.getInt("x"),
-				master.getInt("y"),
-				master.getInt("z")
-		);
+		this.parentPosition = NbtUtils.readBlockPos(tag.getCompound("father"));
 	}
 
 }

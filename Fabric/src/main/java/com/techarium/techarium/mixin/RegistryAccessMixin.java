@@ -8,16 +8,16 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(RegistryAccess.class)
 public interface RegistryAccessMixin {
 
-	@ModifyVariable(method = "method_30531()Lcom/google/common/collect/ImmutableMap;", at = @At("STORE"), ordinal = 0)
-	private static ImmutableMap.Builder<ResourceKey<? extends Registry<?>>, RegistryAccess.RegistryData<?>> swapMapV2(ImmutableMap.Builder<ResourceKey<? extends Registry<?>>, RegistryAccess.RegistryData<?>> builder) {
-		// add our own datapack registries to the RegistryAccess.REGISTRIES in the lamda.
+	@Inject(method = "method_30531", at = @At(target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;", value = "INVOKE"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private static void beforeMapBuild(CallbackInfoReturnable<ImmutableMap<ResourceKey<? extends Registry<?>>, RegistryAccess.RegistryData<?>>> cir, ImmutableMap.Builder<ResourceKey<? extends Registry<?>>, RegistryAccess.RegistryData<?>> builder) {
 		builder.put(FabricRegistryHelper.MULTIBLOCK_STRUCTURES.key(), new RegistryAccess.RegistryData<>(FabricRegistryHelper.MULTIBLOCK_STRUCTURES.key(), MultiBlockStructure.CODEC, null));
-		return builder;
 	}
 
 }

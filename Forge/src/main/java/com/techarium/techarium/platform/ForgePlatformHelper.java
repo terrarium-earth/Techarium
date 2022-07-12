@@ -25,12 +25,6 @@ import java.util.function.Consumer;
 public class ForgePlatformHelper implements IPlatformHelper {
 
 	@Override
-	public String getPlatformName() {
-
-		return "Forge";
-	}
-
-	@Override
 	public boolean isModLoaded(String modId) {
 
 		return ModList.get().isLoaded(modId);
@@ -69,7 +63,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
 		}
 
 		@Override
-		public long getBucketVolume() {
+		public int getBucketVolume() {
 			return FluidType.BUCKET_VOLUME;
 		}
 
@@ -85,7 +79,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
 		}
 
 		@Override
-		public long toKekieBucket(long amount) {
+		public int toKekieBucket(int amount) {
 			return amount;
 		}
 

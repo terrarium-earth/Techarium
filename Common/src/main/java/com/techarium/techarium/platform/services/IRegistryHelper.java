@@ -15,8 +15,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public interface IRegistryHelper {
@@ -33,9 +33,9 @@ public interface IRegistryHelper {
 
 	MultiBlockStructure getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId);
 
-	List<ResourceLocation> getMultiBlocksKeys(Level level);
+	List<ResourceLocation> getMultiBlockKeys(Level level);
 
-	ResourceLocation getMultiBlockKey(Level level, MultiBlockStructure multiBlockStructure);
+	Optional<ResourceLocation> getMultiBlockKey(Level level, MultiBlockStructure multiBlockStructure);
 
 	@FunctionalInterface
 	interface BlockEntityFactory<T extends BlockEntity> {

@@ -13,13 +13,6 @@ import java.util.function.Consumer;
 public interface IPlatformHelper {
 
 	/**
-	 * Gets the name of the current platform
-	 *
-	 * @return The name of the current platform.
-	 */
-	String getPlatformName();
-
-	/**
 	 * Checks if a mod with the given id is loaded.
 	 *
 	 * @param modId The mod to check if it is loaded.
@@ -55,7 +48,7 @@ public interface IPlatformHelper {
 		/**
 		 * @return the volume of a bucket. Yes it is not the same between Forge and Fabric.
 		 */
-		long getBucketVolume();
+		int getBucketVolume();
 
 		TextureAtlasSprite getStillTexture(Fluid fluid);
 
@@ -67,7 +60,7 @@ public interface IPlatformHelper {
 		 * @param amount the amount to convert
 		 * @return the amount converted in kekie-bucket
 		 */
-		long toKekieBucket(long amount);
+		int toKekieBucket(int amount);
 
 		Component getFluidName(Fluid fluid);
 

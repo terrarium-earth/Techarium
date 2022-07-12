@@ -46,7 +46,7 @@ public class BotariumScreen extends AbstractContainerScreen<BotariumMenu> {
 		if (this.menu.getFluidAmount() > 0) {
 			// TODO @anyone: 17/06/2022 limit to max instead of modulo max
 			// TODO @anyone: 18/06/2022 render more precisely (mb instead of bucket)
-			int fluidAmount = (int) (this.menu.getFluidAmount() / CommonServices.PLATFORM.getFluidHelper().getBucketVolume()) % (GAUGE_HEIGHT / PX_PER_BUCKET + 1);
+			int fluidAmount = (this.menu.getFluidAmount() / CommonServices.PLATFORM.getFluidHelper().getBucketVolume()) % (GAUGE_HEIGHT / PX_PER_BUCKET + 1);
 			int color = CommonServices.PLATFORM.getFluidHelper().getFluidColor(this.menu.getFluid());
 			TextureAtlasSprite sprite = CommonServices.PLATFORM.getFluidHelper().getStillTexture(this.menu.getFluid());
 			RenderSystem.setShaderColor((color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F, (color >> 24 & 255) / 255.0F);
@@ -73,7 +73,7 @@ public class BotariumScreen extends AbstractContainerScreen<BotariumMenu> {
 		}
 		int relX = (this.width - this.imageWidth) / 2;
 		int relY = (this.height - this.imageHeight) / 2;
-		long kekieBuckets = CommonServices.PLATFORM.getFluidHelper().toKekieBucket(this.menu.getFluidAmount());
+		int kekieBuckets = CommonServices.PLATFORM.getFluidHelper().toKekieBucket(this.menu.getFluidAmount());
 		// should it display only if the cursor is on only on the fluid (and not on the gauge) ?
 		if (relX + GAUGE_X <= mouseX && mouseX <= relX + GAUGE_X + GAUGE_WIDTH
 				&& relY + GAUGE_TOP <= mouseY && mouseY <= relY + GAUGE_TOP + GAUGE_HEIGHT) {

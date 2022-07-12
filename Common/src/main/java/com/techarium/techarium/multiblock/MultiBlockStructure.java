@@ -9,7 +9,6 @@ import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingMultiBlockBlockEntity;
 import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlocks;
-import com.techarium.techarium.util.BlockRegion;
 import com.techarium.techarium.util.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,6 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,9 +45,44 @@ public class MultiBlockStructure {
 	}));
 
 	private final Map<BlockPos, Block> positions;
-	private SelfDeployingBlock selfDeployingBlock;
+	private final SelfDeployingBlock selfDeployingBlock;
 	private final List<List<String>> pattern;
 	private final Map<String, ResourceLocation> keys;
+
+	public MultiBlockStructure(ResourceLocation selfDeployingBlock, List<List<String>> pattern, Map<String, ResourceLocation> keys) {
+		this.pattern = pattern;
+		this.selfDeployingBlock = ((SelfDeployingBlock) toBlock(selfDeployingBlock));
+		this.keys = keys;
+		this.positions = new HashMap<>();
+		BlockPos core = BlockPos.ZERO;
+		// search core position
+		all:
+		for (int y = 0; y < pattern.size(); y++) {
+			List<String> layer = pattern.get(y);
+			for (int z = 0; z < layer.size(); z++) {
+				String line = layer.get(z);
+				for (int x = 0; x < line.length(); x++) {
+					if (line.charAt(x) == '@') {
+						core = new BlockPos(x, pattern.size() - 1 - y, z);
+						break all;
+					}
+				}
+			}
+		}
+		// determine offsets from core
+		for (int y = pattern.size() - 1; y >= 0; y--) {
+			List<String> layer = pattern.get(y);
+			for (int z = 0; z < layer.size(); z++) {
+				String line = layer.get(z);
+				for (int x = 0; x < line.length(); x++) {
+					String element = "" + line.charAt(x);
+					if (keys.containsKey(element)) {
+						this.positions.put(new BlockPos(x - core.getX(), pattern.size() - 1 - y - core.getY(), z - core.getZ()), toBlock(keys.get(element)));
+					}
+				}
+			}
+		}
+	}
 
 	private static DataResult<List<List<String>>> readPattern(List<List<String>> pattern) {
 		if (pattern.size() == 0) {
@@ -102,41 +137,6 @@ public class MultiBlockStructure {
 		return Registry.BLOCK.get(rl);
 	}
 
-	public MultiBlockStructure(ResourceLocation selfDeployingBlock, List<List<String>> pattern, Map<String, ResourceLocation> keys) {
-		this.pattern = pattern;
-		this.selfDeployingBlock = ((SelfDeployingBlock) toBlock(selfDeployingBlock));
-		this.keys = keys;
-		this.positions = new HashMap<>();
-		BlockPos core = BlockPos.ZERO;
-		// search core position
-		all:
-		for (int y = 0; y < pattern.size(); y++) {
-			List<String> layer = pattern.get(y);
-			for (int z = 0; z < layer.size(); z++) {
-				String line = layer.get(z);
-				for (int x = 0; x < line.length(); x++) {
-					if (line.charAt(x) == '@') {
-						core = new BlockPos(x, pattern.size() - 1 - y, z);
-						break all;
-					}
-				}
-			}
-		}
-		// determine offsets from core
-		for (int y = pattern.size() - 1; y >= 0; y--) {
-			List<String> layer = pattern.get(y);
-			for (int z = 0; z < layer.size(); z++) {
-				String line = layer.get(z);
-				for (int x = 0; x < line.length(); x++) {
-					String element = "" + line.charAt(x);
-					if (keys.containsKey(element)) {
-						this.positions.put(new BlockPos(x - core.getX(), pattern.size() - 1 - y - core.getY(), z - core.getZ()), toBlock(keys.get(element)));
-					}
-				}
-			}
-		}
-	}
-
 	/**
 	 * Determine if a valid structure is present in the world at the core position.
 	 * The direction should be the direction of the core.
@@ -164,7 +164,6 @@ public class MultiBlockStructure {
 		return true;
 	}
 
-
 	/**
 	 * Replace the blocks of the structure with the self-deploying blocks.
 	 *
@@ -184,8 +183,10 @@ public class MultiBlockStructure {
 		}
 		level.setBlock(corePos, this.selfDeployingBlock.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, direction), 3);
 		if (level.getBlockEntity(corePos) instanceof SelfDeployingMultiBlockBlockEntity selfDeployingBlockEntity) {
-			selfDeployingBlockEntity.setDeployedFrom(CommonServices.REGISTRY.getMultiBlockKey(level, this));
-			selfDeployingBlockEntity.deploy();
+			CommonServices.REGISTRY.getMultiBlockKey(level, this).ifPresent(multiblockId -> {
+				selfDeployingBlockEntity.setDeployedFrom(multiblockId);
+				selfDeployingBlockEntity.deploy();
+			});
 		}
 	}
 
@@ -226,10 +227,10 @@ public class MultiBlockStructure {
 	 */
 	public boolean canConvert(Level level, BlockState coreState, BlockPos corePos) {
 		Direction direction = coreState.getValue(BlockStateProperties.HORIZONTAL_FACING);
-		BlockRegion region = this.selfDeployingBlock.getDeployedSize();
-		for (int x = region.xOffset; x < region.xSize - region.xOffset; x++) {
-			for (int y = region.yOffset; y < region.ySize - region.yOffset; y++) {
-				for (int z = region.zOffset; z < region.zSize - region.zOffset; z++) {
+		BoundingBox region = this.selfDeployingBlock.getDeployedSize();
+		for (int x = region.minX(); x < region.maxX(); x++) {
+			for (int y = region.minY(); y < region.maxY(); y++) {
+				for (int z = region.minZ(); z < region.maxZ(); z++) {
 					BlockPos offset = new BlockPos(x, y, z);
 					BlockPos rotated = MathUtils.rotate(offset, direction);
 					BlockState state = level.getBlockState(corePos.offset(rotated));

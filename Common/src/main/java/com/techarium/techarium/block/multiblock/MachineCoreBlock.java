@@ -19,8 +19,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
@@ -30,23 +29,18 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MachineCoreBlock extends Block implements EntityBlock {
 
-	/**
-	 * 0 : multiblock not selected (blue)
-	 * 1 : multiblock selected but not valid (red)
-	 * 2 : multiblock selected and valid (green)
-	 */
-	public static IntegerProperty READY = IntegerProperty.create("ready", 0, 2);
+	public static EnumProperty<MultiblockState> MULTIBLOCK = EnumProperty.create("multiblock", MultiblockState.class);
 
 	public MachineCoreBlock() {
 		super(BlockBehaviour.Properties.of(Material.METAL));
 		this.registerDefaultState(this.stateDefinition.any()
 				.setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
-				.setValue(READY, 0));
+				.setValue(MULTIBLOCK, MultiblockState.NONE));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(BlockStateProperties.HORIZONTAL_FACING, READY);
+		builder.add(BlockStateProperties.HORIZONTAL_FACING, MULTIBLOCK);
 	}
 
 	@Override
@@ -57,7 +51,7 @@ public class MachineCoreBlock extends Block implements EntityBlock {
 
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (!level.isClientSide && player instanceof ServerPlayer) {
+		if (!level.isClientSide) {
 			BlockEntity be = level.getBlockEntity(pos);
 			if (be instanceof MachineCoreBlockEntity mbe) {
 				return mbe.onActivated(state, level, pos, player, hand);
@@ -75,7 +69,7 @@ public class MachineCoreBlock extends Block implements EntityBlock {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-		return blockEntityType == TechariumBlockEntities.MACHINE_CORE.get() ? (level1, pos, state1, be) -> ((MachineCoreBlockEntity) be).tick(level1, pos, state1, (MachineCoreBlockEntity) be) : null;
+		return blockEntityType == TechariumBlockEntities.MACHINE_CORE.get() ? (level1, pos, state1, be) -> ((MachineCoreBlockEntity) be).tick(level1, pos, state1) : null;
 	}
 
 }

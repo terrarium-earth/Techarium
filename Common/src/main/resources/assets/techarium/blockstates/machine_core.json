@@ -1,47 +1,47 @@
 {
 	"variants": {
-		"facing=east,ready=0": {
+		"facing=east,multiblock=none": {
 			"y": 90,
 			"model": "techarium:block/machine_core"
 		},
-		"facing=east,ready=1": {
+		"facing=east,multiblock=invalid": {
 			"y": 90,
 			"model": "techarium:block/machine_core_invalid"
 		},
-		"facing=east,ready=2": {
+		"facing=east,multiblock=valid": {
 			"y": 90,
 			"model": "techarium:block/machine_core_valid"
 		},
-		"facing=north,ready=0": {
+		"facing=north,multiblock=none": {
 			"model": "techarium:block/machine_core"
 		},
-		"facing=north,ready=1": {
+		"facing=north,multiblock=invalid": {
 			"model": "techarium:block/machine_core_invalid"
 		},
-		"facing=north,ready=2": {
+		"facing=north,multiblock=valid": {
 			"model": "techarium:block/machine_core_valid"
 		},
-		"facing=south,ready=0": {
+		"facing=south,multiblock=none": {
 			"y": 180,
 			"model": "techarium:block/machine_core"
 		},
-		"facing=south,ready=1": {
+		"facing=south,multiblock=invalid": {
 			"y": 180,
 			"model": "techarium:block/machine_core_invalid"
 		},
-		"facing=south,ready=2": {
+		"facing=south,multiblock=valid": {
 			"y": 180,
 			"model": "techarium:block/machine_core_valid"
 		},
-		"facing=west,ready=0": {
+		"facing=west,multiblock=none": {
 			"y": 270,
 			"model": "techarium:block/machine_core"
 		},
-		"facing=west,ready=1": {
+		"facing=west,multiblock=invalid": {
 			"y": 270,
 			"model": "techarium:block/machine_core_invalid"
 		},
-		"facing=west,ready=2": {
+		"facing=west,multiblock=valid": {
 			"y": 270,
 			"model": "techarium:block/machine_core_valid"
 		}

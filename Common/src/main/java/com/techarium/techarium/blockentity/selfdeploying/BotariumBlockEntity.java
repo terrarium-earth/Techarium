@@ -1,13 +1,13 @@
 package com.techarium.techarium.blockentity.selfdeploying;
 
-import com.techarium.techarium.Techarium;
 import com.techarium.techarium.inventory.BotariumMenu;
-import com.techarium.techarium.block.selfdeploying.SelfDeployingSlaveBlock;
+import com.techarium.techarium.block.selfdeploying.SelfDeployingChildBlock;
 import com.techarium.techarium.blockentity.selfdeploying.module.FluidModule;
 import com.techarium.techarium.blockentity.selfdeploying.module.ItemModule;
 import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
+import com.techarium.techarium.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -95,13 +95,13 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithModules {
 	}
 
 	@Override
-	public Map<BlockPos, SelfDeployingSlaveBlock> getMachineSlaveLocations() {
-		return Map.of(this.worldPosition.above(), TechariumBlocks.SELF_DEPLOYING_SLAVE.get());
+	public Map<BlockPos, SelfDeployingChildBlock> getMachineChildLocations() {
+		return Map.of(this.worldPosition.above(), TechariumBlocks.SELF_DEPLOYING_CHILD.get());
 	}
 
 	@Override
 	public Component getDisplayName() {
-		return Techarium.translatableComponent("container.techarium.botarium");
+		return Utils.translatableComponent("container.techarium.botarium");
 	}
 
 	@Nullable

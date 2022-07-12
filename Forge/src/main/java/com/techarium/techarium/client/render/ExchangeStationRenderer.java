@@ -10,19 +10,14 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.renderers.geo.GeoBlockRenderer;
 
-import javax.annotation.Nullable;
+public class ExchangeStationRenderer extends GeoBlockRenderer<ExchangeStationBlockEntity> {
 
-public class ExchangeStationRenderer extends GeoBlockRenderer<ExchangeStationBlockEntity>
-{
 	public ExchangeStationRenderer(BlockEntityRendererProvider.Context rendererDispatcherIn) {
 		super(rendererDispatcherIn, new ExchangeStationModel());
 	}
 
 	@Override
-	public RenderType getRenderType(ExchangeStationBlockEntity animatable, float partialTicks, PoseStack stack,
-									@Nullable MultiBufferSource renderTypeBuffer,
-									@Nullable VertexConsumer vertexBuilder, int packedLightIn,
-									ResourceLocation textureLocation) {
+	public RenderType getRenderType(ExchangeStationBlockEntity animatable, float partialTicks, PoseStack stack, MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
 		return RenderType.entityCutoutNoCull(this.getTextureLocation(animatable));
 	}
 

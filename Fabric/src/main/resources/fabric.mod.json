@@ -5,7 +5,7 @@
     "name": "Techarium",
     "description": "ditto",
     "authors": [
-      "Techarium team"
+      "Ketheroth"
     ],
     "contact": {
       "homepage": "https://fabricmc.net/",
@@ -16,7 +16,7 @@
     "environment": "*",
     "entrypoints": {
       "main": [
-        "com.techarium.techarium.TechariumFabric"
+        "com.techarium.techarium.Techarium::init"
       ],
       "client": [
         "com.techarium.techarium.TechariumFabricClient"

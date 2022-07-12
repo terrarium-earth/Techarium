@@ -4,6 +4,7 @@ import com.techarium.techarium.client.render.BotariumRenderer;
 import com.techarium.techarium.client.render.ExchangeStationRenderer;
 import com.techarium.techarium.client.screen.BotariumScreen;
 import com.techarium.techarium.client.screen.ExchangeStationScreen;
+import com.techarium.techarium.client.screen.MachineCoreScreen;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumMenuTypes;
 import net.fabricmc.api.ClientModInitializer;
@@ -19,6 +20,7 @@ public class TechariumFabricClient implements ClientModInitializer {
 
 		MenuScreens.register(TechariumMenuTypes.BOTARIUM.get(), BotariumScreen::new);
 		MenuScreens.register(TechariumMenuTypes.EXCHANGE_STATION.get(), ExchangeStationScreen::new);
+		MenuScreens.register(TechariumMenuTypes.MACHINE_CORE.get(), MachineCoreScreen::new);
 	}
 
 }
