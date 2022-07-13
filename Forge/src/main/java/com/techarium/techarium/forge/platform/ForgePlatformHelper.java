@@ -12,7 +12,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
@@ -69,13 +69,13 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
 		@Override
 		public TextureAtlasSprite getStillTexture(Fluid fluid) {
-			ResourceLocation texture = RenderProperties.get(fluid).getStillTexture();
+			ResourceLocation texture = IClientFluidTypeExtensions.of(fluid).getStillTexture();
 			return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
 		}
 
 		@Override
 		public int getFluidColor(Fluid fluid) {
-			return RenderProperties.get(fluid).getColorTint();
+			return IClientFluidTypeExtensions.of(fluid).getTintColor();
 		}
 
 		@Override

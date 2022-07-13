@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import com.techarium.techarium.platform.services.IRegistryHelper.BlockEntityFactory;
+import com.techarium.techarium.platform.services.IRegistryHelper.MenuTypeFactory;
+
 public class ForgeRegistryHelper implements IRegistryHelper {
 
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Techarium.MOD_ID);

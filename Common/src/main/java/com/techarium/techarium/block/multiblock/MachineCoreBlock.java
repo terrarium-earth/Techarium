@@ -4,7 +4,6 @@ import com.techarium.techarium.blockentity.multiblock.MachineCoreBlockEntity;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -29,18 +28,18 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MachineCoreBlock extends Block implements EntityBlock {
 
-	public static EnumProperty<MultiblockState> MULTIBLOCK = EnumProperty.create("multiblock", MultiblockState.class);
+	public static final EnumProperty<MultiblockState> MULTIBLOCK_STATE = EnumProperty.create("multiblock_state", MultiblockState.class);
 
 	public MachineCoreBlock() {
 		super(BlockBehaviour.Properties.of(Material.METAL));
 		this.registerDefaultState(this.stateDefinition.any()
 				.setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
-				.setValue(MULTIBLOCK, MultiblockState.NONE));
+				.setValue(MULTIBLOCK_STATE, MultiblockState.NONE));
 	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(BlockStateProperties.HORIZONTAL_FACING, MULTIBLOCK);
+		builder.add(BlockStateProperties.HORIZONTAL_FACING, MULTIBLOCK_STATE);
 	}
 
 	@Override

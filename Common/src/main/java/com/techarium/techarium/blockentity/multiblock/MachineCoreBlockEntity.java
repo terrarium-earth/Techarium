@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,19 +82,19 @@ public class MachineCoreBlockEntity extends BlockEntity implements MenuProvider 
 				if (multiBlockStructure.isValidStructure(pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), level)) {
 					if (multiBlockStructure.canConvert(level, state, pos)) {
 						// TODO @Ashley: multiblock can convert now, don't display the overlay anymore
-						level.setBlock(pos, state.setValue(MachineCoreBlock.MULTIBLOCK, MultiblockState.VALID), 3);
+						level.setBlock(pos, state.setValue(MachineCoreBlock.MULTIBLOCK_STATE, MultiblockState.VALID), 3);
 					} else {
 						// TODO @Ashley: multiblock can't convert, display an overlay of the obstructing blocks. You can have the list of the obstructing blocks via MachineCoreBlockEntity#getObstructingBlocks().
 					}
 				} else {
-					level.setBlock(pos, state.setValue(MachineCoreBlock.MULTIBLOCK, MultiblockState.INVALID), 3);
+					level.setBlock(pos, state.setValue(MachineCoreBlock.MULTIBLOCK_STATE, MultiblockState.INVALID), 3);
 				}
 			});
 		}
 	}
 
 	public List<BlockPos> getObstructingBlocks(Level level, BlockPos pos) {
-		return this.multiblock.map(multiBlockStructure -> multiBlockStructure.getObstructingBlocks(level, pos)).orElse(List.of());
+		return this.multiblock.map(multiBlockStructure -> multiBlockStructure.getObstructingBlocks(level, pos)).orElse(Collections.emptyList());
 	}
 
 	@Override

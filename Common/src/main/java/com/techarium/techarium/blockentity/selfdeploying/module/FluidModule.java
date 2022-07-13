@@ -35,7 +35,7 @@ public class FluidModule {
 	public void load(CompoundTag tag) {
 		this.milliBuckets = tag.getInt("milliBuckets");
 		this.maxBucket = tag.getInt("maxBucket");
-		this.fluid = Suppliers.memoize(() -> Registry.FLUID.get(new ResourceLocation(tag.getString("fluid"))));
+		this.fluid = Suppliers.memoize(() -> Registry.FLUID.get(ResourceLocation.tryParse(tag.getString("fluid"))));
 	}
 
 	/**

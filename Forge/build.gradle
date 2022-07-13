@@ -3,6 +3,8 @@ architectury {
 	forge()
 }
 
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/ForgeUpdatesRemapper/main/remapper.gradle'
+
 archivesBaseName = "${mod_name}-forge-${minecraft_version}"
 
 loom {
@@ -10,20 +12,6 @@ loom {
 	forge {
 		convertAccessWideners = true
 		extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
-	}
-	runs {
-		client {
-			client()
-			setConfigName("Forge Client")
-			ideConfigGenerated(true)
-			runDir("run")
-		}
-		server {
-			server()
-			setConfigName("Forge Server")
-			ideConfigGenerated(true)
-			runDir("run")
-		}
 	}
 }
 
@@ -44,7 +32,7 @@ dependencies {
 }
 
 processResources {
-	from project(":Common").sourceSets.main.resources
+//	from project(":Common").sourceSets.main.resources
 	inputs.property "version", project.version
 
 	filesMatching("META-INF/mods.toml") {

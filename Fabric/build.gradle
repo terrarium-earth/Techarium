@@ -7,20 +7,6 @@ architectury {
 
 loom {
 	accessWidenerPath = file('src/main/resources/techarium_fabric.accesswidener')
-	runs {
-		client {
-			client()
-			setConfigName("Fabric Client")
-			ideConfigGenerated(true)
-			runDir("run")
-		}
-		server {
-			server()
-			setConfigName("Fabric Server")
-			ideConfigGenerated(true)
-			runDir("run")
-		}
-	}
 }
 
 configurations {
@@ -38,7 +24,7 @@ dependencies {
 }
 
 processResources {
-	from project(":Common").sourceSets.main.resources
+//	from project(":Common").sourceSets.main.resources
 	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {

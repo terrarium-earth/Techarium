@@ -1,10 +1,10 @@
 {
 	"required": true,
 	"minVersion": "0.8",
-	"package": "com.techarium.techarium.mixin",
+	"package": "com.techarium.techarium.fabric.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"com.techarium.techarium.fabric.mixin.RegistryAccessMixin"
+		"RegistryAccessMixin"
 	],
 	"client": [],
 	"server": [],

@@ -71,8 +71,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 		ArrayList<MultiBlockButton> list = new ArrayList<>();
 		for (int i = 0; i < this.ids.size(); i++) {
 			ResourceLocation id = this.ids.get(i);
-			// name is created from resource location : techarium:random -> multiblock.techarium.random
-			MutableComponent name = Utils.translatableComponent("multiblock." + id.getNamespace() + "." + id.getPath().replace("/", "."));
+			MutableComponent name = Utils.translatableComponent(id.toLanguageKey("multiblock"));
 			if (filter.isEmpty() || name.getString().toLowerCase().startsWith(filter.toLowerCase())) {
 				MultiBlockButton multiBlockButton = new MultiBlockButton(i, this.leftPos + IDS_X, 0, 100, 14, name, button -> {
 					this.buttons.forEach(element -> element.setSelected(false));
@@ -107,8 +106,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (this.minecraft.options.keyInventory.matches(keyCode, scanCode) && this.textInput.isFocused()) {
-//			 I don't know why, but the screen is closed even if the text input is focused
+		if (this.textInput.keyPressed(keyCode, scanCode, modifiers) || this.textInput.canConsumeInput()) {
 			return true;
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);

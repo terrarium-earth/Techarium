@@ -12,14 +12,6 @@ dependencies {
 	modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:${geckolib_fabric_version}"
 }
 
-processResources {
-	def buildProps = project.properties.clone()
-
-	filesMatching(['pack.mcmeta']) {
-		expand buildProps
-	}
-}
-
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
