@@ -1,4 +1,4 @@
-package com.techarium.techarium.platform;
+package com.techarium.techarium.forge.platform;
 
 import com.techarium.techarium.platform.services.IPlatformHelper;
 import net.minecraft.client.Minecraft;

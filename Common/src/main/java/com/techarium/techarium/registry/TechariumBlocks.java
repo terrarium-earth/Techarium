@@ -3,7 +3,7 @@ package com.techarium.techarium.registry;
 import com.techarium.techarium.block.selfdeploying.BotariumBlock;
 import com.techarium.techarium.block.selfdeploying.ExchangeStationBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
-import com.techarium.techarium.block.selfdeploying.SelfDeployingChildBlock;
+import com.techarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
 import com.techarium.techarium.block.multiblock.MachineCoreBlock;
 import com.techarium.techarium.platform.CommonServices;
 import net.minecraft.world.level.block.Block;
@@ -16,7 +16,7 @@ public class TechariumBlocks {
 
 	public static final Supplier<MachineCoreBlock> MACHINE_CORE = CommonServices.REGISTRY.registerBlock("machine_core", MachineCoreBlock::new);
 	public static final Supplier<Block> COMMUNICATION_DEVICE_ELEMENT = CommonServices.REGISTRY.registerBlock("com_device_element", () -> new Block(BlockBehaviour.Properties.of(Material.METAL)));
-	public static final Supplier<SelfDeployingChildBlock> SELF_DEPLOYING_CHILD = CommonServices.REGISTRY.registerBlock("self_deploying_child", () -> new SelfDeployingChildBlock(BlockBehaviour.Properties.of(Material.METAL)));
+	public static final Supplier<SelfDeployingComponentBlock> SELF_DEPLOYING_COMPONENT = CommonServices.REGISTRY.registerBlock("self_deploying_component", () -> new SelfDeployingComponentBlock(BlockBehaviour.Properties.of(Material.METAL)));
 	public static final Supplier<SelfDeployingBlock> EXCHANGE_STATION = CommonServices.REGISTRY.registerBlock("exchange_station", ExchangeStationBlock::new);
 	public static final Supplier<SelfDeployingBlock> BOTARIUM = CommonServices.REGISTRY.registerBlock("botarium", BotariumBlock::new);
 

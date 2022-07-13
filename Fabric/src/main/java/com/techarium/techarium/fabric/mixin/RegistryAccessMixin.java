@@ -1,8 +1,8 @@
-package com.techarium.techarium.mixin;
+package com.techarium.techarium.fabric.mixin;
 
 import com.google.common.collect.ImmutableMap;
 import com.techarium.techarium.multiblock.MultiBlockStructure;
-import com.techarium.techarium.platform.FabricRegistryHelper;
+import com.techarium.techarium.fabric.platform.FabricRegistryHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;

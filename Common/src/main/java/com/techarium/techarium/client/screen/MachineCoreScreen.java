@@ -9,6 +9,7 @@ import com.techarium.techarium.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -47,7 +48,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 	@Override
 	protected void init() {
 		super.init();
-		this.addButtons("");
+		this.initButtons("");
 		this.textInput = new EditBox(this.font, this.leftPos + TEXT_INPUT_X, this.topPos + TEXT_INPUT_Y, 100, 12, Component.empty());
 		this.addRenderableWidget(this.textInput);
 		this.setInitialFocus(this.textInput);
@@ -58,12 +59,14 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 	}
 
 	/**
-	 * Add selectable buttons for each multiblock.
+	 * Initialize the selectable buttons for each multiblock.
 	 *
 	 * @param filter multiblock name filter (do nothing if empty).
 	 */
-	private void addButtons(String filter) {
+	private void initButtons(String filter) {
 		this.startIndex = 0;
+		this.buttons.forEach(this::removeWidget);
+		this.buttons.clear();
 		Optional<ResourceLocation> selected = this.menu.selectedMultiblock();
 		ArrayList<MultiBlockButton> list = new ArrayList<>();
 		for (int i = 0; i < this.ids.size(); i++) {
@@ -99,11 +102,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 	}
 
 	private void filterIds(String filter) {
-		//remove every button
-		this.buttons.forEach(this::removeWidget);
-		this.buttons.clear();
-		//add back buttons starting with filter
-		this.addButtons(filter);
+		this.initButtons(filter);
 	}
 
 	@Override
@@ -158,13 +157,6 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 	}
 
 	@Override
-	public void resize(Minecraft $$0, int $$1, int $$2) {
-		super.resize($$0, $$1, $$2);
-		this.init();
-		// TODO @Ketheroth: 12/07/2022 fix button position after resize
-	}
-
-	@Override
 	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
 		this.renderBackground(poseStack);
 		super.render(poseStack, mouseX, mouseY, partialTicks);
@@ -180,6 +172,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 	@Override
 	protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 		// display scrollbar

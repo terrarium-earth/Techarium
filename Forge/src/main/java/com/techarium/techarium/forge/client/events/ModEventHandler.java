@@ -1,14 +1,10 @@
-package com.techarium.techarium.client.events;
+package com.techarium.techarium.forge.client.events;
 
 import com.techarium.techarium.Techarium;
-import com.techarium.techarium.client.render.BotariumRenderer;
-import com.techarium.techarium.client.render.ExchangeStationRenderer;
-import com.techarium.techarium.client.screen.BotariumScreen;
-import com.techarium.techarium.client.screen.ExchangeStationScreen;
-import com.techarium.techarium.client.screen.MachineCoreScreen;
+import com.techarium.techarium.forge.client.render.BotariumRenderer;
+import com.techarium.techarium.forge.client.render.ExchangeStationRenderer;
 import com.techarium.techarium.registry.TechariumBlockEntities;
-import com.techarium.techarium.registry.TechariumMenuTypes;
-import net.minecraft.client.gui.screens.MenuScreens;
+import com.techarium.techarium.registry.TechariumMenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -27,9 +23,7 @@ public class ModEventHandler {
 
 	@SubscribeEvent
 	public static void onClientSetup(FMLClientSetupEvent event) {
-		MenuScreens.register(TechariumMenuTypes.BOTARIUM.get(), BotariumScreen::new);
-		MenuScreens.register(TechariumMenuTypes.EXCHANGE_STATION.get(), ExchangeStationScreen::new);
-		MenuScreens.register(TechariumMenuTypes.MACHINE_CORE.get(), MachineCoreScreen::new);
+		TechariumMenuScreens.register();
 	}
 
 }

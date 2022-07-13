@@ -31,7 +31,7 @@ public interface IRegistryHelper {
 
 	<E extends AbstractContainerMenu> Supplier<MenuType<E>> registerMenuType(String id, MenuTypeFactory<E> factory);
 
-	MultiBlockStructure getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId);
+	Optional<MultiBlockStructure> getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId);
 
 	List<ResourceLocation> getMultiBlockKeys(Level level);
 

@@ -2,7 +2,7 @@ package com.techarium.techarium.registry;
 
 import com.techarium.techarium.blockentity.selfdeploying.BotariumBlockEntity;
 import com.techarium.techarium.blockentity.selfdeploying.ExchangeStationBlockEntity;
-import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingChildBlockEntity;
+import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingComponentBlockEntity;
 import com.techarium.techarium.blockentity.multiblock.MachineCoreBlockEntity;
 import com.techarium.techarium.platform.CommonServices;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -15,8 +15,8 @@ public class TechariumBlockEntities {
 			() -> CommonServices.REGISTRY.createBlockEntityType(MachineCoreBlockEntity::new, TechariumBlocks.MACHINE_CORE.get()));
 
 
-	public static final Supplier<BlockEntityType<SelfDeployingChildBlockEntity>> SELF_DEPLOYING_CHILD = CommonServices.REGISTRY.registerBlockEntity("self_deploying_child",
-			() -> CommonServices.REGISTRY.createBlockEntityType(SelfDeployingChildBlockEntity::new, TechariumBlocks.SELF_DEPLOYING_CHILD.get()));
+	public static final Supplier<BlockEntityType<SelfDeployingComponentBlockEntity>> SELF_DEPLOYING_COMPONENT = CommonServices.REGISTRY.registerBlockEntity("self_deploying_component",
+			() -> CommonServices.REGISTRY.createBlockEntityType(SelfDeployingComponentBlockEntity::new, TechariumBlocks.SELF_DEPLOYING_COMPONENT.get()));
 
 	public static final Supplier<BlockEntityType<ExchangeStationBlockEntity>> EXCHANGE_STATION = CommonServices.REGISTRY.registerBlockEntity("exchange_station",
 			() -> CommonServices.REGISTRY.createBlockEntityType(ExchangeStationBlockEntity::new, TechariumBlocks.EXCHANGE_STATION.get()));

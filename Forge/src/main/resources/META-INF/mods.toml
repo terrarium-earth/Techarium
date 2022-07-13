@@ -4,7 +4,7 @@ license="MIT"
 #issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/"
 [[mods]]
 modId="techarium"
-version="${file.jarVersion}"
+version="${version}"
 displayName="Techarium"
 #updateJSONURL="https://change.me.example.invalid/updates.json"
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/"

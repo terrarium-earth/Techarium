@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * A class for blocks that are deployed after placed in the world.<br>
  * See {@link SelfDeployingBlockEntity} for the block entity associated. This block entity take care of the deployment.<br>
- * See {@link SelfDeployingChildBlock} for the block used by this block to maintain its state in the world and "claim" the positions.<br>
+ * See {@link SelfDeployingComponentBlock} for the block used by this block to maintain its state in the world and "claim" the positions.<br>
  * <br>
  * Child classes should override {@link SelfDeployingBlock#getDeployedSize()} to change the size of the deployed block. Default is (1,1,1).
  */
@@ -109,7 +109,7 @@ public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 					BlockPos offset = new BlockPos(x, y, z);
 					BlockPos rotated = MathUtils.rotate(offset, direction);
 					BlockState blockState = level.getBlockState(pos.offset(rotated));
-					if (!(blockState.getMaterial().isReplaceable() || blockState.getBlock() instanceof SelfDeployingBlock)) {
+					if (!blockState.getMaterial().isReplaceable() && !(blockState.getBlock() instanceof SelfDeployingBlock)) {
 						return false;
 					}
 				}

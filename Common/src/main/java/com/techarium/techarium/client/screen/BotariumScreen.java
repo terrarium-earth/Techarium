@@ -6,6 +6,7 @@ import com.techarium.techarium.Techarium;
 import com.techarium.techarium.inventory.BotariumMenu;
 import com.techarium.techarium.platform.CommonServices;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -41,8 +42,7 @@ public class BotariumScreen extends AbstractContainerScreen<BotariumMenu> {
 	}
 
 	private void renderFluid(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-		int relX = (this.width - this.imageWidth) / 2;
-		int relY = (this.height - this.imageHeight) / 2;
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		if (this.menu.getFluidAmount() > 0) {
 			// TODO @anyone: 17/06/2022 limit to max instead of modulo max
 			// TODO @anyone: 18/06/2022 render more precisely (mb instead of bucket)
@@ -53,11 +53,11 @@ public class BotariumScreen extends AbstractContainerScreen<BotariumMenu> {
 			RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 			int y = GAUGE_BOTTOM - fluidAmount * PX_PER_BUCKET;
 			// TODO @anyone: 18/06/2022 blit the sprite nicely so it isn't stretched-out
-			blit(poseStack, relX + GAUGE_X, relY + y, this.getBlitOffset(), GAUGE_WIDTH, fluidAmount * PX_PER_BUCKET, sprite);
+			blit(poseStack, this.leftPos + GAUGE_X, this.topPos + y, this.getBlitOffset(), GAUGE_WIDTH, fluidAmount * PX_PER_BUCKET, sprite);
 		}
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.setShaderTexture(0, COMPONENTS);
-		blit(poseStack, relX + GAUGE_X - 1, relY + GAUGE_TOP - 1, 0, 50, 14, 50);
+		blit(poseStack, this.leftPos + GAUGE_X - 1, this.topPos + GAUGE_TOP - 1, 0, 50, 14, 50);
 	}
 
 	@Override
@@ -71,12 +71,10 @@ public class BotariumScreen extends AbstractContainerScreen<BotariumMenu> {
 		if (this.menu.getFluidAmount() <= 0) {
 			return;
 		}
-		int relX = (this.width - this.imageWidth) / 2;
-		int relY = (this.height - this.imageHeight) / 2;
 		int kekieBuckets = CommonServices.PLATFORM.getFluidHelper().toKekieBucket(this.menu.getFluidAmount());
 		// should it display only if the cursor is on only on the fluid (and not on the gauge) ?
-		if (relX + GAUGE_X <= mouseX && mouseX <= relX + GAUGE_X + GAUGE_WIDTH
-				&& relY + GAUGE_TOP <= mouseY && mouseY <= relY + GAUGE_TOP + GAUGE_HEIGHT) {
+		if (this.leftPos + GAUGE_X <= mouseX && mouseX <= this.leftPos + GAUGE_X + GAUGE_WIDTH
+				&& this.topPos + GAUGE_TOP <= mouseY && mouseY <= this.topPos + GAUGE_TOP + GAUGE_HEIGHT) {
 			this.renderComponentTooltip(poseStack, Arrays.asList(CommonServices.PLATFORM.getFluidHelper().getFluidName(this.menu.getFluid()), Component.literal("" + kekieBuckets + " kekie-buckets")), mouseX, mouseY);
 		}
 	}
@@ -85,9 +83,7 @@ public class BotariumScreen extends AbstractContainerScreen<BotariumMenu> {
 	protected void renderBg(PoseStack poseStack, float partialTicks, int x, int y) {
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, TEXTURE);
-		int relX = (this.width - this.imageWidth) / 2;
-		int relY = (this.height - this.imageHeight) / 2;
-		this.blit(poseStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+		this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 	}
 
 }

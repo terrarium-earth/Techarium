@@ -19,7 +19,7 @@
         "com.techarium.techarium.Techarium::init"
       ],
       "client": [
-        "com.techarium.techarium.TechariumFabricClient"
+          "com.techarium.techarium.fabric.TechariumFabricClient"
       ]
     },
     "mixins": [

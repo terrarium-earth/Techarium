@@ -1,7 +1,7 @@
 package com.techarium.techarium.blockentity.selfdeploying;
 
 import com.techarium.techarium.inventory.ExchangeStationMenu;
-import com.techarium.techarium.block.selfdeploying.SelfDeployingChildBlock;
+import com.techarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
 import com.techarium.techarium.blockentity.selfdeploying.module.ItemModule;
 import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
@@ -48,8 +48,8 @@ public class ExchangeStationBlockEntity extends SelfDeployingMultiBlockBlockEnti
 	}
 
 	@Override
-	public Map<BlockPos, SelfDeployingChildBlock> getMachineChildLocations() {
-		return Map.of(this.worldPosition.above(), TechariumBlocks.SELF_DEPLOYING_CHILD.get());
+	public Map<BlockPos, SelfDeployingComponentBlock> getMachineComponentLocations() {
+		return Map.of(this.worldPosition.above(), TechariumBlocks.SELF_DEPLOYING_COMPONENT.get());
 	}
 
 	@Override

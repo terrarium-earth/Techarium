@@ -1,4 +1,4 @@
-package com.techarium.techarium.platform;
+package com.techarium.techarium.fabric.platform;
 
 import com.mojang.serialization.Lifecycle;
 import com.techarium.techarium.Techarium;
@@ -67,12 +67,12 @@ public class FabricRegistryHelper implements IRegistryHelper {
 	}
 
 	@Override
-	public MultiBlockStructure getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId) {
+	public Optional<MultiBlockStructure> getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId) {
 		if (level == null) {
-			return null;
+			return Optional.empty();
 		}
 		Optional<? extends Registry<MultiBlockStructure>> registry = level.registryAccess().registry(MULTIBLOCK_STRUCTURES.key());
-		return registry.map(multiBlockStructures -> multiBlockStructures.get(multiBlockStructureId)).orElse(null);
+		return registry.map(multiBlockStructures -> multiBlockStructures.get(multiBlockStructureId));
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.techarium.techarium.Techarium;
 import com.techarium.techarium.inventory.ExchangeStationMenu;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -34,10 +35,9 @@ public class ExchangeStationScreen extends AbstractContainerScreen<ExchangeStati
 	@Override
 	protected void renderBg(PoseStack poseStack, float partialTicks, int x, int y) {
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, TEXTURE);
-		int relX = (this.width - this.imageWidth) / 2;
-		int relY = (this.height - this.imageHeight) / 2;
-		this.blit(poseStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+		this.blit(poseStack, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 	}
 
 }

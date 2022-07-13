@@ -2,7 +2,7 @@ package com.techarium.techarium.blockentity.selfdeploying;
 
 import com.techarium.techarium.blockentity.selfdeploying.module.FluidModule;
 import com.techarium.techarium.blockentity.selfdeploying.module.ItemModule;
-import com.techarium.techarium.block.selfdeploying.SelfDeployingChildBlock;
+import com.techarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -33,25 +33,25 @@ import java.util.Map;
  */
 public abstract class SelfDeployingBlockEntity extends BlockEntity implements IAnimatable {
 
-	private final Map<BlockPos, SelfDeployingChildBlock> children;
+	private final Map<BlockPos, SelfDeployingComponentBlock> components;
 	private final AnimationFactory factory = new AnimationFactory(this);
 
 	public SelfDeployingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
-		this.children = this.getMachineChildLocations();
+		this.components = this.getMachineComponentLocations();
 	}
 
 	/**
 	 * Deploy the block.
-	 * Default implementation place the children blocks.
+	 * Default implementation place the component blocks.
 	 */
 	public void deploy() {
 		if (this.level != null) {
-			for (Map.Entry<BlockPos, SelfDeployingChildBlock> entry : children.entrySet()) {
+			for (Map.Entry<BlockPos, SelfDeployingComponentBlock> entry : components.entrySet()) {
 				this.level.setBlock(entry.getKey(), entry.getValue().defaultBlockState(), 3);
 				BlockEntity blockEntity = level.getBlockEntity(entry.getKey());
-				if (blockEntity instanceof SelfDeployingChildBlockEntity childBlockEntity) {
-					childBlockEntity.setParentPosition(this.worldPosition);
+				if (blockEntity instanceof SelfDeployingComponentBlockEntity componentBlockEntity) {
+					componentBlockEntity.setControllerPosition(this.worldPosition);
 				}
 			}
 		}
@@ -59,7 +59,7 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 	/**
 	 * Undeploy the block.
-	 * Default implementation remove the children blocks alongside the parent.
+	 * Default implementation remove the component blocks alongside the controller.
 	 *
 	 * @param removeSelf        determine if this block should remove itself
 	 * @param restoreMultiBlock determine if the multiblock associated (if any) should be restored in the world.
@@ -74,8 +74,8 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 				level.setBlock(this.worldPosition, Blocks.AIR.defaultBlockState(), 3);
 			}
 			// TODO @Ketheroth: 11/06/2022 drop content if there is an inventory
-			for (BlockPos pos : children.keySet()) {
-				if (level.getBlockState(pos).getBlock() instanceof SelfDeployingChildBlock) {
+			for (BlockPos pos : components.keySet()) {
+				if (level.getBlockState(pos).getBlock() instanceof SelfDeployingComponentBlock) {
 					level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
 				}
 			}
@@ -83,14 +83,14 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 	}
 
 	/**
-	 * Determine the locations of the child block of this self-deploying block.
+	 * Determine the locations of the component block of this self-deploying block.
 	 * The locations are assumed to be real world position.
 	 * <br>
 	 * These locations should match the BlockRegion given by {@link SelfDeployingBlock#getDeployedSize()}.
 	 *
-	 * @return the locations of the children.
+	 * @return the locations of the components.
 	 */
-	public abstract Map<BlockPos, SelfDeployingChildBlock> getMachineChildLocations();
+	public abstract Map<BlockPos, SelfDeployingComponentBlock> getMachineComponentLocations();
 
 	/**
 	 * Called when the associated block is used.

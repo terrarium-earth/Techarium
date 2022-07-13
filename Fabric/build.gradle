@@ -1,19 +1,8 @@
-plugins {
-	id 'fabric-loom' version '0.12-SNAPSHOT'
-	id 'maven-publish'
-	id 'idea'
-}
-
 archivesBaseName = "${mod_name}-fabric-${minecraft_version}"
 
-dependencies {
-	minecraft "com.mojang:minecraft:${minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-	modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:${geckolib_fabric_version}"
-	implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
-	implementation project(":Common")
+architectury {
+	platformSetupLoomIde()
+	fabric()
 }
 
 loom {
@@ -34,6 +23,19 @@ loom {
 	}
 }
 
+configurations {
+	common
+	compileClasspath.extendsFrom common
+	runtimeClasspath.extendsFrom common
+	developmentFabric.extendsFrom common
+}
+
+dependencies {
+	common(project(path: ":Common", configuration: "namedElements")) { transitive false }
+	modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+	modImplementation "software.bernie.geckolib:geckolib-fabric-1.19:${geckolib_fabric_version}"
+}
 
 processResources {
 	from project(":Common").sourceSets.main.resources
@@ -42,10 +44,6 @@ processResources {
 	filesMatching("fabric.mod.json") {
 		expand "version": project.version
 	}
-}
-
-tasks.withType(JavaCompile) {
-	source(project(":Common").sourceSets.main.allSource)
 }
 
 jar {

@@ -35,17 +35,11 @@ public class MachineCoreBlockEntity extends BlockEntity implements MenuProvider 
 	//  1- The level isn't set when the block entity is loaded
 	//  2- I (Ketheroth) don't want to cache the resource location until I can transform it in the multiblock structure.
 
-	// TODO @anyone: 12/06/2022 change this to allow displaying for just a few seconds (see TODO.md)
-	/**
-	 * List of multiblock cores that are obstructed and can't deploy. This is used to render the obstruction overlays.
-	 */
-	public static List<BlockPos> CORE_WITH_OBSTRUCTION = new ArrayList<>();
-
-	private MultiBlockStructure multiblock;
+	private Optional<MultiBlockStructure> multiblock;
 
 	public MachineCoreBlockEntity(BlockPos pos, BlockState state) {
 		super(TechariumBlockEntities.MACHINE_CORE.get(), pos, state);
-		this.multiblock = null;
+		this.multiblock = Optional.empty();
 	}
 
 
@@ -68,13 +62,13 @@ public class MachineCoreBlockEntity extends BlockEntity implements MenuProvider 
 		// |         yes        |        yes       |   green  | transform multiblock |  open gui   |
 		// |         yes        |        no        |   red    | nothing              |  open gui   |
 		// |         no         |      yes & no    |   blue   | open gui             |  open gui   |
-		if (this.multiblock == null || player.isShiftKeyDown()) {
+		if (this.multiblock.isEmpty() || player.isShiftKeyDown()) {
 			CommonServices.PLATFORM.openGui(((ServerPlayer) player), this, buf -> buf.writeBlockPos(this.worldPosition));
 			return InteractionResult.SUCCESS;
 		}
-		if (this.multiblock.isValidStructure(pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), level)) {
-			if (this.multiblock.canConvert(level, state, pos)) {
-				this.multiblock.convert(level, state, pos);
+		if (this.multiblock.get().isValidStructure(pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), level)) {
+			if (this.multiblock.get().canConvert(level, state, pos)) {
+				this.multiblock.get().convert(level, state, pos);
 				return InteractionResult.SUCCESS;
 			}
 			// TODO @Ashley: multiblock can't convert, display an overlay of the obstructing blocks. You can have the list of the obstructing blocks via MachineCoreBlockEntity#getObstructingBlocks().
@@ -84,9 +78,9 @@ public class MachineCoreBlockEntity extends BlockEntity implements MenuProvider 
 
 	public void tick(Level level, BlockPos pos, BlockState state) {
 		if (level.getGameTime() % 5 == 0) {
-			if (this.multiblock != null) {
-				if (this.multiblock.isValidStructure(pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), level)) {
-					if (this.multiblock.canConvert(level, state, pos)) {
+			this.multiblock.ifPresent(multiBlockStructure -> {
+				if (multiBlockStructure.isValidStructure(pos, state.getValue(BlockStateProperties.HORIZONTAL_FACING), level)) {
+					if (multiBlockStructure.canConvert(level, state, pos)) {
 						// TODO @Ashley: multiblock can convert now, don't display the overlay anymore
 						level.setBlock(pos, state.setValue(MachineCoreBlock.MULTIBLOCK, MultiblockState.VALID), 3);
 					} else {
@@ -95,18 +89,12 @@ public class MachineCoreBlockEntity extends BlockEntity implements MenuProvider 
 				} else {
 					level.setBlock(pos, state.setValue(MachineCoreBlock.MULTIBLOCK, MultiblockState.INVALID), 3);
 				}
-			} else {
-				// is it useful ? are we in another state than 0 if we're in this if ?
-				level.setBlock(pos, state.setValue(MachineCoreBlock.MULTIBLOCK, MultiblockState.NONE), 3);
-			}
+			});
 		}
 	}
 
 	public List<BlockPos> getObstructingBlocks(Level level, BlockPos pos) {
-		if (this.multiblock == null) {
-			return List.of();
-		}
-		return this.multiblock.getObstructingBlocks(level, pos);
+		return this.multiblock.map(multiBlockStructure -> multiBlockStructure.getObstructingBlocks(level, pos)).orElse(List.of());
 	}
 
 	@Override
@@ -125,7 +113,7 @@ public class MachineCoreBlockEntity extends BlockEntity implements MenuProvider 
 	}
 
 	public Optional<ResourceLocation> selectedMultiblock() {
-		return CommonServices.REGISTRY.getMultiBlockKey(this.level, this.multiblock);
+		return this.multiblock.flatMap(multiblockStructure -> CommonServices.REGISTRY.getMultiBlockKey(this.level, multiblockStructure));
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.techarium.techarium.platform;
+package com.techarium.techarium.fabric.platform;
 
 import com.techarium.techarium.platform.services.IPlatformHelper;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
@@ -93,7 +93,7 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
 		@Override
 		public int getBucketVolume() {
-			return FluidConstants.BUCKET;
+			return (int) FluidConstants.BUCKET;
 		}
 
 		@Override

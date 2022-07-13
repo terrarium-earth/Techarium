@@ -14,6 +14,10 @@
 ## Fabric
 - [x] replace geckolib-core with its full implementation when on 1.19 and add the models/renderers
 
+- [ ] datagen
+- [ ] gravy's menuprovider changes https://github.com/terrarium-earth/Techarium/pull/2/files#r918427324
+- [ ] change buttons index so I can do https://github.com/terrarium-earth/Techarium/pull/2/files#r918428788
+
 
 # Notes
 

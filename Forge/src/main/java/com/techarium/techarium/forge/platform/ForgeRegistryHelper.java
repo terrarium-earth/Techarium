@@ -1,9 +1,8 @@
-package com.techarium.techarium.platform;
+package com.techarium.techarium.forge.platform;
 
 import com.techarium.techarium.Techarium;
 import com.techarium.techarium.multiblock.MultiBlockStructure;
 import com.techarium.techarium.platform.services.IRegistryHelper;
-import com.techarium.techarium.util.Utils;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -61,9 +60,12 @@ public class ForgeRegistryHelper implements IRegistryHelper {
 	}
 
 	@Override
-	public MultiBlockStructure getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId) {
+	public Optional<MultiBlockStructure> getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId) {
+		if (level == null) {
+			return Optional.empty();
+		}
 		Optional<? extends Registry<MultiBlockStructure>> registry = level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey());
-		return registry.map(multiBlockStructures -> multiBlockStructures.get(multiBlockStructureId)).orElse(null);
+		return registry.map(multiBlockStructures -> multiBlockStructures.get(multiBlockStructureId));
 	}
 
 	@Override
@@ -73,7 +75,7 @@ public class ForgeRegistryHelper implements IRegistryHelper {
 
 	@Override
 	public Optional<ResourceLocation> getMultiBlockKey(Level level, MultiBlockStructure multiBlockStructure) {
-		return level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey()).map(registry -> registry.getKey(multiBlockStructure)).orElse(Utils.resourceLocation("empty"));
+		return level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey()).map(registry -> registry.getKey(multiBlockStructure));
 	}
 
 	@Override
