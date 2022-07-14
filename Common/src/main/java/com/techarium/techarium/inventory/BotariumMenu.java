@@ -1,40 +1,36 @@
 package com.techarium.techarium.inventory;
 
-import com.techarium.techarium.blockentity.selfdeploying.BotariumBlockEntity;
+import com.techarium.techarium.block.entity.selfdeploying.BotariumBlockEntity;
+import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumMenuTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.FurnaceResultSlot;
-import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 
 public class BotariumMenu extends MachineMenu {
-
-	private final SimpleContainer input;
-	private final SimpleContainer output;
 	private final BotariumBlockEntity botarium;
 
 	public BotariumMenu(int id, Inventory playerInventory, Player player, BlockPos pos) {
 		super(TechariumMenuTypes.BOTARIUM.get(), id, pos);
-		this.botarium = (BotariumBlockEntity) player.level.getBlockEntity(this.pos);
+		this.botarium = TechariumBlockEntities.BOTARIUM.get().getBlockEntity(player.level, this.pos);
 
-		this.input = this.botarium.getItemInput();
-		this.output = this.botarium.getItemOutput();
+		if (botarium != null) {
+			this.addSlot(new Slot(botarium, 0, 49, 35));
+			this.addSlot(new Slot(botarium, 1, 49, 67));
 
-		this.addSlot(new Slot(input, 0, 49, 35));
-		this.addSlot(new Slot(input, 1, 49, 67));
-
-		// TODO future:
-		// we're using FurnaceResultSlot because there is not a crafting container available
-		// when there is one, replace it with ResultSlot
-		this.addSlot(new FurnaceResultSlot(player, output, 0, 83, 81));
-		this.addSlot(new FurnaceResultSlot(player, output, 1, 103, 81));
-		this.addSlot(new FurnaceResultSlot(player, output, 2, 123, 81));
-		this.addSlot(new FurnaceResultSlot(player, output, 3, 143, 81));
+			// TODO future:
+			//  we're using FurnaceResultSlot because there is not a crafting container available
+			//  when there is one, replace it with ResultSlot
+			this.addSlot(new FurnaceResultSlot(player, botarium, 2, 83, 81));
+			this.addSlot(new FurnaceResultSlot(player, botarium, 3, 103, 81));
+			this.addSlot(new FurnaceResultSlot(player, botarium, 4, 123, 81));
+			this.addSlot(new FurnaceResultSlot(player, botarium, 5, 143, 81));
+		}
 
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {
@@ -48,8 +44,7 @@ public class BotariumMenu extends MachineMenu {
 
 	@Override
 	public void removed(Player player) {
-		this.input.setChanged();
-		this.output.setChanged();
+		this.botarium.setChanged();
 	}
 
 	@Override
@@ -86,12 +81,12 @@ public class BotariumMenu extends MachineMenu {
 	}
 
 
-	public int getFluidAmount() {
-		return this.botarium.getFluidInput().currentAmount();
+	public long getFluidAmount() {
+		return this.botarium.getFluidInput().getAmount();
 	}
 
 	public Fluid getFluid() {
-		return this.botarium.getFluidInput().currentFluid();
+		return this.botarium.getFluidInput().getFluid();
 	}
 
 }

@@ -1,9 +1,7 @@
-package com.techarium.techarium.blockentity.selfdeploying;
+package com.techarium.techarium.block.entity.selfdeploying;
 
-import com.techarium.techarium.inventory.BotariumMenu;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
-import com.techarium.techarium.blockentity.selfdeploying.module.FluidModule;
-import com.techarium.techarium.blockentity.selfdeploying.module.ItemModule;
+import com.techarium.techarium.inventory.BotariumMenu;
 import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
@@ -16,12 +14,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BucketItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUtils;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.MobBucketItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -33,7 +26,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import java.util.Map;
 
-public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithModules {
+public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer {
 
 	public BotariumBlockEntity(BlockPos pos, BlockState state) {
 		super(TechariumBlockEntities.BOTARIUM.get(), pos, state);
@@ -43,7 +36,7 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithModules {
 	public InteractionResult onUse(Player player, InteractionHand hand) {
 		if (player instanceof ServerPlayer serverPlayer) {
 			if (!this.handleBucketUse(serverPlayer)) {
-				CommonServices.PLATFORM.openGui(serverPlayer, this, buf -> buf.writeBlockPos(this.worldPosition));
+				CommonServices.PLATFORM.openMenu(serverPlayer, this);
 			}
 		}
 		return InteractionResult.sidedSuccess(this.level.isClientSide);
@@ -55,27 +48,28 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithModules {
 			// TODO @anyone: 18/06/2022 change this to allow other portable tank (like mekanism tank)
 			return false;
 		}
-		FluidModule fluidInput = this.getFluidInput();
+		SimpleFluidContainer fluidInput = this.getFluidInput();
+
 		if (item == Items.BUCKET) {
 			if (fluidInput.isEmpty()) {
 				return false;
 			}
-			if (!fluidInput.canRetrieveBucket(1)) {
+			if (!fluidInput.canRetrieve(SimpleFluidContainer.BUCKET_CAPACITY)) {
 				return false;
 			}
-			Fluid fluid = fluidInput.currentFluid();
-			fluidInput.retrieve(fluid);
-			player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getMainHandItem(), player, new ItemStack(fluid.getBucket())));
+
+			fluidInput.retrieve(SimpleFluidContainer.BUCKET_CAPACITY);
+			player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getMainHandItem(), player, new ItemStack(fluidInput.getFluid().getBucket())));
 			this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
 		} else {
 			Fluid fluid = CommonServices.PLATFORM.getFluidHelper().determineFluidFromItem(player.getMainHandItem());
 			if (!fluid.isSame(Fluids.EMPTY)) {
-				if (fluidInput.isEmpty() || fluidInput.currentFluid().isSame(fluid)) {
-					boolean canAdd = fluidInput.canAddBucket(1);
+				if (fluidInput.isEmpty() || fluidInput.getFluid().isSame(fluid)) {
+					boolean canAdd = fluidInput.canAdd(SimpleFluidContainer.BUCKET_CAPACITY);
 					if (!canAdd) {
 						return false;
 					}
-					fluidInput.add(fluid);
+					fluidInput.add(fluid, SimpleFluidContainer.BUCKET_CAPACITY);
 					player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getMainHandItem(), player, new ItemStack(Items.BUCKET)));
 					this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
 				} else {
@@ -111,18 +105,12 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithModules {
 	}
 
 	@Override
-	protected ItemModule createItemInput() {
-		return new ItemModule(2, this);
+	public int getContainerSize() {
+		return 6;
 	}
 
 	@Override
-	protected ItemModule createItemOutput() {
-		return new ItemModule(4, this);
+	protected SimpleFluidContainer createFluidInput() {
+		return new SimpleFluidContainer(SimpleFluidContainer.BUCKET_CAPACITY * 12);
 	}
-
-	@Override
-	protected FluidModule createFluidInput() {
-		return new FluidModule(12);
-	}
-
 }

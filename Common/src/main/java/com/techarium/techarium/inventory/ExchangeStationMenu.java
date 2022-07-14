@@ -1,6 +1,6 @@
 package com.techarium.techarium.inventory;
 
-import com.techarium.techarium.blockentity.selfdeploying.ExchangeStationBlockEntity;
+import com.techarium.techarium.block.entity.selfdeploying.ExchangeStationBlockEntity;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumMenuTypes;
 import net.minecraft.core.BlockPos;
@@ -13,23 +13,20 @@ import net.minecraft.world.item.ItemStack;
 
 public class ExchangeStationMenu extends MachineMenu {
 
-	private final SimpleContainer input;
-	private final SimpleContainer output;
 	private final ExchangeStationBlockEntity exchangeStation;
 
 	public ExchangeStationMenu(int id, Inventory playerInventory, Player player, BlockPos pos) {
 		super(TechariumMenuTypes.EXCHANGE_STATION.get(), id, pos);
 		this.exchangeStation = TechariumBlockEntities.EXCHANGE_STATION.get().getBlockEntity(player.level, this.pos);
 
-		this.input = this.exchangeStation.getItemInput();
-		this.output = this.exchangeStation.getItemOutput();
+		if (exchangeStation != null) {
+			this.addSlot(new Slot(exchangeStation, 0, 99, 35));
 
-		this.addSlot(new Slot(input, 0, 99, 35));
-
-		// TODO future:
-		// we're using FurnaceResultSlot because there is not a crafting container available
-		// when there is one, replace it with ResultSlot
-		this.addSlot(new FurnaceResultSlot(player, output, 0, 153, 35));
+			// TODO future:
+			//  we're using FurnaceResultSlot because there is not a crafting container available
+			//  when there is one, replace it with ResultSlot
+			this.addSlot(new FurnaceResultSlot(player, exchangeStation, 0, 153, 35));
+		}
 
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {
@@ -43,8 +40,7 @@ public class ExchangeStationMenu extends MachineMenu {
 
 	@Override
 	public void removed(Player player) {
-		this.input.setChanged();
-		this.output.setChanged();
+		this.exchangeStation.setChanged();
 	}
 
 	@Override

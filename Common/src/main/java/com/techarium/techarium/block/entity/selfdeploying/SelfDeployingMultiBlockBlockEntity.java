@@ -1,5 +1,6 @@
-package com.techarium.techarium.blockentity.selfdeploying;
+package com.techarium.techarium.block.entity.selfdeploying;
 
+import com.techarium.techarium.multiblock.MultiblockStructure;
 import com.techarium.techarium.platform.CommonServices;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -9,9 +10,9 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * A self-deploying block formed by a multiblock and convert back to it on destroyed.
  */
-public abstract class SelfDeployingMultiBlockBlockEntity extends SelfDeployingBlockEntity.WithModules {
+public abstract class SelfDeployingMultiBlockBlockEntity extends SelfDeployingBlockEntity.WithContainer {
 
-	private ResourceLocation multiblockId;
+	private MultiblockStructure multiblock;
 
 	public SelfDeployingMultiBlockBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -20,12 +21,14 @@ public abstract class SelfDeployingMultiBlockBlockEntity extends SelfDeployingBl
 	@Override
 	public void undeploy(boolean removeSelf, boolean restoreMultiBlock, BlockState oldState, BlockPos initiator) {
 		super.undeploy(removeSelf, restoreMultiBlock, oldState, initiator);
-		CommonServices.REGISTRY.getMultiBlockStructure(this.level, this.multiblockId)
-				.ifPresent(multiBlockStructure -> multiBlockStructure.revert(this.level, oldState, this.worldPosition, initiator, !restoreMultiBlock));
+
+		if (multiblock != null) {
+			multiblock.revert(level, oldState, worldPosition, initiator, !restoreMultiBlock);
+		}
 	}
 
-	public void setDeployedFrom(ResourceLocation multiblockId) {
-		this.multiblockId = multiblockId;
+	public void setDeployedFrom(MultiblockStructure multiblock) {
+		this.multiblock = multiblock;
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.techarium.techarium.blockentity.selfdeploying;
+package com.techarium.techarium.block.entity.selfdeploying;
 
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumItems;

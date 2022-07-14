@@ -1,8 +1,7 @@
-package com.techarium.techarium.blockentity.selfdeploying;
+package com.techarium.techarium.block.entity.selfdeploying;
 
-import com.techarium.techarium.inventory.ExchangeStationMenu;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
-import com.techarium.techarium.blockentity.selfdeploying.module.ItemModule;
+import com.techarium.techarium.inventory.ExchangeStationMenu;
 import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
@@ -34,7 +33,7 @@ public class ExchangeStationBlockEntity extends SelfDeployingMultiBlockBlockEnti
 	@Override
 	public InteractionResult onUse(Player player, InteractionHand hand) {
 		if (player instanceof ServerPlayer serverPlayer) {
-			CommonServices.PLATFORM.openGui(serverPlayer, this, buf -> buf.writeBlockPos(this.worldPosition));
+			CommonServices.PLATFORM.openMenu(serverPlayer, this);
 		}
 		return InteractionResult.SUCCESS;
 	}
@@ -64,13 +63,7 @@ public class ExchangeStationBlockEntity extends SelfDeployingMultiBlockBlockEnti
 	}
 
 	@Override
-	protected ItemModule createItemInput() {
-		return new ItemModule(1, this);
+	public int getContainerSize() {
+		return 2;
 	}
-
-	@Override
-	protected ItemModule createItemOutput() {
-		return new ItemModule(1, this);
-	}
-
 }

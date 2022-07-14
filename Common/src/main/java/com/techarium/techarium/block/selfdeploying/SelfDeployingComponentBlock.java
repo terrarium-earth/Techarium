@@ -1,6 +1,6 @@
 package com.techarium.techarium.block.selfdeploying;
 
-import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingComponentBlockEntity;
+import com.techarium.techarium.block.entity.selfdeploying.SelfDeployingComponentBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

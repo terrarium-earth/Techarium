@@ -2,7 +2,7 @@ package com.techarium.techarium.fabric.platform;
 
 import com.mojang.serialization.Lifecycle;
 import com.techarium.techarium.Techarium;
-import com.techarium.techarium.multiblock.MultiBlockStructure;
+import com.techarium.techarium.multiblock.MultiblockStructure;
 import com.techarium.techarium.platform.services.IRegistryHelper;
 import com.techarium.techarium.util.Utils;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
@@ -13,6 +13,7 @@ import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -30,11 +31,11 @@ import java.util.function.Supplier;
 
 public class FabricRegistryHelper implements IRegistryHelper {
 
-	public static final MappedRegistry<MultiBlockStructure> MULTIBLOCK_STRUCTURES = FabricRegistryBuilder.createSimple(MultiBlockStructure.class, Utils.resourceLocation(Techarium.MOD_ID + "/multiblock")).buildAndRegister();
+	public static final MappedRegistry<MultiblockStructure> MULTIBLOCK_STRUCTURES = FabricRegistryBuilder.createSimple(MultiblockStructure.class, Utils.resourceLocation(Techarium.MOD_ID + "/multiblock")).buildAndRegister();
 
 	static {
 		// register our own datapack registries to the builtin registries.
-		((WritableRegistry) BuiltinRegistries.REGISTRY).register(MULTIBLOCK_STRUCTURES.key(), MULTIBLOCK_STRUCTURES, Lifecycle.experimental());
+		((WritableRegistry) BuiltinRegistries.REGISTRY).register(MULTIBLOCK_STRUCTURES.key(), MULTIBLOCK_STRUCTURES, Lifecycle.stable());
 	}
 
 	@Override
@@ -67,22 +68,8 @@ public class FabricRegistryHelper implements IRegistryHelper {
 	}
 
 	@Override
-	public Optional<MultiBlockStructure> getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId) {
-		if (level == null) {
-			return Optional.empty();
-		}
-		Optional<? extends Registry<MultiBlockStructure>> registry = level.registryAccess().registry(MULTIBLOCK_STRUCTURES.key());
-		return registry.map(multiBlockStructures -> multiBlockStructures.get(multiBlockStructureId));
-	}
-
-	@Override
-	public List<ResourceLocation> getMultiBlockKeys(Level level) {
-		return level.registryAccess().registry(MULTIBLOCK_STRUCTURES.key()).map(multiBlockStructures -> multiBlockStructures.keySet().stream().toList()).orElseGet(List::of);
-	}
-
-	@Override
-	public Optional<ResourceLocation> getMultiBlockKey(Level level, MultiBlockStructure multiBlockStructure) {
-		return level.registryAccess().registry(MULTIBLOCK_STRUCTURES.key()).map(registry -> registry.getKey(multiBlockStructure));
+	public ResourceKey<? extends Registry<MultiblockStructure>> getMultiblockRegistry() {
+		return MULTIBLOCK_STRUCTURES.key();
 	}
 
 	@Override

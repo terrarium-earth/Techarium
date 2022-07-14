@@ -6,7 +6,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.techarium.techarium.block.multiblock.MachineCoreBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
-import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingMultiBlockBlockEntity;
+import com.techarium.techarium.block.entity.selfdeploying.SelfDeployingMultiBlockBlockEntity;
 import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlocks;
 import com.techarium.techarium.util.MathUtils;
@@ -31,25 +31,21 @@ import java.util.Map;
  * <br>
  * Instances of this class are created via datapack.
  */
-public class MultiBlockStructure {
+public class MultiblockStructure {
 
-	public static final Codec<List<List<String>>> PATTERN_CODEC = Codec.STRING.listOf().listOf().comapFlatMap(MultiBlockStructure::readPattern, lists -> lists);
-	public static final Codec<MultiBlockStructure> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+	public static final Codec<List<List<String>>> PATTERN_CODEC = Codec.STRING.listOf().listOf().comapFlatMap(MultiblockStructure::readPattern, lists -> lists);
+	public static final Codec<MultiblockStructure> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			ResourceLocation.CODEC.fieldOf("deployed").forGetter(multiBlockStructure -> toRL(multiBlockStructure.selfDeployingBlock)),
-			PATTERN_CODEC.fieldOf("pattern").forGetter(MultiBlockStructure::getPattern),
-			Codec.unboundedMap(Codec.STRING, ResourceLocation.CODEC).fieldOf("keys").forGetter(MultiBlockStructure::getKeys)
-	).apply(instance, (selfDeployingBlock1, pattern1, keys1) -> {
-		MultiBlockStructure multiBlockStructure = new MultiBlockStructure(selfDeployingBlock1, pattern1, keys1);
-		System.out.println(multiBlockStructure);
-		return multiBlockStructure;
-	}));
+			PATTERN_CODEC.fieldOf("pattern").forGetter(MultiblockStructure::getPattern),
+			Codec.unboundedMap(Codec.STRING, ResourceLocation.CODEC).fieldOf("keys").forGetter(MultiblockStructure::getKeys)
+	).apply(instance, MultiblockStructure::new));
 
 	private final Map<BlockPos, Block> positions;
 	private final SelfDeployingBlock selfDeployingBlock;
 	private final List<List<String>> pattern;
 	private final Map<String, ResourceLocation> keys;
 
-	public MultiBlockStructure(ResourceLocation selfDeployingBlock, List<List<String>> pattern, Map<String, ResourceLocation> keys) {
+	public MultiblockStructure(ResourceLocation selfDeployingBlock, List<List<String>> pattern, Map<String, ResourceLocation> keys) {
 		this.pattern = pattern;
 		this.selfDeployingBlock = ((SelfDeployingBlock) toBlock(selfDeployingBlock));
 		this.keys = keys;
@@ -183,10 +179,8 @@ public class MultiBlockStructure {
 		}
 		level.setBlock(corePos, this.selfDeployingBlock.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, direction), 3);
 		if (level.getBlockEntity(corePos) instanceof SelfDeployingMultiBlockBlockEntity selfDeployingBlockEntity) {
-			CommonServices.REGISTRY.getMultiBlockKey(level, this).ifPresent(multiblockId -> {
-				selfDeployingBlockEntity.setDeployedFrom(multiblockId);
-				selfDeployingBlockEntity.deploy();
-			});
+			selfDeployingBlockEntity.setDeployedFrom(this);
+			selfDeployingBlockEntity.deploy();
 		}
 	}
 

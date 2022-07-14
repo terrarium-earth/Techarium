@@ -1,7 +1,9 @@
 package com.techarium.techarium.inventory;
 
-import com.techarium.techarium.blockentity.multiblock.MachineCoreBlockEntity;
+import com.techarium.techarium.block.entity.multiblock.MachineCoreBlockEntity;
+import com.techarium.techarium.multiblock.MultiblockStructure;
 import com.techarium.techarium.platform.CommonServices;
+import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumMenuTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +23,7 @@ public class MachineCoreMenu extends AbstractContainerMenu {
 	public MachineCoreMenu(int id, Inventory playerInventory, Player player, BlockPos pos) {
 		super(TechariumMenuTypes.MACHINE_CORE.get(), id);
 		this.pos = pos;
-		this.machineCore = (MachineCoreBlockEntity) player.level.getBlockEntity(this.pos);
+		this.machineCore = TechariumBlockEntities.MACHINE_CORE.get().getBlockEntity(player.level, this.pos);
 	}
 
 	@Override
@@ -34,23 +36,7 @@ public class MachineCoreMenu extends AbstractContainerMenu {
 		return player.distanceToSqr(this.pos.getX(), this.pos.getY(), this.pos.getZ()) <= 64.0D;
 	}
 
-	public List<ResourceLocation> getAllMultiblockStructures() {
-		return CommonServices.REGISTRY.getMultiBlockKeys(this.machineCore.getLevel());
+	public MachineCoreBlockEntity getMachineCore() {
+		return machineCore;
 	}
-
-	public void setMultiBlock(ResourceLocation id) {
-		this.machineCore.setMultiblock(id);
-	}
-
-	public Optional<ResourceLocation> selectedMultiblock() {
-		return this.machineCore.selectedMultiblock();
-	}
-
-	@Override
-	public boolean clickMenuButton(Player player, int buttonId) {
-		ResourceLocation multiblockId = this.getAllMultiblockStructures().get(buttonId);
-		this.setMultiBlock(multiblockId);
-		return super.clickMenuButton(player, buttonId);
-	}
-
 }

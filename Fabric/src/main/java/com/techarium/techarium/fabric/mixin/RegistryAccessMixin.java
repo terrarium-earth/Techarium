@@ -1,7 +1,7 @@
 package com.techarium.techarium.fabric.mixin;
 
 import com.google.common.collect.ImmutableMap;
-import com.techarium.techarium.multiblock.MultiBlockStructure;
+import com.techarium.techarium.multiblock.MultiblockStructure;
 import com.techarium.techarium.fabric.platform.FabricRegistryHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -17,7 +17,7 @@ public interface RegistryAccessMixin {
 
 	@Inject(method = "method_30531", at = @At(target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;", value = "INVOKE"), locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void beforeMapBuild(CallbackInfoReturnable<ImmutableMap<ResourceKey<? extends Registry<?>>, RegistryAccess.RegistryData<?>>> cir, ImmutableMap.Builder<ResourceKey<? extends Registry<?>>, RegistryAccess.RegistryData<?>> builder) {
-		builder.put(FabricRegistryHelper.MULTIBLOCK_STRUCTURES.key(), new RegistryAccess.RegistryData<>(FabricRegistryHelper.MULTIBLOCK_STRUCTURES.key(), MultiBlockStructure.CODEC, null));
+		builder.put(FabricRegistryHelper.MULTIBLOCK_STRUCTURES.key(), new RegistryAccess.RegistryData<>(FabricRegistryHelper.MULTIBLOCK_STRUCTURES.key(), MultiblockStructure.CODEC, null));
 	}
 
 }

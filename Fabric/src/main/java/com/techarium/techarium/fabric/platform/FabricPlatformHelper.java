@@ -1,5 +1,7 @@
 package com.techarium.techarium.fabric.platform;
 
+import com.techarium.techarium.fabric.inventory.ExtraDataMenuProviderWrapper;
+import com.techarium.techarium.inventory.ExtraDataMenuProvider;
 import com.techarium.techarium.platform.services.IPlatformHelper;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -32,39 +34,13 @@ import java.util.function.Consumer;
 public class FabricPlatformHelper implements IPlatformHelper {
 
 	@Override
-	public boolean isModLoaded(String modId) {
-
-		return FabricLoader.getInstance().isModLoaded(modId);
-	}
-
-	@Override
 	public boolean isDevelopmentEnvironment() {
-
 		return FabricLoader.getInstance().isDevelopmentEnvironment();
 	}
 
 	@Override
-	public void openGui(ServerPlayer player, MenuProvider provider, Consumer<FriendlyByteBuf> extraData) {
-		ExtendedScreenHandlerFactory factory = new ExtendedScreenHandlerFactory() {
-			private final MenuProvider prov = provider;
-
-			@Nullable
-			@Override
-			public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-				return prov.createMenu(i, inventory, player);
-			}
-
-			@Override
-			public Component getDisplayName() {
-				return prov.getDisplayName();
-			}
-
-			@Override
-			public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-				extraData.accept(buf);
-			}
-		};
-		player.openMenu(factory);
+	public void openMenu(ServerPlayer player, ExtraDataMenuProvider provider) {
+		player.openMenu(new ExtraDataMenuProviderWrapper(provider));
 	}
 
 	@Override
@@ -92,11 +68,6 @@ public class FabricPlatformHelper implements IPlatformHelper {
 		}
 
 		@Override
-		public int getBucketVolume() {
-			return (int) FluidConstants.BUCKET;
-		}
-
-		@Override
 		public TextureAtlasSprite getStillTexture(Fluid fluid) {
 			ResourceLocation texture = FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidSprites(null, null, fluid.defaultFluidState())[0].getName();
 			return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
@@ -108,15 +79,9 @@ public class FabricPlatformHelper implements IPlatformHelper {
 		}
 
 		@Override
-		public int toKekieBucket(int amount) {
-			return amount / 1000;
-		}
-
-		@Override
 		public Component getFluidName(Fluid fluid) {
 			return FluidVariantAttributes.getName(FluidVariant.of(fluid));
 		}
 
 	}
-
 }

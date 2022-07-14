@@ -1,6 +1,6 @@
 package com.techarium.techarium.block.multiblock;
 
-import com.techarium.techarium.blockentity.multiblock.MachineCoreBlockEntity;
+import com.techarium.techarium.block.entity.multiblock.MachineCoreBlockEntity;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

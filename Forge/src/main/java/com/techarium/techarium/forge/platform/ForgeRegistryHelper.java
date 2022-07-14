@@ -1,9 +1,10 @@
 package com.techarium.techarium.forge.platform;
 
 import com.techarium.techarium.Techarium;
-import com.techarium.techarium.multiblock.MultiBlockStructure;
+import com.techarium.techarium.multiblock.MultiblockStructure;
 import com.techarium.techarium.platform.services.IRegistryHelper;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -24,9 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import com.techarium.techarium.platform.services.IRegistryHelper.BlockEntityFactory;
-import com.techarium.techarium.platform.services.IRegistryHelper.MenuTypeFactory;
-
 public class ForgeRegistryHelper implements IRegistryHelper {
 
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Techarium.MOD_ID);
@@ -34,8 +32,8 @@ public class ForgeRegistryHelper implements IRegistryHelper {
 	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, Techarium.MOD_ID);
 	public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, Techarium.MOD_ID);
 
-	public static final DeferredRegister<MultiBlockStructure> MULTIBLOCK_STRUCTURES = DeferredRegister.create(new ResourceLocation(Techarium.MOD_ID, "multiblock"), Techarium.MOD_ID);
-	public static final Supplier<IForgeRegistry<MultiBlockStructure>> MULTIBLOCK_STRUCTURE_REGISTRY = MULTIBLOCK_STRUCTURES.makeRegistry(() -> new RegistryBuilder<MultiBlockStructure>().dataPackRegistry(MultiBlockStructure.CODEC));
+	public static final DeferredRegister<MultiblockStructure> MULTIBLOCK_STRUCTURES = DeferredRegister.create(new ResourceLocation(Techarium.MOD_ID, "multiblock"), Techarium.MOD_ID);
+	public static final Supplier<IForgeRegistry<MultiblockStructure>> MULTIBLOCK_STRUCTURE_REGISTRY = MULTIBLOCK_STRUCTURES.makeRegistry(() -> new RegistryBuilder<MultiblockStructure>().dataPackRegistry(MultiblockStructure.CODEC));
 
 	@Override
 	public <T extends Item> Supplier<T> registerItem(String id, Supplier<T> item) {
@@ -63,22 +61,8 @@ public class ForgeRegistryHelper implements IRegistryHelper {
 	}
 
 	@Override
-	public Optional<MultiBlockStructure> getMultiBlockStructure(Level level, ResourceLocation multiBlockStructureId) {
-		if (level == null) {
-			return Optional.empty();
-		}
-		Optional<? extends Registry<MultiBlockStructure>> registry = level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey());
-		return registry.map(multiBlockStructures -> multiBlockStructures.get(multiBlockStructureId));
-	}
-
-	@Override
-	public List<ResourceLocation> getMultiBlockKeys(Level level) {
-		return level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey()).map(multiBlockStructures -> multiBlockStructures.keySet().stream().toList()).orElseGet(List::of);
-	}
-
-	@Override
-	public Optional<ResourceLocation> getMultiBlockKey(Level level, MultiBlockStructure multiBlockStructure) {
-		return level.registryAccess().registry(MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey()).map(registry -> registry.getKey(multiBlockStructure));
+	public ResourceKey<? extends Registry<MultiblockStructure>> getMultiblockRegistry() {
+		return MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey();
 	}
 
 	@Override

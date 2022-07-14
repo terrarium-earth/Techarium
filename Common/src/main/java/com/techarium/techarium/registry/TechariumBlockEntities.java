@@ -1,9 +1,9 @@
 package com.techarium.techarium.registry;
 
-import com.techarium.techarium.blockentity.selfdeploying.BotariumBlockEntity;
-import com.techarium.techarium.blockentity.selfdeploying.ExchangeStationBlockEntity;
-import com.techarium.techarium.blockentity.selfdeploying.SelfDeployingComponentBlockEntity;
-import com.techarium.techarium.blockentity.multiblock.MachineCoreBlockEntity;
+import com.techarium.techarium.block.entity.selfdeploying.BotariumBlockEntity;
+import com.techarium.techarium.block.entity.selfdeploying.ExchangeStationBlockEntity;
+import com.techarium.techarium.block.entity.selfdeploying.SelfDeployingComponentBlockEntity;
+import com.techarium.techarium.block.entity.multiblock.MachineCoreBlockEntity;
 import com.techarium.techarium.platform.CommonServices;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -25,6 +25,7 @@ public class TechariumBlockEntities {
 			() -> CommonServices.REGISTRY.createBlockEntityType(BotariumBlockEntity::new, TechariumBlocks.BOTARIUM.get()));
 
 
-	public static void register() {}
+	public static void register() {
+	}
 
 }

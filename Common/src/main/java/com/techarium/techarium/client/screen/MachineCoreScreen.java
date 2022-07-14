@@ -5,20 +5,24 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.techarium.techarium.Techarium;
 import com.techarium.techarium.client.widget.MultiBlockButton;
 import com.techarium.techarium.inventory.MachineCoreMenu;
+import com.techarium.techarium.multiblock.MultiblockStructure;
+import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.Level;
+import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> {
 
@@ -31,7 +35,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 	private static final int TEXT_INPUT_X = 19; // width 100
 	private static final int TEXT_INPUT_Y = 26; // height 12
 
-	private final List<ResourceLocation> ids;
+	private final Set<Map.Entry<ResourceKey<MultiblockStructure>, MultiblockStructure>> multiblocks;
 	private final List<MultiBlockButton> buttons;
 	private EditBox textInput;
 	private int startIndex;
@@ -41,20 +45,25 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 		super(menu, inventory, title);
 		this.imageWidth = 165;
 		this.imageHeight = 186;
-		this.ids = this.menu.getAllMultiblockStructures();
+
+		this.multiblocks = Objects.requireNonNull(menu.getMachineCore().getLevel()).registryAccess()
+				.registry(CommonServices.REGISTRY.getMultiblockRegistry())
+				.map(Registry::entrySet)
+				.orElse(Collections.emptySet());
+
 		this.buttons = new ArrayList<>();
 	}
 
 	@Override
 	protected void init() {
 		super.init();
-		this.initButtons("");
-		this.textInput = new EditBox(this.font, this.leftPos + TEXT_INPUT_X, this.topPos + TEXT_INPUT_Y, 100, 12, Component.empty());
+		this.textInput = new EditBox(this.font, this.leftPos + TEXT_INPUT_X, this.topPos + TEXT_INPUT_Y, 100, 12, textInput, Component.empty());
+		this.initButtons(textInput.getValue());
 		this.addRenderableWidget(this.textInput);
 		this.setInitialFocus(this.textInput);
 		this.textInput.setFocus(true);
 		this.textInput.setBordered(false);
-		this.textInput.setResponder(this::filterIds);
+		this.textInput.setResponder(value -> rebuildWidgets());
 		this.showHints = false;
 	}
 
@@ -65,34 +74,27 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 	 */
 	private void initButtons(String filter) {
 		this.startIndex = 0;
-		this.buttons.forEach(this::removeWidget);
 		this.buttons.clear();
-		Optional<ResourceLocation> selected = this.menu.selectedMultiblock();
-		ArrayList<MultiBlockButton> list = new ArrayList<>();
-		for (int i = 0; i < this.ids.size(); i++) {
-			ResourceLocation id = this.ids.get(i);
-			MutableComponent name = Utils.translatableComponent(id.toLanguageKey("multiblock"));
-			if (filter.isEmpty() || name.getString().toLowerCase().startsWith(filter.toLowerCase())) {
-				MultiBlockButton multiBlockButton = new MultiBlockButton(i, this.leftPos + IDS_X, 0, 100, 14, name, button -> {
-					this.buttons.forEach(element -> element.setSelected(false));
-					this.menu.setMultiBlock(id);
-					((MultiBlockButton) button).setSelected(true);
+
+		List<MultiBlockButton> list = new ArrayList<>();
+		for (var entry : multiblocks) {
+			MutableComponent name = Utils.translatableComponent(entry.getKey().location().toLanguageKey("multiblock"));
+			if (name.getString().toLowerCase(Locale.ENGLISH).contains(filter.toLowerCase(Locale.ENGLISH))) {
+				MultiBlockButton multiBlockButton = new MultiBlockButton(menu.getMachineCore(), entry.getValue(), this.leftPos + IDS_X, 0, 100, 14, name, button -> {
+					this.menu.getMachineCore().setMultiblock(entry.getValue());
 				});
-				if (selected.isPresent()) {
-					if (id.equals(selected.get())) {
-						multiBlockButton.setSelected(true);
-					}
-				}
+
 				list.add(multiBlockButton);
 			}
 		}
+
 		// sort the buttons by the translated name of the multiblocks
-		Collections.sort(list);
+		list = list.stream().sorted(Comparator.comparing(button -> button.getMessage().getString())).toList();
 		for (int i = 0; i < list.size(); i++) {
 			MultiBlockButton elem = list.get(i);
 			elem.y = this.topPos + IDS_Y + 14 * i;
 		}
-		this.buttons.addAll(list.stream().sorted().toList());
+		this.buttons.addAll(list);
 		this.buttons.forEach(this::addRenderableWidget);
 		// hide buttons outside the area
 		for (int j = 8; j < this.buttons.size(); j++) {
@@ -100,16 +102,22 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 		}
 	}
 
-	private void filterIds(String filter) {
-		this.initButtons(filter);
+	@Override
+	protected void containerTick() {
+		super.containerTick();
+		textInput.tick();
 	}
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (this.textInput.keyPressed(keyCode, scanCode, modifiers) || this.textInput.canConsumeInput()) {
+		if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+			this.minecraft.player.closeContainer();
 			return true;
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+
+		return this.textInput.keyPressed(keyCode, scanCode, modifiers) ||
+				this.textInput.canConsumeInput() ||
+				super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override
@@ -141,24 +149,28 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-		for (int i = 0; i < this.buttons.size(); i++) {
-			if (this.buttons.get(i).mouseClicked(mouseX, mouseY, mouseButton)) {
-				// when a button is clicked, send it to the server so the block-entity knows which multiblock has been selected
-				this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, this.buttons.get(i).getIndex());
-				return true;
-			}
-		}
 		if (this.leftPos + 9 <= mouseX && mouseX <= this.leftPos + 23 && this.topPos + 169 <= mouseY && mouseY <= this.topPos + 183) {
+			// FIXME this should be a button
 			this.showHints = !this.showHints;
+			return true;
 		}
-		return super.mouseClicked(mouseX, mouseY, mouseButton);
+
+		return textInput.mouseClicked(mouseX, mouseY, mouseButton) || super.mouseClicked(mouseX, mouseY, mouseButton);
+	}
+
+	@Override
+	protected void insertText(String text, boolean overwrite) {
+		if (overwrite) {
+			this.textInput.setValue(text);
+		} else {
+			this.textInput.insertText(text);
+		}
 	}
 
 	@Override
 	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
 		this.renderBackground(poseStack);
 		super.render(poseStack, mouseX, mouseY, partialTicks);
-		this.textInput.render(poseStack, mouseX, mouseY, partialTicks);
 		this.renderTooltip(poseStack, mouseX, mouseY);
 	}
 

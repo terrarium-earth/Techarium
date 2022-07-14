@@ -1,18 +1,22 @@
-package com.techarium.techarium.blockentity.selfdeploying;
+package com.techarium.techarium.block.entity.selfdeploying;
 
-import com.techarium.techarium.blockentity.selfdeploying.module.FluidModule;
-import com.techarium.techarium.blockentity.selfdeploying.module.ItemModule;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
+import com.techarium.techarium.inventory.ExtraDataMenuProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -110,39 +114,17 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 	}
 
 	/**
-	 * A self-deploying block entity with inventory modules.
+	 * A self-deploying block entity with an inventory.
 	 */
 	// TODO @anyone: 11/07/2022 change it, it is a wip
 	// TODO @Ketheroth: 17/06/2022 see if I can/should move this in the super-class
-	public static abstract class WithModules extends SelfDeployingBlockEntity implements MenuProvider {
+	public static abstract class WithContainer extends SelfDeployingBlockEntity implements ExtraDataMenuProvider, Container {
+		private NonNullList<ItemStack> items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+		private SimpleFluidContainer fluidInput;
 
-		private final ItemModule itemInput;
-		private final ItemModule itemOutput;
-		private final FluidModule fluidInput;
-
-		public WithModules(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		public WithContainer(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 			super(type, pos, state);
-			itemInput = this.createItemInput();
-			itemOutput = this.createItemOutput();
 			fluidInput = this.createFluidInput();
-		}
-
-		/**
-		 * Default implementation : empty item module
-		 *
-		 * @return the item input of the machine.
-		 */
-		protected ItemModule createItemInput() {
-			return ItemModule.EMPTY;
-		}
-
-		/**
-		 * Default implementation : empty item module
-		 *
-		 * @return the item output of the machine.
-		 */
-		protected ItemModule createItemOutput() {
-			return ItemModule.EMPTY;
 		}
 
 		/**
@@ -150,19 +132,11 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 		 *
 		 * @return the fluid input of the machine.
 		 */
-		protected FluidModule createFluidInput() {
-			return FluidModule.EMPTY;
+		protected SimpleFluidContainer createFluidInput() {
+			return SimpleFluidContainer.EMPTY;
 		}
 
-		public ItemModule getItemInput() {
-			return this.itemInput;
-		}
-
-		public ItemModule getItemOutput() {
-			return this.itemOutput;
-		}
-
-		public FluidModule getFluidInput() {
+		public SimpleFluidContainer getFluidInput() {
 			return this.fluidInput;
 		}
 
@@ -179,24 +153,60 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 		@Override
 		protected void saveAdditional(CompoundTag tag) {
-			CompoundTag tagItemInput = new CompoundTag();
-			this.itemInput.save(tagItemInput);
-			tag.put("itemInput", tagItemInput);
-			CompoundTag tagItemOutput = new CompoundTag();
-			this.itemOutput.save(tagItemOutput);
-			tag.put("itemOutput", tagItemOutput);
-			CompoundTag tagFluidInput = new CompoundTag();
-			this.fluidInput.save(tagFluidInput);
-			tag.put("fluidInput", tagFluidInput);
+			ContainerHelper.saveAllItems(tag, this.items);
+
+			tag.put("FluidInput", this.fluidInput.save());
 		}
 
 		@Override
 		public void load(CompoundTag tag) {
-			this.itemInput.load(tag.getCompound("itemInput"));
-			this.itemOutput.load(tag.getCompound("itemOutput"));
-			this.fluidInput.load(tag.getCompound("fluidInput"));
+			this.items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+			ContainerHelper.loadAllItems(tag, this.items);
+
+			this.fluidInput = new SimpleFluidContainer(tag.getCompound("FluidInput"));
 		}
 
-	}
+		@Override
+		public void writeExtraData(ServerPlayer player, FriendlyByteBuf buffer) {
+			buffer.writeBlockPos(this.worldPosition);
+		}
 
+		@Override
+		public boolean isEmpty() {
+			return this.items.stream().allMatch(ItemStack::isEmpty);
+		}
+
+		@Override
+		public ItemStack getItem(int slot) {
+			return items.get(slot);
+		}
+
+		@Override
+		public ItemStack removeItem(int slot, int amount) {
+			ItemStack stack = ContainerHelper.removeItem(this.items, slot, amount);
+			if (!stack.isEmpty()) this.setChanged();
+
+			return stack;
+		}
+
+		@Override
+		public ItemStack removeItemNoUpdate(int slot) {
+			return ContainerHelper.takeItem(this.items, slot);
+		}
+
+		@Override
+		public void setItem(int slot, ItemStack stack) {
+			items.set(slot, stack);
+		}
+
+		@Override
+		public boolean stillValid(Player player) {
+			return player.distanceToSqr(this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ()) <= 64.0D;
+		}
+
+		@Override
+		public void clearContent() {
+			items.clear();
+		}
+	}
 }
