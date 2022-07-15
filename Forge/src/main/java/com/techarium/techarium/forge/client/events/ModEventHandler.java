@@ -4,7 +4,6 @@ import com.techarium.techarium.Techarium;
 import com.techarium.techarium.forge.client.render.BotariumRenderer;
 import com.techarium.techarium.forge.client.render.ExchangeStationRenderer;
 import com.techarium.techarium.registry.TechariumBlockEntities;
-import com.techarium.techarium.registry.TechariumMenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -25,5 +24,4 @@ public class ModEventHandler {
 	public static void onClientSetup(FMLClientSetupEvent event) {
 		TechariumMenuScreens.register();
 	}
-
 }

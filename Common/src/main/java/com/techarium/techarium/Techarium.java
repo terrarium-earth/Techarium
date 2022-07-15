@@ -5,6 +5,7 @@ import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
 import com.techarium.techarium.registry.TechariumItems;
 import com.techarium.techarium.registry.TechariumMenuTypes;
+import com.techarium.techarium.util.PlatformHelper;
 import com.techarium.techarium.util.Utils;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +24,7 @@ public class Techarium {
 	public static final ResourceLocation FONT = Utils.resourceLocation("techarium");
 	public static final Style STYLE = Style.EMPTY.withFont(FONT);
 
-	public static final boolean DEBUG_MODE = CommonServices.PLATFORM.isDevelopmentEnvironment();  // if we want debug items/blocks
+	public static final boolean DEBUG_MODE = PlatformHelper.isDevelopmentEnvironment();  // if we want debug items/blocks
 
 	public static void init() {
 		TechariumBlocks.register();

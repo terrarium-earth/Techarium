@@ -1,9 +1,8 @@
-package com.techarium.techarium.fabric;
+package com.techarium.techarium.fabric.client;
 
 import com.techarium.techarium.fabric.client.render.BotariumRenderer;
 import com.techarium.techarium.fabric.client.render.ExchangeStationRenderer;
 import com.techarium.techarium.registry.TechariumBlockEntities;
-import com.techarium.techarium.registry.TechariumMenuScreens;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 

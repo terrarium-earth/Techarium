@@ -4,8 +4,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.techarium.techarium.Techarium;
 import com.techarium.techarium.block.entity.selfdeploying.SimpleFluidContainer;
+import com.techarium.techarium.client.util.FluidClientUtils;
 import com.techarium.techarium.inventory.BotariumMenu;
 import com.techarium.techarium.platform.CommonServices;
+import com.techarium.techarium.util.PlatformHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -38,18 +41,19 @@ public class BotariumScreen extends AbstractContainerScreen<BotariumMenu> {
 	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
 		this.renderBackground(poseStack);
 		super.render(poseStack, mouseX, mouseY, partialTicks);
-		this.renderFluid(poseStack, mouseX, mouseY, partialTicks);
+		this.renderFluid(poseStack);
 		this.renderTooltip(poseStack, mouseX, mouseY);
 	}
 
-	private void renderFluid(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+	private void renderFluid(PoseStack poseStack) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		if (this.menu.getFluidAmount() > 0) {
 			// TODO @anyone: 17/06/2022 limit to max instead of modulo max
 			// TODO @anyone: 18/06/2022 render more precisely (mb instead of bucket)
 			int fluidAmount = (int) (this.menu.getFluidAmount() / SimpleFluidContainer.BUCKET_CAPACITY) % (GAUGE_HEIGHT / PX_PER_BUCKET + 1);
-			int color = CommonServices.PLATFORM.getFluidHelper().getFluidColor(this.menu.getFluid());
-			TextureAtlasSprite sprite = CommonServices.PLATFORM.getFluidHelper().getStillTexture(this.menu.getFluid());
+			int color = FluidClientUtils.getFluidColor(menu.getFluid(), menu.getBotarium().getLevel(), menu.getBotarium().getBlockPos());
+			ResourceLocation texture = FluidClientUtils.getStillTexture(menu.getFluid(), menu.getBotarium().getLevel(), menu.getBotarium().getBlockPos());
+			TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
 			RenderSystem.setShaderColor((color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F, (color >> 24 & 255) / 255.0F);
 			RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 			int y = GAUGE_BOTTOM - fluidAmount * PX_PER_BUCKET;
@@ -77,7 +81,7 @@ public class BotariumScreen extends AbstractContainerScreen<BotariumMenu> {
 		// should it display only if the cursor is on only on the fluid (and not on the gauge) ?
 		if (this.leftPos + GAUGE_X <= mouseX && mouseX <= this.leftPos + GAUGE_X + GAUGE_WIDTH
 				&& this.topPos + GAUGE_TOP <= mouseY && mouseY <= this.topPos + GAUGE_TOP + GAUGE_HEIGHT) {
-			this.renderComponentTooltip(poseStack, Arrays.asList(CommonServices.PLATFORM.getFluidHelper().getFluidName(this.menu.getFluid()), Component.literal(kekieBuckets + " kekie-buckets")), mouseX, mouseY);
+			this.renderComponentTooltip(poseStack, Arrays.asList(PlatformHelper.getFluidName(this.menu.getFluid()), Component.literal(kekieBuckets + " kekie-buckets")), mouseX, mouseY);
 		}
 	}
 

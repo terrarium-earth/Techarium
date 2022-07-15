@@ -5,6 +5,7 @@ import com.techarium.techarium.inventory.ExchangeStationMenu;
 import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
+import com.techarium.techarium.util.PlatformHelper;
 import com.techarium.techarium.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -33,7 +34,7 @@ public class ExchangeStationBlockEntity extends SelfDeployingMultiBlockBlockEnti
 	@Override
 	public InteractionResult onUse(Player player, InteractionHand hand) {
 		if (player instanceof ServerPlayer serverPlayer) {
-			CommonServices.PLATFORM.openMenu(serverPlayer, this);
+			PlatformHelper.openMenu(serverPlayer, this);
 		}
 		return InteractionResult.SUCCESS;
 	}

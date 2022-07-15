@@ -1,8 +1,6 @@
-package com.techarium.techarium.registry;
+package com.techarium.techarium.client.screen;
 
-import com.techarium.techarium.client.screen.BotariumScreen;
-import com.techarium.techarium.client.screen.ExchangeStationScreen;
-import com.techarium.techarium.client.screen.MachineCoreScreen;
+import com.techarium.techarium.registry.TechariumMenuTypes;
 import net.minecraft.client.gui.screens.MenuScreens;
 
 public class TechariumMenuScreens {
@@ -12,5 +10,4 @@ public class TechariumMenuScreens {
 		MenuScreens.register(TechariumMenuTypes.EXCHANGE_STATION.get(), ExchangeStationScreen::new);
 		MenuScreens.register(TechariumMenuTypes.MACHINE_CORE.get(), MachineCoreScreen::new);
 	}
-
 }

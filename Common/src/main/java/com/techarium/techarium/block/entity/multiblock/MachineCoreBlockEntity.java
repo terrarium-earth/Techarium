@@ -7,6 +7,7 @@ import com.techarium.techarium.inventory.MachineCoreMenu;
 import com.techarium.techarium.multiblock.MultiblockStructure;
 import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
+import com.techarium.techarium.util.PlatformHelper;
 import com.techarium.techarium.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -40,14 +41,13 @@ public class MachineCoreBlockEntity extends BlockEntity implements ExtraDataMenu
 
 	public MachineCoreBlockEntity(BlockPos pos, BlockState state) {
 		super(TechariumBlockEntities.MACHINE_CORE.get(), pos, state);
-		this.multiblock = null;
 	}
 
 	// TODO: 11/07/2022 datapack reload
 	// TODO: 11/07/2022 machine offset from the core
 	public InteractionResult onActivated(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
 		if (this.multiblock == null || player.isShiftKeyDown()) {
-			CommonServices.PLATFORM.openMenu(((ServerPlayer) player), this);
+			PlatformHelper.openMenu(((ServerPlayer) player), this);
 			return InteractionResult.SUCCESS;
 		}
 

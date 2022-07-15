@@ -5,6 +5,7 @@ import com.techarium.techarium.inventory.BotariumMenu;
 import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
+import com.techarium.techarium.util.PlatformHelper;
 import com.techarium.techarium.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -36,7 +37,7 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer 
 	public InteractionResult onUse(Player player, InteractionHand hand) {
 		if (player instanceof ServerPlayer serverPlayer) {
 			if (!this.handleBucketUse(serverPlayer)) {
-				CommonServices.PLATFORM.openMenu(serverPlayer, this);
+				PlatformHelper.openMenu(serverPlayer, this);
 			}
 		}
 		return InteractionResult.sidedSuccess(this.level.isClientSide);
@@ -62,7 +63,7 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer 
 			player.setItemInHand(InteractionHand.MAIN_HAND, ItemUtils.createFilledResult(player.getMainHandItem(), player, new ItemStack(fluidInput.getFluid().getBucket())));
 			this.level.sendBlockUpdated(this.worldPosition, this.getBlockState(), this.getBlockState(), 2);
 		} else {
-			Fluid fluid = CommonServices.PLATFORM.getFluidHelper().determineFluidFromItem(player.getMainHandItem());
+			Fluid fluid = PlatformHelper.determineFluidFromItem(player.getMainHandItem());
 			if (!fluid.isSame(Fluids.EMPTY)) {
 				if (fluidInput.isEmpty() || fluidInput.getFluid().isSame(fluid)) {
 					boolean canAdd = fluidInput.canAdd(SimpleFluidContainer.BUCKET_CAPACITY);

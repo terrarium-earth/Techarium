@@ -89,4 +89,7 @@ public class BotariumMenu extends MachineMenu {
 		return this.botarium.getFluidInput().getFluid();
 	}
 
+	public BotariumBlockEntity getBotarium() {
+		return botarium;
+	}
 }
