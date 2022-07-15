@@ -66,11 +66,11 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 	 * Default implementation remove the component blocks alongside the controller.
 	 *
 	 * @param removeSelf        determine if this block should remove itself
-	 * @param restoreMultiBlock determine if the multiblock associated (if any) should be restored in the world.
+	 * @param restoreMultiblock determine if the multiblock associated (if any) should be restored in the world.
 	 * @param oldState          the state of the core block before it was removed
 	 * @param initiator         the position of the block that initiated the removal of the self-deployed block
 	 */
-	public void undeploy(boolean removeSelf, boolean restoreMultiBlock, BlockState oldState, BlockPos initiator) {
+	public void undeploy(boolean removeSelf, boolean restoreMultiblock, BlockState oldState, BlockPos initiator) {
 		if (level != null) {
 			this.level.removeBlockEntity(this.worldPosition);  // state changed but not yet the block entity so we do it now
 			if (removeSelf) {

@@ -9,11 +9,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 
-public class MultiBlockButton extends Button {
+public class MultiblockButton extends Button {
 	private final MachineCoreBlockEntity machineCore;
 	private final MultiblockStructure multiblock;
 
-	public MultiBlockButton(MachineCoreBlockEntity machineCore, MultiblockStructure multiblock, int x, int y, int width, int height, Component name, OnPress onPress) {
+	public MultiblockButton(MachineCoreBlockEntity machineCore, MultiblockStructure multiblock, int x, int y, int width, int height, Component name, OnPress onPress) {
 		super(x, y, width, height, name, onPress);
 		this.machineCore = machineCore;
 		this.multiblock = multiblock;

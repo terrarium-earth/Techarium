@@ -1,9 +1,5 @@
 package com.techarium.techarium.block.entity.selfdeploying;
 
-import com.google.common.base.Suppliers;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.techarium.techarium.platform.CommonServices;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -12,10 +8,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
-import java.util.Optional;
-
 /**
- * A module that store a fluid.
+ * A container that stores a fluid.
  */
 public class SimpleFluidContainer {
 	public static final SimpleFluidContainer EMPTY = new SimpleFluidContainer(0);
@@ -43,7 +37,7 @@ public class SimpleFluidContainer {
 	}
 
 	/**
-	 * Load the module from the tag.
+	 * Load the container from the tag.
 	 *
 	 * @param tag the tag to load the container from.
 	 */
@@ -55,9 +49,9 @@ public class SimpleFluidContainer {
 	}
 
 	/**
-	 * Save the module to the tag.
+	 * Save the container to a tag.
 	 *
-	 * @param tag the tag to save the container to.
+	 * @return The tag the container is saved in.
 	 */
 	public CompoundTag save() {
 		CompoundTag tag = new CompoundTag();

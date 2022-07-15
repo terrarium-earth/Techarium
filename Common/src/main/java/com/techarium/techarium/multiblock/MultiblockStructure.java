@@ -6,8 +6,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.techarium.techarium.block.multiblock.MachineCoreBlock;
 import com.techarium.techarium.block.selfdeploying.SelfDeployingBlock;
-import com.techarium.techarium.block.entity.selfdeploying.SelfDeployingMultiBlockBlockEntity;
-import com.techarium.techarium.platform.CommonServices;
+import com.techarium.techarium.block.entity.selfdeploying.SelfDeployingMultiblockBlockEntity;
 import com.techarium.techarium.registry.TechariumBlocks;
 import com.techarium.techarium.util.MathUtils;
 import net.minecraft.core.BlockPos;
@@ -178,7 +177,7 @@ public class MultiblockStructure {
 			level.setBlock(levelPos, Blocks.AIR.defaultBlockState(), 3);
 		}
 		level.setBlock(corePos, this.selfDeployingBlock.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, direction), 3);
-		if (level.getBlockEntity(corePos) instanceof SelfDeployingMultiBlockBlockEntity selfDeployingBlockEntity) {
+		if (level.getBlockEntity(corePos) instanceof SelfDeployingMultiblockBlockEntity selfDeployingBlockEntity) {
 			selfDeployingBlockEntity.setDeployedFrom(this);
 			selfDeployingBlockEntity.deploy();
 		}
@@ -248,7 +247,7 @@ public class MultiblockStructure {
 
 	@Override
 	public String toString() {
-		return "MultiBlockStructure{" +
+		return "MultiblockStructure{" +
 				"selfDeployingBlock=" + selfDeployingBlock +
 				", positions=" + positions.entrySet().stream().map(entry -> "" + entry.getKey().toString() + "->" + entry.getValue() + ",").toList() +
 				", keys=" + Joiner.on(",").withKeyValueSeparator("=").join(this.keys) +

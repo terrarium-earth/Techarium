@@ -3,7 +3,7 @@ package com.techarium.techarium.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.techarium.techarium.Techarium;
-import com.techarium.techarium.client.widget.MultiBlockButton;
+import com.techarium.techarium.client.widget.MultiblockButton;
 import com.techarium.techarium.inventory.MachineCoreMenu;
 import com.techarium.techarium.multiblock.MultiblockStructure;
 import com.techarium.techarium.platform.CommonServices;
@@ -33,7 +33,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 	private static final int TEXT_INPUT_Y = 26; // height 12
 
 	private final Set<Map.Entry<ResourceKey<MultiblockStructure>, MultiblockStructure>> multiblocks;
-	private final List<MultiBlockButton> buttons;
+	private final List<MultiblockButton> buttons;
 	private EditBox textInput;
 	private int startIndex;
 	private boolean showHints;
@@ -73,11 +73,11 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 		this.startIndex = 0;
 		this.buttons.clear();
 
-		List<MultiBlockButton> list = new ArrayList<>();
+		List<MultiblockButton> list = new ArrayList<>();
 		for (var entry : multiblocks) {
 			MutableComponent name = Utils.translatableComponent(entry.getKey().location().toLanguageKey("multiblock"));
 			if (name.getString().toLowerCase(Locale.ENGLISH).contains(filter.toLowerCase(Locale.ENGLISH))) {
-				MultiBlockButton multiBlockButton = new MultiBlockButton(menu.getMachineCore(), entry.getValue(), this.leftPos + IDS_X, 0, 100, 14, name, button -> {
+				MultiblockButton multiBlockButton = new MultiblockButton(menu.getMachineCore(), entry.getValue(), this.leftPos + IDS_X, 0, 100, 14, name, button -> {
 					this.menu.getMachineCore().setMultiblock(entry.getValue());
 				});
 
@@ -88,7 +88,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 		// sort the buttons by the translated name of the multiblocks
 		list = list.stream().sorted(Comparator.comparing(button -> button.getMessage().getString())).toList();
 		for (int i = 0; i < list.size(); i++) {
-			MultiBlockButton elem = list.get(i);
+			MultiblockButton elem = list.get(i);
 			elem.y = this.topPos + IDS_Y + 14 * i;
 		}
 		this.buttons.addAll(list);
@@ -126,7 +126,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 				this.startIndex++;
 				this.buttons.get(startIndex - 1).visible = false;
 				this.buttons.get(startIndex + 7).visible = true;
-				for (MultiBlockButton button : this.buttons) {
+				for (MultiblockButton button : this.buttons) {
 					button.y -= 14;
 				}
 			}
@@ -136,7 +136,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 				this.startIndex--;
 				this.buttons.get(startIndex).visible = true;
 				this.buttons.get(startIndex + 8).visible = false;
-				for (MultiBlockButton button : this.buttons) {
+				for (MultiblockButton button : this.buttons) {
 					button.y += 14;
 				}
 			}

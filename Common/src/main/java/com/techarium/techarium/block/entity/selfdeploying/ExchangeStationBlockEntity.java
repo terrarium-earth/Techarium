@@ -2,7 +2,6 @@ package com.techarium.techarium.block.entity.selfdeploying;
 
 import com.techarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
 import com.techarium.techarium.inventory.ExchangeStationMenu;
-import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
 import com.techarium.techarium.util.PlatformHelper;
@@ -25,7 +24,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import java.util.Map;
 
-public class ExchangeStationBlockEntity extends SelfDeployingMultiBlockBlockEntity implements MenuProvider {
+public class ExchangeStationBlockEntity extends SelfDeployingMultiblockBlockEntity implements MenuProvider {
 
 	public ExchangeStationBlockEntity(BlockPos pos, BlockState state) {
 		super(TechariumBlockEntities.EXCHANGE_STATION.get(), pos, state);
