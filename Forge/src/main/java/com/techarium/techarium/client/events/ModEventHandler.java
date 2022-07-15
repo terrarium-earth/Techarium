@@ -1,8 +1,8 @@
-package com.techarium.techarium.forge.client.events;
+package com.techarium.techarium.client.events;
 
 import com.techarium.techarium.Techarium;
-import com.techarium.techarium.forge.client.render.BotariumRenderer;
-import com.techarium.techarium.forge.client.render.ExchangeStationRenderer;
+import com.techarium.techarium.client.render.BotariumRenderer;
+import com.techarium.techarium.client.render.ExchangeStationRenderer;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;

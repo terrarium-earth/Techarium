@@ -1,4 +1,4 @@
-package com.techarium.techarium.forge.platform;
+package com.techarium.techarium.platform;
 
 import com.techarium.techarium.Techarium;
 import com.techarium.techarium.multiblock.MultiblockStructure;

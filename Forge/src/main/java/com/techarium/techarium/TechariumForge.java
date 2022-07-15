@@ -1,7 +1,7 @@
-package com.techarium.techarium.forge;
+package com.techarium.techarium;
 
 import com.techarium.techarium.Techarium;
-import com.techarium.techarium.forge.platform.ForgeRegistryHelper;
+import com.techarium.techarium.platform.ForgeRegistryHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
