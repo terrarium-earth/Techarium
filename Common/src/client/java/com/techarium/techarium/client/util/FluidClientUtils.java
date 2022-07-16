@@ -1,7 +1,6 @@
 package com.techarium.techarium.client.util;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockAndTintGetter;

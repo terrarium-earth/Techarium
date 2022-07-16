@@ -14,8 +14,6 @@ val minecraftVersion: String by project
 val forgeVersion: String by project
 val geckolibVersion: String by project
 
-base.archivesName.set("${modName}-forge-${minecraftVersion}")
-
 val common: Configuration by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = false
@@ -28,6 +26,8 @@ val shadowCommon: Configuration by configurations.creating {
 val commonSources: Configuration by configurations.creating {
     isCanBeConsumed = false
 }
+
+base.archivesName.set("${modName}-forge-${minecraftVersion}")
 
 loom {
     accessWidenerPath.set(project(":Common").loom.accessWidenerPath)

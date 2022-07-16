@@ -4,6 +4,7 @@ import com.techarium.techarium.Techarium;
 import com.techarium.techarium.client.render.BotariumRenderer;
 import com.techarium.techarium.client.render.ExchangeStationRenderer;
 import com.techarium.techarium.registry.TechariumBlockEntities;
+import com.techarium.techarium.client.screen.TechariumMenuScreens;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
