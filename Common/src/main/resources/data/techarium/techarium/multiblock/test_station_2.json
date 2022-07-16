@@ -1,0 +1,17 @@
+{
+	"deployed": "techarium:exchange_station",
+	"pattern": [
+		[
+			"d"
+		],
+		[
+			"d"
+		],
+		[
+			"@"
+		]
+	],
+	"keys": {
+		"d": "minecraft:diamond_block"
+	}
+}

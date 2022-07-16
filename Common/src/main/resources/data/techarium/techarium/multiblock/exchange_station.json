@@ -1,0 +1,14 @@
+{
+	"deployed": "techarium:exchange_station",
+	"pattern": [
+		[
+			"d"
+		],
+		[
+			"@"
+		]
+	],
+	"keys": {
+		"d": "techarium:com_device_element"
+	}
+}
