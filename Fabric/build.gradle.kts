@@ -18,26 +18,30 @@ loom {
     splitEnvironmentSourceSets()
 }
 
-val commonSource: Directory = rootProject.layout.projectDirectory.dir("Common").dir("src")
+sourceSets {
+    val commonSourceSets = project(":Common").sourceSets
 
-sourceSets.main {
-    val main = commonSource.dir(SourceSet.MAIN_SOURCE_SET_NAME)
+    val commonMain = commonSourceSets.main.get()
+    val commonClient = commonSourceSets["client"]
 
-    java.srcDir(main.dir("java"))
-    resources.srcDir(main.dir("resources"))
-}
+    main {
+        java.srcDirs += commonMain.java.srcDirs
+        resources.srcDirs += commonMain.resources.srcDirs
+    }
 
-sourceSets.named("client") {
-    val client = commonSource.dir("client")
-
-    java.srcDir(client.dir("java"))
-    resources.srcDir(client.dir("resources"))
+    named("client") {
+        java.srcDirs += commonClient.java.srcDirs
+        resources.srcDirs += commonClient.resources.srcDirs
+    }
 }
 
 dependencies {
     modImplementation(group = "net.fabricmc", name = "fabric-loader", version = fabricLoaderVersion)
     modImplementation(group = "net.fabricmc.fabric-api", name = "fabric-api", version = fabricApiVersion)
     modImplementation(group = "software.bernie.geckolib", name = "geckolib-fabric-1.19", version = geckolibVersion)
+
+    compileOnly(project(path = ":Common", configuration = "apiElements"))
+    "clientCompileOnly"(project(path = ":Common", configuration = "clientApiElements"))
 }
 
 tasks {

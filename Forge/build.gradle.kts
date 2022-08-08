@@ -12,22 +12,29 @@ val geckolibVersion: String by project
 
 base.archivesName.set("${modName}-forge-${minecraftVersion}")
 
-sourceSets.main {
-    val source = rootProject.layout.projectDirectory.dir("Common").dir("src")
-    val main = source.dir(SourceSet.MAIN_SOURCE_SET_NAME)
-    val client = source.dir("client")
+sourceSets {
+    val commonSourceSets = project(":Common").sourceSets
 
-    java.srcDir(main.dir("java"))
-    java.srcDir(client.dir("java"))
+    val commonMain = commonSourceSets.main.get()
+    val commonClient = commonSourceSets["client"]
 
-    resources.srcDir("src/generated/resources")
-    resources.srcDir(main.dir("resources"))
-    resources.srcDir(client.dir("resources"))
+    main {
+        java.srcDirs += commonMain.java.srcDirs
+        java.srcDirs += commonClient.java.srcDirs
+
+        resources.srcDirs += commonMain.resources.srcDirs
+        resources.srcDirs += commonClient.resources.srcDirs
+
+        resources.srcDir("src/generated/resources")
+    }
 }
 
 dependencies {
     forge(group = "net.minecraftforge", name = "forge", version = "${minecraftVersion}-${forgeVersion}")
     modImplementation(group = "software.bernie.geckolib", name = "geckolib-forge-1.19", version = geckolibVersion)
+
+    compileOnly(project(path = ":Common", configuration = "apiElements"))
+    compileOnly(project(path = ":Common", configuration = "clientApiElements"))
 }
 
 tasks {

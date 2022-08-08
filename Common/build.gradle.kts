@@ -16,3 +16,9 @@ loom {
 dependencies {
     modImplementation(group = "software.bernie.geckolib", name = "geckolib-fabric-1.19", version = geckolibVersion)
 }
+
+java {
+    registerFeature("client") {
+        usingSourceSet(sourceSets["client"])
+    }
+}
