@@ -18,3 +18,8 @@ java {
         usingSourceSet(sourceSets["client"])
     }
 }
+
+// None of this project needs to be processed, it's just here for IDEs to know how to handle stuff properly.
+tasks.all {
+    enabled = false
+}

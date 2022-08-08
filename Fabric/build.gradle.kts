@@ -20,17 +20,18 @@ loom {
 sourceSets {
     val commonSourceSets = project(":Common").sourceSets
 
-    val commonMain = commonSourceSets.main.get()
-    val commonClient = commonSourceSets["client"]
-
     main {
-        java.srcDirs += commonMain.java.srcDirs
-        resources.srcDirs += commonMain.resources.srcDirs
+        val commonMain = commonSourceSets.main
+
+        java.srcDir(commonMain.map { it.java.srcDirs })
+        resources.srcDir(commonMain.map { it.resources.srcDirs })
     }
 
     named("client") {
-        java.srcDirs += commonClient.java.srcDirs
-        resources.srcDirs += commonClient.resources.srcDirs
+        val commonClient = commonSourceSets.named("client")
+
+        java.srcDir(commonClient.map { it.java.srcDirs })
+        resources.srcDir(commonClient.map { it.resources.srcDirs })
     }
 }
 

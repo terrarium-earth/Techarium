@@ -12,17 +12,21 @@ val geckolibVersion: String by project
 base.archivesName.set("${modName}-forge-${minecraftVersion}")
 
 sourceSets {
-    val commonSourceSets = project(":Common").sourceSets
-
-    val commonMain = commonSourceSets.main.get()
-    val commonClient = commonSourceSets["client"]
-
     main {
-        java.srcDirs += commonMain.java.srcDirs
-        java.srcDirs += commonClient.java.srcDirs
+        val commonSourceSets = project(":Common").sourceSets
 
-        resources.srcDirs += commonMain.resources.srcDirs
-        resources.srcDirs += commonClient.resources.srcDirs
+        val commonMain = commonSourceSets.main
+        val commonClient = commonSourceSets.named("client")
+
+        java.srcDirs(
+            commonMain.map { it.java.srcDirs },
+            commonClient.map { it.java.srcDirs },
+        )
+
+        resources.srcDirs(
+            commonMain.map { it.resources.srcDirs },
+            commonClient.map { it.resources.srcDirs },
+        )
 
         resources.srcDir("src/generated/resources")
     }
