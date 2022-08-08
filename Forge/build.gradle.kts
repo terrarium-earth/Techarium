@@ -2,7 +2,6 @@ import earth.terrarium.ProcessClasses
 
 architectury {
     platformSetupLoomIde()
-    forge()
 }
 
 val modName: String by project

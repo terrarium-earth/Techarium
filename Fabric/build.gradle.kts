@@ -10,7 +10,6 @@ base.archivesName.set("${modName}-fabric-${minecraftVersion}")
 
 architectury {
     platformSetupLoomIde()
-    fabric()
 }
 
 loom {

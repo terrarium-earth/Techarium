@@ -4,10 +4,6 @@ val geckolibVersion: String by project
 
 base.archivesName.set("${modName}-common-${minecraftVersion}")
 
-architectury {
-    common("forge", "fabric")
-}
-
 loom {
     @Suppress("UnstableApiUsage")
     splitEnvironmentSourceSets()
