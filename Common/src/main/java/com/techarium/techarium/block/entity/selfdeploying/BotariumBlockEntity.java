@@ -2,7 +2,6 @@ package com.techarium.techarium.block.entity.selfdeploying;
 
 import com.techarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
 import com.techarium.techarium.inventory.BotariumMenu;
-import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumBlocks;
 import com.techarium.techarium.util.PlatformHelper;

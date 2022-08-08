@@ -1,27 +1,10 @@
-import net.fabricmc.loom.util.Constants
-
-plugins {
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-}
+import earth.terrarium.ProcessClasses
 
 val modName: String by project
 val minecraftVersion: String by project
 val fabricLoaderVersion: String by project
 val fabricApiVersion: String by project
 val geckolibVersion: String by project
-
-val common: Configuration by configurations.creating {
-    isCanBeConsumed = false
-    isCanBeResolved = false
-}
-
-val shadowCommon: Configuration by configurations.creating {
-    isCanBeConsumed = false
-}
-
-val commonSources: Configuration by configurations.creating {
-    isCanBeConsumed = false
-}
 
 base.archivesName.set("${modName}-fabric-${minecraftVersion}")
 
@@ -31,61 +14,59 @@ architectury {
 }
 
 loom {
-    accessWidenerPath.set(file("src/main/resources/techarium_fabric.accesswidener"))
-
     @Suppress("UnstableApiUsage")
     splitEnvironmentSourceSets()
 }
 
-configurations.compileClasspath { extendsFrom(common) }
-configurations.runtimeClasspath { extendsFrom(common) }
+val commonSource: Directory = rootProject.layout.projectDirectory.dir("Common").dir("src")
+
+sourceSets.main {
+    val main = commonSource.dir(SourceSet.MAIN_SOURCE_SET_NAME)
+
+    java.srcDir(main.dir("java"))
+    resources.srcDir(main.dir("resources"))
+}
+
+sourceSets.named("client") {
+    val client = commonSource.dir("client")
+
+    java.srcDir(client.dir("java"))
+    resources.srcDir(client.dir("resources"))
+}
 
 dependencies {
     modImplementation(group = "net.fabricmc", name = "fabric-loader", version = fabricLoaderVersion)
     modImplementation(group = "net.fabricmc.fabric-api", name = "fabric-api", version = fabricApiVersion)
     modImplementation(group = "software.bernie.geckolib", name = "geckolib-fabric-1.19", version = geckolibVersion)
-
-    common(project(path = ":Common", configuration = Constants.Configurations.NAMED_ELEMENTS)) { isTransitive = false }
-    shadowCommon(project(path = ":Common", configuration = "transformProductionFabric")) { isTransitive = false }
-    commonSources(project(path = ":Common", configuration = JavaPlugin.SOURCES_ELEMENTS_CONFIGURATION_NAME))
-}
-
-components.getByName("java") {
-    this as AdhocComponentWithVariants
-
-    withVariantsFromConfiguration(configurations.shadowRuntimeElements.get()) {
-        skip()
-    }
 }
 
 tasks {
+    val processJavaClasses by registering(ProcessClasses::class) {
+        extensionPackages.add("com.techarium.techarium.fabric.extensions")
+
+        dependsOn(compileJava)
+    }
+
+    val processJavaClientClasses by registering(ProcessClasses::class) {
+        extensionPackages.add("com.techarium.techarium.fabric.client.extensions")
+        classesDirectory.set(named<AbstractCompile>("compileClientJava").flatMap(AbstractCompile::getDestinationDirectory))
+
+        dependsOn("compileClientJava")
+    }
+
+    classes {
+        dependsOn(processJavaClasses)
+    }
+
+    named("clientClasses") {
+        dependsOn(processJavaClientClasses)
+    }
+
     processResources {
         inputs.property("version", version)
 
         filesMatching("fabric.mod.json") {
             expand(mapOf("version" to version))
         }
-    }
-
-    shadowJar {
-        configurations = listOf(shadowCommon)
-        archiveClassifier.set("dev-shadow")
-    }
-
-    remapJar {
-        inputFile.set(shadowJar.flatMap(Jar::getArchiveFile))
-    }
-
-    jar {
-        archiveClassifier.set("dev")
-
-        from("LICENSE") {
-            rename { "${it}_${modName}" }
-        }
-    }
-
-    sourcesJar {
-        from(provider { commonSources.map(::zipTree) })
-        dependsOn(commonSources)
     }
 }

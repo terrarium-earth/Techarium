@@ -6,7 +6,6 @@ import com.techarium.techarium.Techarium;
 import com.techarium.techarium.block.entity.selfdeploying.SimpleFluidContainer;
 import com.techarium.techarium.client.util.FluidClientUtils;
 import com.techarium.techarium.inventory.BotariumMenu;
-import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.util.PlatformHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -52,8 +51,7 @@ public class BotariumScreen extends AbstractContainerScreen<BotariumMenu> {
 			// TODO @anyone: 18/06/2022 render more precisely (mb instead of bucket)
 			int fluidAmount = (int) (this.menu.getFluidAmount() / SimpleFluidContainer.BUCKET_CAPACITY) % (GAUGE_HEIGHT / PX_PER_BUCKET + 1);
 			int color = FluidClientUtils.getFluidColor(menu.getFluid(), menu.getBotarium().getLevel(), menu.getBotarium().getBlockPos());
-			ResourceLocation texture = FluidClientUtils.getStillTexture(menu.getFluid(), menu.getBotarium().getLevel(), menu.getBotarium().getBlockPos());
-			TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
+			TextureAtlasSprite sprite = FluidClientUtils.getStillTexture(menu.getFluid(), menu.getBotarium().getLevel(), menu.getBotarium().getBlockPos());
 			RenderSystem.setShaderColor((color >> 16 & 255) / 255.0F, (color >> 8 & 255) / 255.0F, (color & 255) / 255.0F, (color >> 24 & 255) / 255.0F);
 			RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
 			int y = GAUGE_BOTTOM - fluidAmount * PX_PER_BUCKET;

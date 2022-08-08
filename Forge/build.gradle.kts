@@ -1,8 +1,4 @@
-import net.fabricmc.loom.util.Constants
-
-plugins {
-    id("com.github.johnrengelman.shadow") version "7.1.2"
-}
+import earth.terrarium.ProcessClasses
 
 architectury {
     platformSetupLoomIde()
@@ -14,78 +10,45 @@ val minecraftVersion: String by project
 val forgeVersion: String by project
 val geckolibVersion: String by project
 
-val common: Configuration by configurations.creating {
-    isCanBeConsumed = false
-    isCanBeResolved = false
-}
-
-val shadowCommon: Configuration by configurations.creating {
-    isCanBeConsumed = false
-}
-
-val commonSources: Configuration by configurations.creating {
-    isCanBeConsumed = false
-}
-
 base.archivesName.set("${modName}-forge-${minecraftVersion}")
 
-loom {
-    accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
-
-    forge {
-        convertAccessWideners.set(true)
-        extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-    }
-}
-
 sourceSets.main {
-    resources.srcDir("src/generated/resources")
-}
+    val source = rootProject.layout.projectDirectory.dir("Common").dir("src")
+    val main = source.dir(SourceSet.MAIN_SOURCE_SET_NAME)
+    val client = source.dir("client")
 
-configurations.compileClasspath { extendsFrom(common) }
-configurations.runtimeClasspath { extendsFrom(common) }
+    java.srcDir(main.dir("java"))
+    java.srcDir(client.dir("java"))
+
+    resources.srcDir("src/generated/resources")
+    resources.srcDir(main.dir("resources"))
+    resources.srcDir(client.dir("resources"))
+}
 
 dependencies {
     forge(group = "net.minecraftforge", name = "forge", version = "${minecraftVersion}-${forgeVersion}")
     modImplementation(group = "software.bernie.geckolib", name = "geckolib-forge-1.19", version = geckolibVersion)
-
-    common(project(path = ":Common", configuration = Constants.Configurations.NAMED_ELEMENTS)) { isTransitive = false }
-    shadowCommon(project(path = ":Common", configuration = "transformProductionForge")) { isTransitive = false }
-    commonSources(project(path = ":Common", configuration = JavaPlugin.SOURCES_ELEMENTS_CONFIGURATION_NAME))
-}
-
-components.getByName("java") {
-    this as AdhocComponentWithVariants
-
-    withVariantsFromConfiguration(configurations.shadowRuntimeElements.get()) {
-        skip()
-    }
 }
 
 tasks {
+    val processJavaClasses by registering(ProcessClasses::class) {
+        extensionPackages.addAll(
+            "com.techarium.techarium.forge.extensions",
+            "com.techarium.techarium.forge.client.extensions",
+        )
+
+        dependsOn(compileJava)
+    }
+
+    classes {
+        dependsOn(processJavaClasses)
+    }
+
     processResources {
         inputs.property("version", version)
 
         filesMatching("META-INF/mods.toml") {
             expand(mapOf("version" to version))
         }
-    }
-
-    shadowJar {
-        configurations = listOf(shadowCommon)
-        archiveClassifier.set("dev-shadow")
-    }
-
-    remapJar {
-        inputFile.set(shadowJar.flatMap(Jar::getArchiveFile))
-    }
-
-    jar {
-        archiveClassifier.set("dev")
-    }
-
-    sourcesJar {
-        from(provider { commonSources.map(::zipTree) })
-        dependsOn(commonSources)
     }
 }

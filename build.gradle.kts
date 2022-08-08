@@ -1,5 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
+import earth.terrarium.ProcessClasses
 import net.fabricmc.loom.util.Constants
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 
@@ -24,7 +25,7 @@ subprojects {
     loom.silentMojangMappingsLicense()
 
     dependencies {
-        Constants.Configurations.MINECRAFT(group = "com.mojan", name = "minecraft", version = minecraftVersion)
+        Constants.Configurations.MINECRAFT(group = "com.mojang", name = "minecraft", version = minecraftVersion)
 
         Constants.Configurations.MAPPINGS(
             loom.layered {
@@ -37,9 +38,13 @@ subprojects {
     }
 
     tasks.jar {
-        manifest {
-            val modName: String by project
+        val modName: String by project
 
+        from("LICENSE") {
+            rename { "${it}_${modName}" }
+        }
+
+        manifest {
             attributes(
                 "Specification-Title" to modName,
                 "Specification-Vendor" to authorName,
@@ -51,6 +56,11 @@ subprojects {
                 "Build-On-Minecraft" to minecraftVersion
             )
         }
+    }
+
+    tasks.withType<ProcessClasses> {
+        annotationType.convention("com.techarium.techarium.util.extensions.ExtensionFor")
+        classesDirectory.convention(tasks.compileJava.flatMap(AbstractCompile::getDestinationDirectory))
     }
 
     // Disables Gradle's custom module metadata from being published to maven. The

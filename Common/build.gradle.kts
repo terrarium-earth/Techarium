@@ -9,8 +9,6 @@ architectury {
 }
 
 loom {
-    accessWidenerPath.set(file("src/main/resources/techarium_common.accesswidener"))
-
     @Suppress("UnstableApiUsage")
     splitEnvironmentSourceSets()
 }

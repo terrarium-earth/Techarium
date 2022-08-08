@@ -5,14 +5,12 @@ import com.techarium.techarium.block.multiblock.MultiblockState;
 import com.techarium.techarium.inventory.ExtraDataMenuProvider;
 import com.techarium.techarium.inventory.MachineCoreMenu;
 import com.techarium.techarium.multiblock.MultiblockStructure;
-import com.techarium.techarium.platform.CommonServices;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.util.PlatformHelper;
 import com.techarium.techarium.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,7 +25,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * A BlockEntity for the {@link MachineCoreBlock}.
