@@ -11,6 +11,7 @@ import java.io.FileNotFoundException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
+import java.nio.file.StandardOpenOption
 import java.util.function.Predicate
 import kotlin.io.path.*
 
@@ -259,7 +260,7 @@ abstract class ProcessClasses : DefaultTask() {
                 val newPath = destination.resolve(root.relativize(path).toString())
 
                 newPath.parent.createDirectories()
-                path.copyTo(newPath)
+                path.copyTo(newPath, StandardCopyOption.REPLACE_EXISTING)
             }
         }
     }
