@@ -11,6 +11,15 @@ val geckolibVersion: String by project
 
 base.archivesName.set("${modName}-forge-${minecraftVersion}")
 
+val processJavaClasses by tasks.registering(ProcessClasses::class) {
+    extensionPackages.addAll(
+        "com.techarium.techarium.forge.extensions",
+        "com.techarium.techarium.forge.client.extensions",
+    )
+
+    dependsOn(tasks.compileJava)
+}
+
 sourceSets {
     main {
         val commonSourceSets = project(":Common").sourceSets
@@ -29,6 +38,8 @@ sourceSets {
         )
 
         resources.srcDir("src/generated/resources")
+
+        compiledBy(processJavaClasses)
     }
 }
 
@@ -36,29 +47,14 @@ dependencies {
     forge(group = "net.minecraftforge", name = "forge", version = "${minecraftVersion}-${forgeVersion}")
     modImplementation(group = "software.bernie.geckolib", name = "geckolib-forge-1.19", version = geckolibVersion)
 
-    compileOnly(project(path = ":Common", configuration = "apiElements"))
-    compileOnly(project(path = ":Common", configuration = "clientApiElements"))
+    compileOnly(project(path = ":Common", configuration = "apiElements")) { isTransitive = false }
+    compileOnly(project(path = ":Common", configuration = "clientApiElements")) { isTransitive = false }
 }
 
-tasks {
-    val processJavaClasses by registering(ProcessClasses::class) {
-        extensionPackages.addAll(
-            "com.techarium.techarium.forge.extensions",
-            "com.techarium.techarium.forge.client.extensions",
-        )
+tasks.processResources {
+    inputs.property("version", version)
 
-        dependsOn(compileJava)
-    }
-
-    classes {
-        dependsOn(processJavaClasses)
-    }
-
-    processResources {
-        inputs.property("version", version)
-
-        filesMatching("META-INF/mods.toml") {
-            expand(mapOf("version" to version))
-        }
+    filesMatching("META-INF/mods.toml") {
+        expand(mapOf("version" to version))
     }
 }

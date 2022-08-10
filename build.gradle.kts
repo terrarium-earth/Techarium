@@ -37,6 +37,7 @@ subprojects {
         )
     }
 
+
     tasks.jar {
         val modName: String by project
 
@@ -58,16 +59,27 @@ subprojects {
         }
     }
 
-    tasks.withType<ProcessClasses> {
-        annotationType.convention("com.techarium.techarium.util.extensions.ExtensionFor")
-        classesDirectory.convention(tasks.compileJava.flatMap(AbstractCompile::getDestinationDirectory))
-    }
+    if (name != "Common") {
+        sourceSets.main {
+            java.destinationDirectory.set(layout.buildDirectory.dir("processedClasses").map { it.dir("java").dir(SourceSet.MAIN_SOURCE_SET_NAME) })
+        }
 
-    // Disables Gradle's custom module metadata from being published to maven. The
-    // metadata includes mapped dependencies which are not reasonably consumable by
-    // other mod developers.
-    tasks.withType<GenerateModuleMetadata> {
-        enabled = false
+        tasks.compileJava {
+            destinationDirectory.set(layout.buildDirectory.dir("classes").map { it.dir("java").dir(SourceSet.MAIN_SOURCE_SET_NAME) })
+        }
+
+        tasks.withType<ProcessClasses> {
+            annotationType.convention("com.techarium.techarium.util.extensions.ExtensionFor")
+            classesDirectory.convention(tasks.compileJava.flatMap(AbstractCompile::getDestinationDirectory))
+            destinationDirectory.convention(sourceSets.main.flatMap { it.java.destinationDirectory })
+        }
+
+        // Disables Gradle's custom module metadata from being published to maven. The
+        // metadata includes mapped dependencies which are not reasonably consumable by
+        // other mod developers.
+        tasks.withType<GenerateModuleMetadata> {
+            enabled = false
+        }
     }
 }
 
