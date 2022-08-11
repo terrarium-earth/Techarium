@@ -2,6 +2,7 @@ package com.techarium.techarium.forge.extensions;
 
 import com.techarium.techarium.Techarium;
 import com.techarium.techarium.forge.TechariumCreativeModeTab;
+import com.techarium.techarium.forge.TechariumForge;
 import com.techarium.techarium.multiblock.MultiblockStructure;
 import com.techarium.techarium.registry.RegistryHelper;
 import com.techarium.techarium.util.extensions.ExtensionFor;
@@ -25,8 +26,7 @@ import java.util.function.Supplier;
 
 @ExtensionFor(RegistryHelper.class)
 public class ForgeRegistryHelper {
-    public static final DeferredRegister<MultiblockStructure> MULTIBLOCK_STRUCTURES = DeferredRegister.create(new ResourceLocation(Techarium.MOD_ID, "multiblock"), Techarium.MOD_ID);
-    public static final Supplier<IForgeRegistry<MultiblockStructure>> MULTIBLOCK_STRUCTURE_REGISTRY = MULTIBLOCK_STRUCTURES.makeRegistry(() -> new RegistryBuilder<MultiblockStructure>().dataPackRegistry(MultiblockStructure.CODEC));
+    public static final Supplier<IForgeRegistry<MultiblockStructure>> MULTIBLOCK_STRUCTURE_REGISTRY = TechariumForge.MULTIBLOCK_STRUCTURES.makeRegistry(() -> new RegistryBuilder<MultiblockStructure>().dataPackRegistry(MultiblockStructure.CODEC));
 
     @ExtensionImplementation
     public static <E extends BlockEntity> BlockEntityType<E> createBlockEntityType(RegistryHelper.BlockEntityFactory<E> factory, Block... blocks) {

@@ -79,7 +79,7 @@ abstract class ProcessClasses : DefaultTask() {
             is FrameNode -> {
                 local = local?.map {
                     if (it is String) {
-                        Type.getObjectType(it).replaceExtensionReferences(extensionName, baseName).descriptor
+                        Type.getObjectType(it).replaceExtensionReferences(extensionName, baseName).internalName
                     } else {
                         it
                     }
@@ -87,7 +87,7 @@ abstract class ProcessClasses : DefaultTask() {
 
                 stack = stack?.map {
                     if (it is String) {
-                        Type.getObjectType(it).replaceExtensionReferences(extensionName, baseName).descriptor
+                        Type.getObjectType(it).replaceExtensionReferences(extensionName, baseName).internalName
                     } else {
                         it
                     }
