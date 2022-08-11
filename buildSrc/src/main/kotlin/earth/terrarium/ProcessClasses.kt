@@ -161,11 +161,13 @@ abstract class ProcessClasses : DefaultTask() {
                     staticInitializer.instructions.insert(beforeReturn, instruction)
                 }
             }
-        } else if (method.name != "<init>") {
-            val index = node.methods.indexOfFirst { it.name == method.name }
+        } else {
+            val index = node.methods.indexOfFirst { it.name == method.name && it.desc == method.desc }
 
             if (index < 0) {
-                node.methods.add(method)
+                if (method.name != "<init>") {
+                    node.methods.add(method)
+                }
             } else {
                 node.methods[index] = method
             }

@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
+import org.apache.commons.lang3.NotImplementedException;
 
 @ExtendableDeclaration
 public class PlatformHelper {
@@ -16,7 +17,7 @@ public class PlatformHelper {
 	 */
 	@ExtendableDeclaration
 	public static boolean isDevelopmentEnvironment() {
-		throw new UnsupportedOperationException("isDevelopmentEnvironment was not implemented.");
+		throw new NotImplementedException("isDevelopmentEnvironment was not implemented.");
 	}
 
 	/**
@@ -27,16 +28,16 @@ public class PlatformHelper {
 	 */
 	@ExtendableDeclaration
 	public static void openMenu(ServerPlayer player, ExtraDataMenuProvider provider) {
-		throw new UnsupportedOperationException("openMenu was not implemented.");
+		throw new NotImplementedException("openMenu was not implemented.");
 	}
 
 	@ExtendableDeclaration
 	public static Fluid determineFluidFromItem(ItemStack stack) {
-		throw new UnsupportedOperationException("determineFluidFromItem was not implemented.");
+		throw new NotImplementedException("determineFluidFromItem was not implemented.");
 	}
 
 	@ExtendableDeclaration
 	public static Component getFluidName(Fluid fluid) {
-		throw new UnsupportedOperationException("getFluidName was not implemented.");
+		throw new NotImplementedException("getFluidName was not implemented.");
 	}
 }

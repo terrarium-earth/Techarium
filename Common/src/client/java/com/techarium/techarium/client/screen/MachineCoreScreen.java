@@ -6,7 +6,7 @@ import com.techarium.techarium.Techarium;
 import com.techarium.techarium.client.widget.MultiblockButton;
 import com.techarium.techarium.inventory.MachineCoreMenu;
 import com.techarium.techarium.multiblock.MultiblockStructure;
-import com.techarium.techarium.platform.CommonServices;
+import com.techarium.techarium.registry.RegistryHelper;
 import com.techarium.techarium.util.Utils;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -44,7 +44,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 		this.imageHeight = 186;
 
 		this.multiblocks = Objects.requireNonNull(menu.getMachineCore().getLevel()).registryAccess()
-				.registry(CommonServices.REGISTRY.getMultiblockRegistry())
+				.registry(RegistryHelper.getMultiblockRegistryKey())
 				.map(Registry::entrySet)
 				.orElse(Collections.emptySet());
 
