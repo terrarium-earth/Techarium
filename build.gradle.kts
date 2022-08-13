@@ -1,11 +1,12 @@
 @file:Suppress("UnstableApiUsage")
 
-import earth.terrarium.ProcessClasses
+import net.msrandom.postprocess.PostProcessClasses
 import net.fabricmc.loom.util.Constants
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 
 plugins {
     java
+    id("jvm-post-processing") version "0.1"
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("dev.architectury.loom") version "0.12.0-SNAPSHOT" apply false
 }
@@ -18,6 +19,7 @@ architectury {
 }
 
 subprojects {
+    apply(plugin = "jvm-post-processing")
     apply(plugin = "dev.architectury.loom")
 
     val loom = the<LoomGradleExtensionAPI>()
@@ -68,7 +70,7 @@ subprojects {
             destinationDirectory.set(layout.buildDirectory.dir("classes").map { it.dir("java").dir(SourceSet.MAIN_SOURCE_SET_NAME) })
         }
 
-        tasks.withType<ProcessClasses> {
+        tasks.withType<PostProcessClasses> {
             annotationType.convention("com.techarium.techarium.util.extensions.ExtensionFor")
             classesDirectory.convention(tasks.compileJava.flatMap(AbstractCompile::getDestinationDirectory))
             destinationDirectory.convention(sourceSets.main.flatMap { it.java.destinationDirectory })

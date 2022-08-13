@@ -1,4 +1,4 @@
-import earth.terrarium.ProcessClasses
+import net.msrandom.postprocess.PostProcessClasses
 
 architectury {
     platformSetupLoomIde()
@@ -11,7 +11,7 @@ val geckolibVersion: String by project
 
 base.archivesName.set("${modName}-forge-${minecraftVersion}")
 
-val processJavaClasses by tasks.registering(ProcessClasses::class) {
+val processJavaClasses by tasks.registering(PostProcessClasses::class) {
     extensionPackages.addAll(
         "com.techarium.techarium.forge.extensions",
         "com.techarium.techarium.forge.client.extensions",

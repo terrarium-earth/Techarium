@@ -1,4 +1,4 @@
-import earth.terrarium.ProcessClasses
+import net.msrandom.postprocess.PostProcessClasses
 
 val modName: String by project
 val minecraftVersion: String by project
@@ -17,7 +17,7 @@ loom {
     splitEnvironmentSourceSets()
 }
 
-val processJavaClasses by tasks.registering(ProcessClasses::class) {
+val processJavaClasses by tasks.registering(PostProcessClasses::class) {
     extensionPackages.add("com.techarium.techarium.fabric.extensions")
     dependsOn(tasks.compileJava)
 }
@@ -27,7 +27,7 @@ val compileClientJava = tasks.named<JavaCompile>("compileClientJava") {
     dependsOn(processJavaClasses)
 }
 
-val processJavaClientClasses by tasks.registering(ProcessClasses::class) {
+val processJavaClientClasses by tasks.registering(PostProcessClasses::class) {
     extensionPackages.add("com.techarium.techarium.fabric.client.extensions")
     classesDirectory.convention(compileClientJava.flatMap(AbstractCompile::getDestinationDirectory))
     destinationDirectory.convention(sourceSets.named("client").flatMap { it.java.destinationDirectory })
