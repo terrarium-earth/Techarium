@@ -1,0 +1,28 @@
+{
+  "deployed": "techarium:exchange_station",
+  "keys": {
+    "d": {
+      "block": "#forge:cobblestone"
+    },
+    "e": {
+      "block": "techarium:com_device_element"
+    },
+    "l": {
+      "block": [
+        "minecraft:coal_block",
+        "minecraft:iron_block",
+        "#forge:storage_blocks"
+      ]
+    }
+  },
+  "pattern": [
+    [
+      "ed",
+      "d "
+    ],
+    [
+      "@l",
+      "  "
+    ]
+  ]
+}

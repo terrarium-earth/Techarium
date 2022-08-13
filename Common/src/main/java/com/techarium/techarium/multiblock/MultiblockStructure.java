@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,16 +36,20 @@ public class MultiblockStructure {
 	public static final Codec<List<List<String>>> PATTERN_CODEC = Codec.STRING.listOf().listOf().comapFlatMap(MultiblockStructure::readPattern, lists -> lists);
 	public static final Codec<MultiblockStructure> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			ResourceLocation.CODEC.fieldOf("deployed").forGetter(multiBlockStructure -> toRL(multiBlockStructure.selfDeployingBlock)),
-			PATTERN_CODEC.fieldOf("pattern").forGetter(MultiblockStructure::getPattern),
-			Codec.unboundedMap(Codec.STRING, ResourceLocation.CODEC).fieldOf("keys").forGetter(MultiblockStructure::getKeys)
+			PATTERN_CODEC.fieldOf("pattern").forGetter(multiblockStructure -> multiblockStructure.pattern),
+			Codec.unboundedMap(Codec.STRING, MultiblockElement.CODEC).fieldOf("keys").forGetter(multiblockStructure -> multiblockStructure.keys)
 	).apply(instance, MultiblockStructure::new));
 
-	private final Map<BlockPos, Block> positions;
+	private final Map<BlockPos, MultiblockElement> positions;
 	private final SelfDeployingBlock selfDeployingBlock;
 	private final List<List<String>> pattern;
-	private final Map<String, ResourceLocation> keys;
+	private final Map<String, MultiblockElement> keys;
 
-	public MultiblockStructure(ResourceLocation selfDeployingBlock, List<List<String>> pattern, Map<String, ResourceLocation> keys) {
+	public MultiblockStructure(ResourceLocation selfDeployingBlock, String[][] pattern, Map<String, MultiblockElement> keys) {
+		this(selfDeployingBlock, Arrays.stream(pattern).map(array -> Arrays.stream(array).toList()).toList(), keys);
+	}
+
+	public MultiblockStructure(ResourceLocation selfDeployingBlock, List<List<String>> pattern, Map<String, MultiblockElement> keys) {
 		this.pattern = pattern;
 		this.selfDeployingBlock = ((SelfDeployingBlock) toBlock(selfDeployingBlock));
 		this.keys = keys;
@@ -72,7 +77,7 @@ public class MultiblockStructure {
 				for (int x = 0; x < line.length(); x++) {
 					String element = "" + line.charAt(x);
 					if (keys.containsKey(element)) {
-						this.positions.put(new BlockPos(x - core.getX(), pattern.size() - 1 - y - core.getY(), z - core.getZ()), toBlock(keys.get(element)));
+						this.positions.put(new BlockPos(x - core.getX(), pattern.size() - 1 - y - core.getY(), z - core.getZ()), keys.get(element));
 					}
 				}
 			}
@@ -116,14 +121,6 @@ public class MultiblockStructure {
 		return DataResult.error("@ is not present");
 	}
 
-	private List<List<String>> getPattern() {
-		return this.pattern;
-	}
-
-	private Map<String, ResourceLocation> getKeys() {
-		return this.keys;
-	}
-
 	private static ResourceLocation toRL(Block block) {
 		return Registry.BLOCK.getKey(block);
 	}
@@ -146,13 +143,12 @@ public class MultiblockStructure {
 			// if somehow the core in world doesn't match the multiblock core it's not valid
 			return false;
 		}
-		for (Map.Entry<BlockPos, Block> entry : this.positions.entrySet()) {
+		for (Map.Entry<BlockPos, MultiblockElement> entry : this.positions.entrySet()) {
 			// first rotate the offset, so we're in the same direction as the core block
 			BlockPos offset = MathUtils.rotate(entry.getKey(), direction);
 			// now we check if the block at this position in the world match.
 			BlockPos levelPos = core.offset(offset);
-			Block block = level.getBlockState(levelPos).getBlock();
-			if (!entry.getValue().equals(block)) {
+			if (!entry.getValue().matches(level, levelPos)) {
 				return false;
 			}
 		}
@@ -170,43 +166,19 @@ public class MultiblockStructure {
 		if (!this.canConvert(level, state, corePos)) {
 			return;
 		}
+		HashMap<BlockPos, BlockState> states = new HashMap<>();
 		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-		for (BlockPos pos : this.positions.keySet()) {
+		for (Map.Entry<BlockPos, MultiblockElement> entry : this.positions.entrySet()) {
 			// replace multiblock with air so the self-deploying block can safely replace them.
-			BlockPos levelPos = corePos.offset(MathUtils.rotate(pos, direction));
+			BlockPos levelPos = corePos.offset(MathUtils.rotate(entry.getKey(), direction));
+			states.put(levelPos, level.getBlockState(levelPos));
 			level.setBlock(levelPos, Blocks.AIR.defaultBlockState(), 3);
 		}
 		level.setBlock(corePos, this.selfDeployingBlock.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, direction), 3);
 		if (level.getBlockEntity(corePos) instanceof SelfDeployingMultiblockBlockEntity selfDeployingBlockEntity) {
-			selfDeployingBlockEntity.setDeployedFrom(this);
+			selfDeployingBlockEntity.setMultiblockState(states);
 			selfDeployingBlockEntity.deploy();
 		}
-	}
-
-	/**
-	 * Place the blocks of this structure in the world.
-	 * This should be called from a self-deploying block being destructed.
-	 *
-	 * @param level      the world
-	 * @param state      the state of the core block of the self-deploying block
-	 * @param corePos    the position of the core block of the self-deployed block
-	 * @param initiator  the position of the block that initiated the removal of the self-deployed block
-	 * @param dropBlocks determine if the blocks of this multiblock should be dropped in the world instead of placed in the world.
-	 */
-	public void revert(Level level, BlockState state, BlockPos corePos, BlockPos initiator, boolean dropBlocks) {
-		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-		for (Map.Entry<BlockPos, Block> entry : this.positions.entrySet()) {
-			BlockPos pos = corePos.offset(MathUtils.rotate(entry.getKey(), direction));
-			level.setBlock(pos, entry.getValue().defaultBlockState(), 3);
-			if (dropBlocks) {
-				level.destroyBlock(pos, true);
-			}
-		}
-		level.setBlock(corePos, TechariumBlocks.MACHINE_CORE.get().defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, direction), 3);
-		if (dropBlocks) {
-			level.destroyBlock(corePos, true);
-		}
-		level.destroyBlock(initiator, true);
 	}
 
 	/**
@@ -227,7 +199,7 @@ public class MultiblockStructure {
 					BlockPos offset = new BlockPos(x, y, z);
 					BlockPos rotated = MathUtils.rotate(offset, direction);
 					BlockState state = level.getBlockState(corePos.offset(rotated));
-					if (!(state.getMaterial().isReplaceable() || state.getBlock() instanceof MachineCoreBlock || state.getBlock().equals(this.positions.get(offset)))) {
+					if (!(state.getMaterial().isReplaceable() || state.getBlock() instanceof MachineCoreBlock || this.positions.get(offset).matches(level, corePos.offset(rotated)))) {
 						return false;
 					}
 				}

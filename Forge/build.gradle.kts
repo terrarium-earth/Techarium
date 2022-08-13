@@ -20,6 +20,14 @@ val processJavaClasses by tasks.registering(ProcessClasses::class) {
     dependsOn(tasks.compileJava)
 }
 
+loom {
+    forge {
+        dataGen {
+            mod("techarium")
+        }
+    }
+}
+
 sourceSets {
     main {
         val commonSourceSets = project(":Common").sourceSets
@@ -57,4 +65,6 @@ tasks.processResources {
     filesMatching("META-INF/mods.toml") {
         expand(mapOf("version" to version))
     }
+
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }

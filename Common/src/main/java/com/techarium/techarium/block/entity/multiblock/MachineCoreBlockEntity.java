@@ -40,8 +40,6 @@ public class MachineCoreBlockEntity extends BlockEntity implements ExtraDataMenu
 		super(TechariumBlockEntities.MACHINE_CORE.get(), pos, state);
 	}
 
-	// TODO: 11/07/2022 datapack reload
-	// TODO: 11/07/2022 machine offset from the core
 	public InteractionResult onActivated(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand) {
 		if (this.multiblock == null || player.isShiftKeyDown()) {
 			PlatformHelper.openMenu(((ServerPlayer) player), this);

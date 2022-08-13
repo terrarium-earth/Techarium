@@ -1,6 +1,8 @@
 package com.techarium.techarium.inventory;
 
 import com.techarium.techarium.block.entity.multiblock.MachineCoreBlockEntity;
+import com.techarium.techarium.multiblock.MultiblockStructure;
+import com.techarium.techarium.registry.RegistryHelper;
 import com.techarium.techarium.registry.TechariumBlockEntities;
 import com.techarium.techarium.registry.TechariumMenuTypes;
 import net.minecraft.core.BlockPos;
@@ -32,5 +34,12 @@ public class MachineCoreMenu extends AbstractContainerMenu {
 
 	public MachineCoreBlockEntity getMachineCore() {
 		return machineCore;
+	}
+
+	@Override
+	public boolean clickMenuButton(Player player, int buttonId) {
+		MultiblockStructure multiblockStructure = this.getMachineCore().getLevel().registryAccess().registry(RegistryHelper.getMultiblockRegistryKey()).get().byId(buttonId);
+		this.machineCore.setMultiblock(multiblockStructure);
+		return super.clickMenuButton(player, buttonId);
 	}
 }

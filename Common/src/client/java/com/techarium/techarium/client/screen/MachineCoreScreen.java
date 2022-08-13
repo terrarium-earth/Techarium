@@ -76,7 +76,7 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 		List<MultiblockButton> list = new ArrayList<>();
 		for (var entry : multiblocks) {
 			MutableComponent name = Utils.translatableComponent(entry.getKey().location().toLanguageKey("multiblock"));
-			if (name.getString().toLowerCase(Locale.ENGLISH).contains(filter.toLowerCase(Locale.ENGLISH))) {
+			if (name.getString().toLowerCase().contains(filter.toLowerCase())) {
 				MultiblockButton multiBlockButton = new MultiblockButton(menu.getMachineCore(), entry.getValue(), this.leftPos + IDS_X, 0, 100, 14, name, button -> {
 					this.menu.getMachineCore().setMultiblock(entry.getValue());
 				});
@@ -150,6 +150,16 @@ public class MachineCoreScreen extends AbstractContainerScreen<MachineCoreMenu> 
 			// FIXME this should be a button
 			this.showHints = !this.showHints;
 			return true;
+		}
+
+		for (MultiblockButton multiBlockButton : this.buttons) {
+			if (multiBlockButton.mouseClicked(mouseX, mouseY, mouseButton)) {
+				// little hack to send the id of the multiblock clicked to the server because I can't be bothered right now to send a custom packet
+				// (if this packet is not sent, the server don't know which multiblock has been selected)
+				// see MachineCoreMenu#clickMenuButton() to the reception part
+				int id = this.menu.getMachineCore().getLevel().registryAccess().registry(RegistryHelper.getMultiblockRegistryKey()).get().getId(multiBlockButton.getMultiblock());
+				this.minecraft.gameMode.handleInventoryButtonClick(this.menu.containerId, id);
+			}
 		}
 
 		return textInput.mouseClicked(mouseX, mouseY, mouseButton) || super.mouseClicked(mouseX, mouseY, mouseButton);
