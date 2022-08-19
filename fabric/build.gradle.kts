@@ -13,20 +13,22 @@ loom {
     splitEnvironmentSourceSets()
 }
 
+val client: SourceSet by sourceSets.getting
+
 val processJavaClasses by tasks.registering(PostProcessClasses::class) {
     extensionPackages.add("earth.terrarium.techarium.fabric.extensions")
     dependsOn(tasks.compileJava)
 }
 
 val compileClientJava = tasks.named<JavaCompile>("compileClientJava") {
-    destinationDirectory.set(layout.buildDirectory.dir("classes").map { it.dir("java").dir("client") })
+    destinationDirectory.set(layout.buildDirectory.dir("classes").map { it.dir("java").dir(client.name) })
     dependsOn(processJavaClasses)
 }
 
 val processJavaClientClasses by tasks.registering(PostProcessClasses::class) {
     extensionPackages.add("earth.terrarium.techarium.fabric.client.extensions")
     classesDirectory.convention(compileClientJava.flatMap(AbstractCompile::getDestinationDirectory))
-    destinationDirectory.convention(sourceSets.named("client").flatMap { it.java.destinationDirectory })
+    destinationDirectory.convention(client.java.destinationDirectory)
 
     dependsOn(compileClientJava)
 }
@@ -43,10 +45,10 @@ sourceSets {
         compiledBy(processJavaClasses)
     }
 
-    named("client") {
-        val commonClient = commonSourceSets.named("client")
+    client.apply {
+        val commonClient = commonSourceSets.named(client.name)
 
-        java.destinationDirectory.set(layout.buildDirectory.dir("processedClasses").map { it.dir("java").dir("client") })
+        java.destinationDirectory.set(layout.buildDirectory.dir("processedClasses").map { it.dir("java").dir(client.name) })
 
         java.srcDir(commonClient.map { it.java.srcDirs })
         resources.srcDir(commonClient.map { it.resources.srcDirs })
@@ -62,8 +64,8 @@ dependencies {
 
     compileOnly(projects.common) { isTransitive = false }
 
-    "clientCompileOnly"(projects.common) {
-        targetConfiguration = "clientApiElements"
+    client.compileOnlyConfigurationName(projects.common) {
+        targetConfiguration = client.apiElementsConfigurationName
         isTransitive = false
     }
 }
@@ -73,5 +75,10 @@ tasks.processResources {
 
     filesMatching("fabric.mod.json") {
         expand(mapOf("version" to version))
+    }
+
+    // This won't work when building jars.
+    client.output.resourcesDir?.let {
+        from(it)
     }
 }

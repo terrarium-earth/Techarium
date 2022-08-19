@@ -60,7 +60,7 @@ subprojects {
                 val parchmentVersion: String by project
 
                 officialMojangMappings()
-                parchment(create(group = "org.parchmentmc.data", name = "parchment-1.18.2", version = parchmentVersion, ext = "zip"))
+                parchment(create(group = "org.parchmentmc.data", name = "parchment-$minecraftVersion", version = parchmentVersion, ext = "zip"))
             }
         )
     }
