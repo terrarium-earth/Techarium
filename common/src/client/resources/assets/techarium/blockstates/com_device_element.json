@@ -1,0 +1,7 @@
+{
+	"variants": {
+		"": {
+			"model": "techarium:block/com_device_element"
+		}
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"parent": "minecraft:block/orientable_with_bottom",
+	"textures": {
+		"front": "techarium:block/com_device_element_side",
+		"bottom": "techarium:block/com_device_element_bottom",
+		"top": "techarium:block/com_device_element_top",
+		"side": "techarium:block/com_device_element_side"
+	}
+}
