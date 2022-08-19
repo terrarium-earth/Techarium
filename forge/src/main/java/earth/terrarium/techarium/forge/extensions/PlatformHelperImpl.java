@@ -23,7 +23,7 @@ public class PlatformHelperImpl {
 
 	@ExtensionImplementation
 	public static void openMenu(ServerPlayer player, ExtraDataMenuProvider provider) {
-		NetworkHooks.openGui(player, provider, (data) -> provider.writeExtraData(player, data));
+		NetworkHooks.openScreen(player, provider, (data) -> provider.writeExtraData(player, data));
 	}
 
 	@ExtensionImplementation
