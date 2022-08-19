@@ -1,5 +1,7 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+rootProject.name = "techarium"
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -10,5 +12,12 @@ pluginManagement {
     }
 }
 
-rootProject.name = "techarium"
 include("common", "fabric", "forge")
+
+fun includeNamed(vararg projectPaths: String) {
+    include(*projectPaths)
+
+    for (path in projectPaths) {
+        project(":$path").name = "${rootProject.name}-$path"
+    }
+}

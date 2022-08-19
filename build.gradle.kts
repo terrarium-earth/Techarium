@@ -11,11 +11,37 @@ plugins {
     id("dev.architectury.loom") version "0.12.0-SNAPSHOT" apply false
 }
 
+val modVersion: String by project
 val minecraftVersion: String by project
-val authorName: String by project
 
 architectury {
     minecraft = minecraftVersion
+}
+
+allprojects {
+    apply(plugin = "java")
+    apply(plugin = "architectury-plugin")
+    apply(plugin = "maven-publish")
+
+    version = "$modVersion-$minecraftVersion"
+
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+        withSourcesJar()
+    }
+
+    repositories {
+        mavenCentral()
+
+        maven(url = "https://maven.parchmentmc.org")
+        maven(url = "https://repo.spongepowered.org/repository/maven-public/")
+        maven(url = "https://maven.blamejared.com")
+        maven(url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/")
+    }
+
+    tasks.withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
 }
 
 subprojects {
@@ -41,19 +67,19 @@ subprojects {
 
 
     tasks.jar {
-        val modName: String by project
+        val authorName: String by project
 
         from("LICENSE") {
-            rename { "${it}_${modName}" }
+            rename { "${it}_${rootProject.name}" }
         }
 
         manifest {
             attributes(
-                "Specification-Title" to modName,
+                "Specification-Title" to rootProject.name,
                 "Specification-Vendor" to authorName,
-                "Specification-Version" to archiveVersion.get(),
+                "Specification-Version" to project.version,
                 "Implementation-Title" to name,
-                "Implementation-Version" to archiveVersion.get(),
+                "Implementation-Version" to project.version,
                 "Implementation-Vendor" to authorName,
                 "Built-On-Java" to "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})",
                 "Build-On-Minecraft" to minecraftVersion
@@ -61,7 +87,7 @@ subprojects {
         }
     }
 
-    if (name != projects.common.name) {
+    if (name != rootProject.projects.common.name) {
         sourceSets.main {
             java.destinationDirectory.set(layout.buildDirectory.dir("processedClasses").map { it.dir("java").dir(SourceSet.MAIN_SOURCE_SET_NAME) })
         }
@@ -82,28 +108,5 @@ subprojects {
         tasks.withType<GenerateModuleMetadata> {
             enabled = false
         }
-    }
-}
-
-allprojects {
-    apply(plugin = "architectury-plugin")
-    apply(plugin = "maven-publish")
-
-    java {
-        toolchain.languageVersion.set(JavaLanguageVersion.of(17))
-        withSourcesJar()
-    }
-
-    repositories {
-        mavenCentral()
-
-        maven(url = "https://maven.parchmentmc.org")
-        maven(url = "https://repo.spongepowered.org/repository/maven-public/")
-        maven(url = "https://maven.blamejared.com")
-        maven(url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/")
-    }
-
-    tasks.withType<JavaCompile> {
-        options.encoding = "UTF-8"
     }
 }

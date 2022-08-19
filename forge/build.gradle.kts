@@ -4,12 +4,9 @@ architectury {
     platformSetupLoomIde()
 }
 
-val modName: String by project
 val minecraftVersion: String by project
 val forgeVersion: String by project
 val geckolibVersion: String by project
-
-base.archivesName.set("${modName}-forge-${minecraftVersion}")
 
 val processJavaClasses by tasks.registering(PostProcessClasses::class) {
     extensionPackages.addAll(

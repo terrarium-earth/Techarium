@@ -1,8 +1,4 @@
-val modName: String by project
-val minecraftVersion: String by project
 val geckolibVersion: String by project
-
-base.archivesName.set("${modName}-common-${minecraftVersion}")
 
 loom {
     @Suppress("UnstableApiUsage")

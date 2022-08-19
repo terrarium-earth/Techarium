@@ -1,12 +1,8 @@
 import net.msrandom.postprocess.PostProcessClasses
 
-val modName: String by project
-val minecraftVersion: String by project
 val fabricLoaderVersion: String by project
 val fabricApiVersion: String by project
 val geckolibVersion: String by project
-
-base.archivesName.set("${modName}-fabric-${minecraftVersion}")
 
 architectury {
     platformSetupLoomIde()
