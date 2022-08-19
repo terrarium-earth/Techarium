@@ -71,7 +71,7 @@ subprojects {
         }
 
         tasks.withType<PostProcessClasses> {
-            annotationType.convention("com.techarium.techarium.util.extensions.ExtensionFor")
+            annotationType.convention("earth.terrarium.techarium.util.extensions.ExtensionFor")
             classesDirectory.convention(tasks.compileJava.flatMap(AbstractCompile::getDestinationDirectory))
             destinationDirectory.convention(sourceSets.main.flatMap { it.java.destinationDirectory })
         }

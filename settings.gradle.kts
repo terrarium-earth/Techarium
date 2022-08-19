@@ -1,3 +1,5 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -9,4 +11,4 @@ pluginManagement {
 }
 
 rootProject.name = "techarium"
-include("Common", "Fabric", "Forge")
+include("common", "fabric", "forge")
