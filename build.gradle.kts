@@ -61,7 +61,7 @@ subprojects {
         }
     }
 
-    if (name != "Common") {
+    if (name != projects.common.name) {
         sourceSets.main {
             java.destinationDirectory.set(layout.buildDirectory.dir("processedClasses").map { it.dir("java").dir(SourceSet.MAIN_SOURCE_SET_NAME) })
         }
