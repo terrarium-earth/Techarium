@@ -37,7 +37,7 @@ public class ForgeRegistryHelper {
     }
 
     @ExtensionImplementation
-    public static ResourceKey<? extends Registry<MultiblockStructure>> getMultiblockRegistryKey() {
+    public static ResourceKey<Registry<MultiblockStructure>> getMultiblockRegistryKey() {
         return MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey();
     }
 
