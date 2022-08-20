@@ -32,7 +32,7 @@ public final class RegistryHelper {
     }
 
     @ExtendableDeclaration
-    public static ResourceKey<? extends Registry<MultiblockStructure>> getMultiblockRegistryKey() {
+    public static ResourceKey<Registry<MultiblockStructure>> getMultiblockRegistryKey() {
         throw new NotImplementedException("getMultiblockRegistryKey was not implemented.");
     }
 

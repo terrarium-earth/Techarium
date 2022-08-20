@@ -8,11 +8,9 @@ import earth.terrarium.techarium.multiblock.MultiblockElement;
 import earth.terrarium.techarium.multiblock.MultiblockStructure;
 import earth.terrarium.techarium.registry.RegistryHelper;
 import earth.terrarium.techarium.util.Utils;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.JsonCodecProvider;
@@ -33,7 +31,7 @@ public class DatagenEvenHandler {
 		RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, registryAccess);
 
 		JsonCodecProvider<MultiblockStructure> multiblockProvider = JsonCodecProvider.forDatapackRegistry(
-				generator, existingFileHelper, Techarium.MOD_ID, registryOps, (ResourceKey<Registry<MultiblockStructure>>) RegistryHelper.getMultiblockRegistryKey(), createMultiblocks());
+				generator, existingFileHelper, Techarium.MOD_ID, registryOps, RegistryHelper.getMultiblockRegistryKey(), createMultiblocks());
 		generator.addProvider(event.includeServer(), multiblockProvider);
 	}
 
