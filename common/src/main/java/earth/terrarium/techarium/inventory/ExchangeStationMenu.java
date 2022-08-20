@@ -4,6 +4,7 @@ import earth.terrarium.techarium.block.entity.selfdeploying.ExchangeStationBlock
 import earth.terrarium.techarium.registry.TechariumBlockEntities;
 import earth.terrarium.techarium.registry.TechariumMenuTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.FurnaceResultSlot;
@@ -14,7 +15,11 @@ public class ExchangeStationMenu extends MachineMenu {
 
 	private final ExchangeStationBlockEntity exchangeStation;
 
-	public ExchangeStationMenu(int id, Inventory playerInventory, Player player, BlockPos pos) {
+	public ExchangeStationMenu(int id, Inventory inventory, FriendlyByteBuf buffer) {
+		this(id, inventory, inventory.player, buffer.readBlockPos());
+	}
+
+	public ExchangeStationMenu(int id, Inventory inventory, Player player, BlockPos pos) {
 		super(TechariumMenuTypes.EXCHANGE_STATION.get(), id, pos);
 		this.exchangeStation = TechariumBlockEntities.EXCHANGE_STATION.get().getBlockEntity(player.level, this.pos);
 
@@ -29,11 +34,11 @@ public class ExchangeStationMenu extends MachineMenu {
 
 		for (int y = 0; y < 3; y++) {
 			for (int x = 0; x < 9; x++) {
-				this.addSlot(new Slot(playerInventory, 9 + y * 9 + x, 16 + 18 * x, 148 + 18 * y));
+				this.addSlot(new Slot(inventory, 9 + y * 9 + x, 16 + 18 * x, 148 + 18 * y));
 			}
 		}
 		for (int x = 0; x < 9; x++) {
-			this.addSlot(new Slot(playerInventory, x, 16 + 18 * x, 206));
+			this.addSlot(new Slot(inventory, x, 16 + 18 * x, 206));
 		}
 	}
 

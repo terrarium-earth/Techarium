@@ -6,6 +6,7 @@ import earth.terrarium.techarium.registry.RegistryHelper;
 import earth.terrarium.techarium.registry.TechariumBlockEntities;
 import earth.terrarium.techarium.registry.TechariumMenuTypes;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -16,7 +17,11 @@ public class MachineCoreMenu extends AbstractContainerMenu {
 	private final BlockPos pos;
 	private final MachineCoreBlockEntity machineCore;
 
-	public MachineCoreMenu(int id, Inventory playerInventory, Player player, BlockPos pos) {
+	public MachineCoreMenu(int id, Inventory inventory, FriendlyByteBuf buffer) {
+		this(id, inventory.player, buffer.readBlockPos());
+	}
+
+	public MachineCoreMenu(int id, Player player, BlockPos pos) {
 		super(TechariumMenuTypes.MACHINE_CORE.get(), id);
 		this.pos = pos;
 		this.machineCore = TechariumBlockEntities.MACHINE_CORE.get().getBlockEntity(player.level, this.pos);

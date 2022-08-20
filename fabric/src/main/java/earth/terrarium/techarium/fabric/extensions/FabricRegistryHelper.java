@@ -36,7 +36,7 @@ public class FabricRegistryHelper {
 
 	@ExtensionImplementation
 	public static <E extends AbstractContainerMenu> MenuType<E> createMenuType(RegistryHelper.MenuTypeFactory<E> factory) {
-		return new ExtendedScreenHandlerType<>((windowId, inventory, buf) -> factory.create(windowId, inventory, buf.readBlockPos()));
+		return new ExtendedScreenHandlerType<>(factory::create);
 	}
 
 	@ExtensionImplementation
