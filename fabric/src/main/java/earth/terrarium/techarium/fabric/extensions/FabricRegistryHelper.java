@@ -1,6 +1,5 @@
 package earth.terrarium.techarium.fabric.extensions;
 
-import com.mojang.serialization.Lifecycle;
 import earth.terrarium.techarium.Techarium;
 import earth.terrarium.techarium.multiblock.MultiblockStructure;
 import earth.terrarium.techarium.registry.RegistryHelper;
@@ -13,8 +12,6 @@ import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityT
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.WritableRegistry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -32,11 +29,6 @@ public class FabricRegistryHelper {
 
 	public static final MappedRegistry<MultiblockStructure> MULTIBLOCK_STRUCTURES = FabricRegistryBuilder.createSimple(MultiblockStructure.class, Utils.resourceLocation(Techarium.MOD_ID + "/multiblock")).buildAndRegister();
 
-	static {
-		// register our own datapack registries to the builtin registries.
-		((WritableRegistry) BuiltinRegistries.REGISTRY).register(MULTIBLOCK_STRUCTURES.key(), MULTIBLOCK_STRUCTURES, Lifecycle.stable());
-	}
-
 	@ExtensionImplementation
 	public static <E extends BlockEntity> BlockEntityType<E> createBlockEntityType(RegistryHelper.BlockEntityFactory<E> factory, Block... blocks) {
 		return FabricBlockEntityTypeBuilder.create(factory::create, blocks).build();
@@ -44,12 +36,13 @@ public class FabricRegistryHelper {
 
 	@ExtensionImplementation
 	public static <E extends AbstractContainerMenu> MenuType<E> createMenuType(RegistryHelper.MenuTypeFactory<E> factory) {
-		return new ExtendedScreenHandlerType<>((windowId, inventory, buf) -> factory.create(windowId, inventory, buf.readBlockPos()));
+		return new ExtendedScreenHandlerType<>(factory::create);
 	}
 
 	@ExtensionImplementation
-	public static ResourceKey<? extends Registry<MultiblockStructure>> getMultiblockRegistryKey() {
-		return MULTIBLOCK_STRUCTURES.key();
+	@SuppressWarnings("unchecked")
+	public static ResourceKey<Registry<MultiblockStructure>> getMultiblockRegistryKey() {
+		return (ResourceKey<Registry<MultiblockStructure>>) MULTIBLOCK_STRUCTURES.key();
 	}
 
 	@ExtensionImplementation

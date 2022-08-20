@@ -21,6 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -84,8 +85,8 @@ public class MachineCoreBlockEntity extends BlockEntity implements ExtraDataMenu
 
 	@Nullable
 	@Override
-	public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
-		return new MachineCoreMenu(id, inv, player, this.worldPosition);
+	public AbstractContainerMenu createMenu(int id, @NotNull Inventory inv, @NotNull Player player) {
+		return new MachineCoreMenu(id, player, this.worldPosition);
 	}
 
 	public void setMultiblock(MultiblockStructure multiblock) {

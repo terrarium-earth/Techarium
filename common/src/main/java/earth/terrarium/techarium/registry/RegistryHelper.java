@@ -4,6 +4,7 @@ import earth.terrarium.techarium.multiblock.MultiblockStructure;
 import earth.terrarium.techarium.util.extensions.ExtendableDeclaration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.NotImplementedException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
@@ -32,7 +34,7 @@ public final class RegistryHelper {
     }
 
     @ExtendableDeclaration
-    public static ResourceKey<? extends Registry<MultiblockStructure>> getMultiblockRegistryKey() {
+    public static ResourceKey<Registry<MultiblockStructure>> getMultiblockRegistryKey() {
         throw new NotImplementedException("getMultiblockRegistryKey was not implemented.");
     }
 
@@ -44,14 +46,14 @@ public final class RegistryHelper {
     @FunctionalInterface
     public interface BlockEntityFactory<T extends BlockEntity> {
 
-        T create(BlockPos blockPos, BlockState blockState);
+        @NotNull T create(BlockPos blockPos, BlockState blockState);
 
     }
 
     @FunctionalInterface
     public interface MenuTypeFactory<T extends AbstractContainerMenu> {
 
-        T create(int id, Inventory inventory, BlockPos pos);
+        T create(int id, Inventory inventory, FriendlyByteBuf buf);
 
     }
 }

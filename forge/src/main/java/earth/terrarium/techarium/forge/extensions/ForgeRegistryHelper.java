@@ -33,7 +33,7 @@ public class ForgeRegistryHelper {
 
     @ExtensionImplementation
     public static <E extends AbstractContainerMenu> MenuType<E> createMenuType(RegistryHelper.MenuTypeFactory<E> factory) {
-        return IForgeMenuType.create((windowId, inv, data) -> factory.create(windowId, inv, data.readBlockPos()));
+        return IForgeMenuType.create(factory::create);
     }
 
     @ExtensionImplementation
