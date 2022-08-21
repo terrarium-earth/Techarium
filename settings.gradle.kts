@@ -12,12 +12,13 @@ pluginManagement {
     }
 }
 
-include("common", "fabric", "forge")
+includeNamed("common", "fabric", "forge")
 
 fun includeNamed(vararg projectPaths: String) {
     include(*projectPaths)
 
     for (path in projectPaths) {
-        project(":$path").name = "${rootProject.name}-$path"
+        val project = project(":$path")
+        project.name = "${project.parent?.name}-$path"
     }
 }

@@ -1,9 +1,7 @@
-package earth.terrarium.techarium.forge.extensions;
+package earth.terrarium.techarium.compilemixins;
 
 import earth.terrarium.techarium.inventory.ExtraDataMenuProvider;
 import earth.terrarium.techarium.util.PlatformHelper;
-import earth.terrarium.techarium.util.extensions.ExtensionFor;
-import earth.terrarium.techarium.util.extensions.ExtensionImplementation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -13,20 +11,22 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.network.NetworkHooks;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 
-@ExtensionFor(PlatformHelper.class)
-public class PlatformHelperImpl {
-	@ExtensionImplementation
+@Mixin(value = PlatformHelper.class, remap = false)
+public class PlatformHelperCompileMixin {
+	@Overwrite
 	public static boolean isDevelopmentEnvironment() {
 		return !FMLLoader.isProduction();
 	}
 
-	@ExtensionImplementation
+	@Overwrite
 	public static void openMenu(ServerPlayer player, ExtraDataMenuProvider provider) {
 		NetworkHooks.openScreen(player, provider, (data) -> provider.writeExtraData(player, data));
 	}
 
-	@ExtensionImplementation
+	@Overwrite
 	public static Fluid determineFluidFromItem(ItemStack stack) {
 		FluidStack fluidStack = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
 		if (fluidStack.isEmpty()) {
@@ -35,7 +35,7 @@ public class PlatformHelperImpl {
 		return fluidStack.getFluid();
 	}
 
-	@ExtensionImplementation
+	@Overwrite
 	public static Component getFluidName(Fluid fluid) {
 		return fluid.getFluidType().getDescription();
 	}

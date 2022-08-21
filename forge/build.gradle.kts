@@ -1,4 +1,4 @@
-import net.msrandom.postprocess.PostProcessClasses
+import net.msrandom.postprocess.MixinClasses
 
 architectury {
     platformSetupLoomIde()
@@ -8,11 +8,9 @@ val minecraftVersion: String by project
 val forgeVersion: String by project
 val geckolibVersion: String by project
 
-val processJavaClasses by tasks.registering(PostProcessClasses::class) {
-    extensionPackages.addAll(
-        "earth.terrarium.techarium.forge.extensions",
-        "earth.terrarium.techarium.forge.client.extensions",
-    )
+val mixinJavaClasses by tasks.registering(MixinClasses::class) {
+    configs.from(rootProject.file("compile.mixins.json"), rootProject.file("compile-client.mixins.json"))
+    classpath.from(tasks.compileJava.map(AbstractCompile::getClasspath))
 
     dependsOn(tasks.compileJava)
 }
@@ -27,7 +25,7 @@ loom {
 
 sourceSets {
     main {
-        val commonSourceSets = projects.common.dependencyProject.sourceSets
+        val commonSourceSets = projects.techariumCommon.dependencyProject.sourceSets
 
         val commonMain = commonSourceSets.main
         val commonClient = commonSourceSets.named("client")
@@ -42,9 +40,9 @@ sourceSets {
             commonClient.map { it.resources.srcDirs },
         )
 
-        resources.srcDir("src/generated/resources")
+        // resources.srcDir("src/generated/resources")
 
-        compiledBy(processJavaClasses)
+        compiledBy(mixinJavaClasses)
     }
 }
 
@@ -52,9 +50,9 @@ dependencies {
     forge(group = "net.minecraftforge", name = "forge", version = "${minecraftVersion}-${forgeVersion}")
     modImplementation(group = "software.bernie.geckolib", name = "geckolib-forge-1.19", version = geckolibVersion)
 
-    compileOnly(projects.common) { isTransitive = false }
+    compileOnly(projects.techariumCommon) { isTransitive = false }
 
-    compileOnly(projects.common) {
+    compileOnly(projects.techariumCommon) {
         targetConfiguration = "clientApiElements"
         isTransitive = false
     }
@@ -66,6 +64,4 @@ tasks.processResources {
     filesMatching("META-INF/mods.toml") {
         expand(mapOf("version" to version))
     }
-
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }

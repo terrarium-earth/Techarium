@@ -1,10 +1,8 @@
-package earth.terrarium.techarium.fabric.extensions;
+package earth.terrarium.techarium.compilemixins;
 
 import earth.terrarium.techarium.fabric.inventory.ExtraDataMenuProviderWrapper;
 import earth.terrarium.techarium.inventory.ExtraDataMenuProvider;
-import earth.terrarium.techarium.util.extensions.ExtensionFor;
 import earth.terrarium.techarium.util.PlatformHelper;
-import earth.terrarium.techarium.util.extensions.ExtensionImplementation;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -17,20 +15,22 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 
-@ExtensionFor(PlatformHelper.class)
-public class PlatformHelperImpl {
-	@ExtensionImplementation
+@Mixin(value = PlatformHelper.class, remap = false)
+public class PlatformHelperCompileMixin {
+	@Overwrite
 	public static boolean isDevelopmentEnvironment() {
 		return FabricLoader.getInstance().isDevelopmentEnvironment();
 	}
 
-	@ExtensionImplementation
+	@Overwrite
 	public static void openMenu(ServerPlayer player, ExtraDataMenuProvider provider) {
 		player.openMenu(new ExtraDataMenuProviderWrapper(provider));
 	}
 
-	@ExtensionImplementation
+	@Overwrite
 	public static Fluid determineFluidFromItem(ItemStack stack) {
 		Storage<FluidVariant> storage = ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM);
 		if (storage == null) {
@@ -42,7 +42,7 @@ public class PlatformHelperImpl {
 		return Fluids.EMPTY;
 	}
 
-	@ExtensionImplementation
+	@Overwrite
 	public static Component getFluidName(Fluid fluid) {
 		return FluidVariantAttributes.getName(FluidVariant.of(fluid));
 	}

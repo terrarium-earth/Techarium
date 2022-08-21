@@ -1,7 +1,7 @@
 package earth.terrarium.techarium.registry;
 
 import earth.terrarium.techarium.multiblock.MultiblockStructure;
-import earth.terrarium.techarium.util.extensions.ExtendableDeclaration;
+import earth.terrarium.techarium.util.ImplementedByMixin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,24 +21,23 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-@ExtendableDeclaration
 public final class RegistryHelper {
-    @ExtendableDeclaration
+    @ImplementedByMixin
     public static <E extends BlockEntity> BlockEntityType<E> createBlockEntityType(BlockEntityFactory<E> factory, Block... blocks) {
         throw new NotImplementedException("createBlockEntityType was not implemented.");
     }
 
-    @ExtendableDeclaration
+    @ImplementedByMixin
     public static <E extends AbstractContainerMenu> MenuType<E> createMenuType(MenuTypeFactory<E> factory) {
         throw new NotImplementedException("createBlockEntityType was not implemented.");
     }
 
-    @ExtendableDeclaration
+    @ImplementedByMixin
     public static ResourceKey<Registry<MultiblockStructure>> getMultiblockRegistryKey() {
         throw new NotImplementedException("getMultiblockRegistryKey was not implemented.");
     }
 
-    @ExtendableDeclaration
+    @ImplementedByMixin
     public static CreativeModeTab registerCreativeTab(ResourceLocation tab, Supplier<ItemStack> icon) {
         throw new NotImplementedException("registerCreativeTab was not implemented.");
     }

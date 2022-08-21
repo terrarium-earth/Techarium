@@ -1,4 +1,4 @@
-import net.msrandom.postprocess.PostProcessClasses
+import net.msrandom.postprocess.MixinClasses
 
 val fabricLoaderVersion: String by project
 val fabricApiVersion: String by project
@@ -15,18 +15,19 @@ loom {
 
 val client: SourceSet by sourceSets.getting
 
-val processJavaClasses by tasks.registering(PostProcessClasses::class) {
-    extensionPackages.add("earth.terrarium.techarium.fabric.extensions")
+val mixinJavaClasses by tasks.registering(MixinClasses::class) {
+    configs.from(rootProject.file("compile.mixins.json"))
+    classpath.from(tasks.compileJava.map(AbstractCompile::getClasspath))
     dependsOn(tasks.compileJava)
 }
 
-val compileClientJava = tasks.named<JavaCompile>("compileClientJava") {
+val compileClientJava = tasks.named<JavaCompile>(client.compileJavaTaskName) {
     destinationDirectory.set(layout.buildDirectory.dir("classes").map { it.dir("java").dir(client.name) })
-    dependsOn(processJavaClasses)
+    dependsOn(mixinJavaClasses)
 }
 
-val processJavaClientClasses by tasks.registering(PostProcessClasses::class) {
-    extensionPackages.add("earth.terrarium.techarium.fabric.client.extensions")
+val mixinClientJavaClasses by tasks.registering(MixinClasses::class) {
+    configs.from(rootProject.file("compile-${client.name}.mixins.json"))
     classesDirectory.convention(compileClientJava.flatMap(AbstractCompile::getDestinationDirectory))
     destinationDirectory.convention(client.java.destinationDirectory)
 
@@ -34,7 +35,7 @@ val processJavaClientClasses by tasks.registering(PostProcessClasses::class) {
 }
 
 sourceSets {
-    val commonSourceSets = projects.common.dependencyProject.sourceSets
+    val commonSourceSets = projects.techariumCommon.dependencyProject.sourceSets
 
     main {
         val commonMain = commonSourceSets.main
@@ -42,7 +43,7 @@ sourceSets {
         java.srcDir(commonMain.map { it.java.srcDirs })
         resources.srcDir(commonMain.map { it.resources.srcDirs })
 
-        compiledBy(processJavaClasses)
+        compiledBy(mixinJavaClasses)
     }
 
     client.apply {
@@ -53,7 +54,7 @@ sourceSets {
         java.srcDir(commonClient.map { it.java.srcDirs })
         resources.srcDir(commonClient.map { it.resources.srcDirs })
 
-        compiledBy(processJavaClientClasses)
+        compiledBy(mixinClientJavaClasses)
     }
 }
 
@@ -62,9 +63,9 @@ dependencies {
     modImplementation(group = "net.fabricmc.fabric-api", name = "fabric-api", version = fabricApiVersion)
     modImplementation(group = "software.bernie.geckolib", name = "geckolib-fabric-1.19", version = geckolibVersion)
 
-    compileOnly(projects.common) { isTransitive = false }
+    compileOnly(projects.techariumCommon) { isTransitive = false }
 
-    client.compileOnlyConfigurationName(projects.common) {
+    client.compileOnlyConfigurationName(projects.techariumCommon) {
         targetConfiguration = client.apiElementsConfigurationName
         isTransitive = false
     }
@@ -77,8 +78,13 @@ tasks.processResources {
         expand(mapOf("version" to version))
     }
 
-    // This won't work when building jars.
     client.output.resourcesDir?.let {
         from(it)
     }
+
+    dependsOn(client.processResourcesTaskName)
+}
+
+tasks.jar {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }

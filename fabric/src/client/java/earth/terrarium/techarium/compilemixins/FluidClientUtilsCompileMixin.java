@@ -1,23 +1,23 @@
-package earth.terrarium.techarium.fabric.client.extensions;
+package earth.terrarium.techarium.compilemixins;
 
 import earth.terrarium.techarium.client.util.FluidClientUtils;
-import earth.terrarium.techarium.util.extensions.ExtensionFor;
-import earth.terrarium.techarium.util.extensions.ExtensionImplementation;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 
-@ExtensionFor(FluidClientUtils.class)
-public class FluidClientUtilsImpl {
-	@ExtensionImplementation
+@Mixin(value = FluidClientUtils.class, remap = false)
+public class FluidClientUtilsCompileMixin {
+	@Overwrite
 	public static TextureAtlasSprite getStillTexture(Fluid fluid, @Nullable BlockAndTintGetter view, @Nullable BlockPos pos) {
 		return FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidSprites(view, pos, fluid.defaultFluidState())[0];
 	}
 
-	@ExtensionImplementation
+	@Overwrite
 	public static int getFluidColor(Fluid fluid, @Nullable BlockAndTintGetter view, @Nullable BlockPos pos) {
 		return FluidRenderHandlerRegistry.INSTANCE.get(fluid).getFluidColor(view, pos, fluid.defaultFluidState());
 	}

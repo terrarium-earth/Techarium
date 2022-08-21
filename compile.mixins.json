@@ -1,0 +1,9 @@
+{
+  "minVersion": "0.8",
+  "package": "earth.terrarium.techarium.compilemixins",
+  "mixins": [
+    "PlatformHelperCompileMixin",
+    "RegistryHelperCompileMixin",
+    "TechariumRegistrarCompileMixin"
+  ]
+}

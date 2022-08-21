@@ -1,30 +1,34 @@
-package earth.terrarium.techarium.fabric.extensions;
+package earth.terrarium.techarium.compilemixins;
 
 import earth.terrarium.techarium.fabric.registry.RegistrySupplier;
 import earth.terrarium.techarium.registry.TechariumRegistrar;
-import earth.terrarium.techarium.util.extensions.ExtensionFor;
-import earth.terrarium.techarium.util.extensions.ExtensionImplementation;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-@ExtensionFor(TechariumRegistrar.class)
-public class TechariumFabricRegistrar<T> {
-    private final String modId;
-    private final Registry<T> registry;
+@Mixin(value = TechariumRegistrar.class, remap = false)
+public class TechariumRegistrarCompileMixin<T> {
+    private String modId;
+
+    private Registry<T> registry;
 
     private final List<RegistrySupplier<T, ?>> registered = new ArrayList<>();
 
-    @ExtensionImplementation
-    public TechariumFabricRegistrar(String modId, Registry<T> registry) {
+    @Overwrite
+    private void init(String modId, Registry<T> registry) {
         this.modId = modId;
         this.registry = registry;
     }
 
-    @ExtensionImplementation
+    @Overwrite
     public <U extends T> Supplier<U> register(String name, Supplier<U> factory) {
         var supplier = new RegistrySupplier<>(new ResourceLocation(modId, name), registry, factory);
 
@@ -32,7 +36,7 @@ public class TechariumFabricRegistrar<T> {
         return supplier;
     }
 
-    @ExtensionImplementation
+    @Overwrite
     public void initialize() {
         for (var entry : registered) {
             entry.initialize();

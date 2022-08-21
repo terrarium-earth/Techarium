@@ -1,11 +1,9 @@
-package earth.terrarium.techarium.fabric.extensions;
+package earth.terrarium.techarium.compilemixins;
 
 import earth.terrarium.techarium.Techarium;
 import earth.terrarium.techarium.multiblock.MultiblockStructure;
 import earth.terrarium.techarium.registry.RegistryHelper;
 import earth.terrarium.techarium.util.Utils;
-import earth.terrarium.techarium.util.extensions.ExtensionFor;
-import earth.terrarium.techarium.util.extensions.ExtensionImplementation;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
@@ -21,31 +19,33 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 
 import java.util.function.Supplier;
 
-@ExtensionFor(RegistryHelper.class)
-public class FabricRegistryHelper {
+@Mixin(value = RegistryHelper.class, remap = false)
+public class RegistryHelperCompileMixin {
 
 	public static final MappedRegistry<MultiblockStructure> MULTIBLOCK_STRUCTURES = FabricRegistryBuilder.createSimple(MultiblockStructure.class, Utils.resourceLocation(Techarium.MOD_ID + "/multiblock")).buildAndRegister();
 
-	@ExtensionImplementation
+	@Overwrite
 	public static <E extends BlockEntity> BlockEntityType<E> createBlockEntityType(RegistryHelper.BlockEntityFactory<E> factory, Block... blocks) {
 		return FabricBlockEntityTypeBuilder.create(factory::create, blocks).build();
 	}
 
-	@ExtensionImplementation
+	@Overwrite
 	public static <E extends AbstractContainerMenu> MenuType<E> createMenuType(RegistryHelper.MenuTypeFactory<E> factory) {
 		return new ExtendedScreenHandlerType<>(factory::create);
 	}
 
-	@ExtensionImplementation
+	@Overwrite
 	@SuppressWarnings("unchecked")
 	public static ResourceKey<Registry<MultiblockStructure>> getMultiblockRegistryKey() {
 		return (ResourceKey<Registry<MultiblockStructure>>) MULTIBLOCK_STRUCTURES.key();
 	}
 
-	@ExtensionImplementation
+	@Overwrite
 	public static CreativeModeTab registerCreativeTab(ResourceLocation tab, Supplier<ItemStack> icon) {
 		return FabricItemGroupBuilder.build(tab, icon);
 	}

@@ -1,24 +1,27 @@
 package earth.terrarium.techarium.registry;
 
-import earth.terrarium.techarium.util.extensions.ExtendableDeclaration;
+import earth.terrarium.techarium.util.ImplementedByMixin;
 import net.minecraft.core.Registry;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.function.Supplier;
 
-@ExtendableDeclaration
 public class TechariumRegistrar<T> {
-    @ExtendableDeclaration
     public TechariumRegistrar(String modId, Registry<T> registry) {
-        throw new NotImplementedException("TechariumRegistrar was not implemented.");
+        init(modId, registry);
     }
 
-    @ExtendableDeclaration
+    @ImplementedByMixin
+    private void init(String modId, Registry<T> registry) {
+        throw new NotImplementedException("init was not implemented.");
+    }
+
+    @ImplementedByMixin
     public <U extends T> Supplier<U> register(String name, Supplier<U> supplier) {
         throw new NotImplementedException("register was not implemented.");
     }
 
-    @ExtendableDeclaration
+    @ImplementedByMixin
     public void initialize() {
         throw new NotImplementedException("initialize was not implemented.");
     }

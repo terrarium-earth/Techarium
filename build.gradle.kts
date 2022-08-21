@@ -1,12 +1,12 @@
 @file:Suppress("UnstableApiUsage")
 
-import net.msrandom.postprocess.PostProcessClasses
+import net.msrandom.postprocess.MixinClasses
 import net.fabricmc.loom.util.Constants
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 
 plugins {
     java
-    id("jvm-post-processing") version "0.1"
+    id("jvm-post-processing") version "0.6.1"
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("dev.architectury.loom") version "0.12.0-SNAPSHOT" apply false
 }
@@ -23,7 +23,7 @@ allprojects {
     apply(plugin = "architectury-plugin")
     apply(plugin = "maven-publish")
 
-    version = "$modVersion-$minecraftVersion"
+    version = "$minecraftVersion-$modVersion"
 
     java {
         toolchain.languageVersion.set(JavaLanguageVersion.of(17))
@@ -87,7 +87,7 @@ subprojects {
         }
     }
 
-    if (name != rootProject.projects.common.name) {
+    if (name != rootProject.projects.techariumCommon.name) {
         sourceSets.main {
             java.destinationDirectory.set(layout.buildDirectory.dir("processedClasses").map { it.dir("java").dir(SourceSet.MAIN_SOURCE_SET_NAME) })
         }
@@ -96,8 +96,7 @@ subprojects {
             destinationDirectory.set(layout.buildDirectory.dir("classes").map { it.dir("java").dir(SourceSet.MAIN_SOURCE_SET_NAME) })
         }
 
-        tasks.withType<PostProcessClasses> {
-            annotationType.convention("earth.terrarium.techarium.util.extensions.ExtensionFor")
+        tasks.withType<MixinClasses> {
             classesDirectory.convention(tasks.compileJava.flatMap(AbstractCompile::getDestinationDirectory))
             destinationDirectory.convention(sourceSets.main.flatMap { it.java.destinationDirectory })
         }
