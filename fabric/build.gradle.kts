@@ -1,5 +1,3 @@
-import net.msrandom.extensions.PostProcessClasses
-
 val fabricLoaderVersion: String by project
 val fabricApiVersion: String by project
 val geckolibVersion: String by project

@@ -1,5 +1,3 @@
-import net.msrandom.extensions.PostProcessClasses
-
 architectury {
     platformSetupLoomIde()
 }

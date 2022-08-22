@@ -1,6 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-import net.msrandom.extensions.PostProcessClasses
 import net.fabricmc.loom.util.Constants
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 
