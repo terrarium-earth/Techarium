@@ -1,12 +1,11 @@
 @file:Suppress("UnstableApiUsage")
 
-import net.msrandom.postprocess.PostProcessClasses
 import net.fabricmc.loom.util.Constants
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 
 plugins {
     java
-    id("jvm-post-processing") version "0.1"
+    id("jvm-class-extensions") version "1.0"
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("dev.architectury.loom") version "0.12.0-SNAPSHOT" apply false
 }
@@ -45,12 +44,16 @@ allprojects {
 }
 
 subprojects {
-    apply(plugin = "jvm-post-processing")
+    apply(plugin = "jvm-class-extensions")
     apply(plugin = "dev.architectury.loom")
 
     val loom = the<LoomGradleExtensionAPI>()
 
     loom.silentMojangMappingsLicense()
+
+    repositories {
+        maven(url = "https://maven.msrandom.net/repository/root/")
+    }
 
     dependencies {
         Constants.Configurations.MINECRAFT(group = "com.mojang", name = "minecraft", version = minecraftVersion)
@@ -64,7 +67,6 @@ subprojects {
             }
         )
     }
-
 
     tasks.jar {
         val authorName: String by project
@@ -87,21 +89,7 @@ subprojects {
         }
     }
 
-    if (name != rootProject.projects.common.name) {
-        sourceSets.main {
-            java.destinationDirectory.set(layout.buildDirectory.dir("processedClasses").map { it.dir("java").dir(SourceSet.MAIN_SOURCE_SET_NAME) })
-        }
-
-        tasks.compileJava {
-            destinationDirectory.set(layout.buildDirectory.dir("classes").map { it.dir("java").dir(SourceSet.MAIN_SOURCE_SET_NAME) })
-        }
-
-        tasks.withType<PostProcessClasses> {
-            annotationType.convention("earth.terrarium.techarium.util.extensions.ExtensionFor")
-            classesDirectory.convention(tasks.compileJava.flatMap(AbstractCompile::getDestinationDirectory))
-            destinationDirectory.convention(sourceSets.main.flatMap { it.java.destinationDirectory })
-        }
-
+    if (name != rootProject.projects.techariumCommon.name) {
         // Disables Gradle's custom module metadata from being published to maven. The
         // metadata includes mapped dependencies which are not reasonably consumable by
         // other mod developers.

@@ -6,6 +6,7 @@ loom {
 }
 
 dependencies {
+    compileOnly(group = "net.msrandom", name = "class-extension-annotations", version = "1.0")
     modImplementation(group = "software.bernie.geckolib", name = "geckolib-fabric-1.19", version = geckolibVersion)
 }
 

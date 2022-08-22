@@ -1,5 +1,3 @@
-import net.msrandom.postprocess.PostProcessClasses
-
 architectury {
     platformSetupLoomIde()
 }
@@ -8,13 +6,8 @@ val minecraftVersion: String by project
 val forgeVersion: String by project
 val geckolibVersion: String by project
 
-val processJavaClasses by tasks.registering(PostProcessClasses::class) {
-    extensionPackages.addAll(
-        "earth.terrarium.techarium.forge.extensions",
-        "earth.terrarium.techarium.forge.client.extensions",
-    )
-
-    dependsOn(tasks.compileJava)
+classExtensions {
+    registerForSourceSet(sourceSets.main.get(), "earth.terrarium.techarium.forge.extensions", "earth.terrarium.techarium.forge.client.extensions")
 }
 
 loom {
@@ -27,7 +20,7 @@ loom {
 
 sourceSets {
     main {
-        val commonSourceSets = projects.common.dependencyProject.sourceSets
+        val commonSourceSets = projects.techariumCommon.dependencyProject.sourceSets
 
         val commonMain = commonSourceSets.main
         val commonClient = commonSourceSets.named("client")
@@ -43,8 +36,6 @@ sourceSets {
         )
 
         resources.srcDir("src/generated/resources")
-
-        compiledBy(processJavaClasses)
     }
 }
 
@@ -52,9 +43,9 @@ dependencies {
     forge(group = "net.minecraftforge", name = "forge", version = "${minecraftVersion}-${forgeVersion}")
     modImplementation(group = "software.bernie.geckolib", name = "geckolib-forge-1.19", version = geckolibVersion)
 
-    compileOnly(projects.common) { isTransitive = false }
+    compileOnly(projects.techariumCommon) { isTransitive = false }
 
-    compileOnly(projects.common) {
+    compileOnly(projects.techariumCommon) {
         targetConfiguration = "clientApiElements"
         isTransitive = false
     }
@@ -67,5 +58,9 @@ tasks.processResources {
         expand(mapOf("version" to version))
     }
 
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+tasks.sourcesJar {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }

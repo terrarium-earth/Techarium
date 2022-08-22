@@ -12,7 +12,7 @@ pluginManagement {
     }
 }
 
-include("common", "fabric", "forge")
+includeNamed("common", "fabric", "forge")
 
 fun includeNamed(vararg projectPaths: String) {
     include(*projectPaths)

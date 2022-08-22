@@ -4,8 +4,6 @@ import earth.terrarium.techarium.forge.TechariumCreativeModeTab;
 import earth.terrarium.techarium.forge.TechariumForge;
 import earth.terrarium.techarium.multiblock.MultiblockStructure;
 import earth.terrarium.techarium.registry.RegistryHelper;
-import earth.terrarium.techarium.util.extensions.ExtensionFor;
-import earth.terrarium.techarium.util.extensions.ExtensionImplementation;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -19,29 +17,31 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
+import net.msrandom.extensions.annotations.ClassExtension;
+import net.msrandom.extensions.annotations.ImplementsBaseElement;
 
 import java.util.function.Supplier;
 
-@ExtensionFor(RegistryHelper.class)
+@ClassExtension(RegistryHelper.class)
 public class ForgeRegistryHelper {
     public static final Supplier<IForgeRegistry<MultiblockStructure>> MULTIBLOCK_STRUCTURE_REGISTRY = TechariumForge.MULTIBLOCK_STRUCTURES.makeRegistry(() -> new RegistryBuilder<MultiblockStructure>().dataPackRegistry(MultiblockStructure.CODEC));
 
-    @ExtensionImplementation
+    @ImplementsBaseElement
     public static <E extends BlockEntity> BlockEntityType<E> createBlockEntityType(RegistryHelper.BlockEntityFactory<E> factory, Block... blocks) {
         return BlockEntityType.Builder.of(factory::create, blocks).build(null);
     }
 
-    @ExtensionImplementation
+    @ImplementsBaseElement
     public static <E extends AbstractContainerMenu> MenuType<E> createMenuType(RegistryHelper.MenuTypeFactory<E> factory) {
         return IForgeMenuType.create(factory::create);
     }
 
-    @ExtensionImplementation
+    @ImplementsBaseElement
     public static ResourceKey<Registry<MultiblockStructure>> getMultiblockRegistryKey() {
         return MULTIBLOCK_STRUCTURE_REGISTRY.get().getRegistryKey();
     }
 
-    @ExtensionImplementation
+    @ImplementsBaseElement
     public static CreativeModeTab registerCreativeTab(ResourceLocation tab, Supplier<ItemStack> icon) {
         return new TechariumCreativeModeTab(tab, icon);
     }
