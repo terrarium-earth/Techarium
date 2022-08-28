@@ -5,6 +5,7 @@ import earth.terrarium.techarium.block.entity.selfdeploying.BotariumBlockEntity;
 import earth.terrarium.techarium.block.entity.selfdeploying.ExchangeStationBlockEntity;
 import earth.terrarium.techarium.block.entity.selfdeploying.SelfDeployingComponentBlockEntity;
 import earth.terrarium.techarium.block.entity.multiblock.MachineCoreBlockEntity;
+import earth.terrarium.techarium.block.entity.singleblock.GravMagnetBlockEntity;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -25,6 +26,9 @@ public class TechariumBlockEntities {
 
 	public static final Supplier<BlockEntityType<BotariumBlockEntity>> BOTARIUM = REGISTRAR.register("botarium",
 			() -> RegistryHelper.createBlockEntityType(BotariumBlockEntity::new, TechariumBlocks.BOTARIUM.get()));
+
+	public static final Supplier<BlockEntityType<GravMagnetBlockEntity>> GRAVMAGNET = REGISTRAR.register("gravmagnet",
+			() -> RegistryHelper.createBlockEntityType(GravMagnetBlockEntity::new, TechariumBlocks.GRAVMAGNET.get()));
 
 
 }
