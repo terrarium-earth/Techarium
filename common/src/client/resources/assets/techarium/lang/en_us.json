@@ -1,5 +1,6 @@
 {
 	"block.techarium.machine_core": "Machine Core",
+	"block.techarium.gravmagnet": "Grav Magnet",
 	"block.techarium.com_device_element": "Communication Device Element",
 	"item.techarium.tech_tool": "Tech Tool",
 	"itemGroup.techarium.tab": "Techarium",

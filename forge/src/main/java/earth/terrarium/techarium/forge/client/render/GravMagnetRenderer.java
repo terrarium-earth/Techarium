@@ -28,7 +28,7 @@ public class GravMagnetRenderer extends GeoBlockRenderer<GravMagnetBlockEntity> 
 
 	@Override
 	public RenderType getRenderType(GravMagnetBlockEntity animatable, float partialTicks, PoseStack stack, MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
-		return RenderType.entityCutout(this.getTextureLocation(animatable));
+		return RenderType.entityCutoutNoCull(this.getTextureLocation(animatable));
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class GravMagnetRenderer extends GeoBlockRenderer<GravMagnetBlockEntity> 
 							float red, float green, float blue, float partialTicks) {
 
 		BlockState state = animatable.getLevel().getBlockState(animatable.getBlockPos());
-		DirectionProperty directionState = BlockStateProperties.HORIZONTAL_FACING;
+		DirectionProperty directionState = BlockStateProperties.FACING;
 		if (state.hasProperty(directionState)) {
 			Direction dir = state.getValue(directionState);
 			stackIn.translate(0, 0, 0);

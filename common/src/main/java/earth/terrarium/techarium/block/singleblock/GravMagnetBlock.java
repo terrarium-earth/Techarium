@@ -25,7 +25,7 @@ public class GravMagnetBlock extends Block implements EntityBlock {
     public GravMagnetBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any()
-                .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
+                .setValue(BlockStateProperties.FACING, Direction.NORTH));
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(BlockStateProperties.POWERED, false));
     }
@@ -38,14 +38,14 @@ public class GravMagnetBlock extends Block implements EntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.HORIZONTAL_FACING);
+        builder.add(BlockStateProperties.FACING);
         builder.add(BlockStateProperties.POWERED);
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        Direction dir = context.getPlayer().isShiftKeyDown() ? context.getHorizontalDirection() : context.getHorizontalDirection().getOpposite();
-        return super.getStateForPlacement(context).setValue(BlockStateProperties.HORIZONTAL_FACING, dir).setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos()));
+        Direction dir = context.getPlayer().isShiftKeyDown() ? context.getNearestLookingDirection() : context.getNearestLookingDirection().getOpposite();
+        return super.getStateForPlacement(context).setValue(BlockStateProperties.FACING, dir).setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos()));
     }
 
     @Override
@@ -56,6 +56,6 @@ public class GravMagnetBlock extends Block implements EntityBlock {
 
     @Override
     public RenderShape getRenderShape(@NotNull BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
     }
 }
