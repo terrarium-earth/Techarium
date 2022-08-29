@@ -1,5 +1,8 @@
 package earth.terrarium.techarium.block.entity.selfdeploying;
 
+import earth.terrarium.botarium.api.BlockEnergyContainer;
+import earth.terrarium.botarium.api.EnergyBlock;
+import earth.terrarium.botarium.api.EnergyContainer;
 import earth.terrarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
 import earth.terrarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import earth.terrarium.techarium.inventory.ExtraDataMenuProvider;
@@ -21,6 +24,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -39,6 +43,7 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 	private final Map<BlockPos, SelfDeployingComponentBlock> components;
 	private final AnimationFactory factory = new AnimationFactory(this);
+	private EnergyContainer energyContainer;
 
 	public SelfDeployingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
@@ -152,17 +157,17 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 		}
 
 		@Override
-		protected void saveAdditional(CompoundTag tag) {
+		protected void saveAdditional(@NotNull CompoundTag tag) {
+			super.saveAdditional(tag);
 			ContainerHelper.saveAllItems(tag, this.items);
-
 			tag.put("FluidInput", this.fluidInput.save());
 		}
 
 		@Override
-		public void load(CompoundTag tag) {
+		public void load(@NotNull CompoundTag tag) {
+			super.load(tag);
 			this.items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
 			ContainerHelper.loadAllItems(tag, this.items);
-
 			this.fluidInput = new SimpleFluidContainer(tag.getCompound("FluidInput"));
 		}
 
