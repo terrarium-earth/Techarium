@@ -30,11 +30,6 @@ public class FabricRegistryHelper {
 	public static final MappedRegistry<MultiblockStructure> MULTIBLOCK_STRUCTURES = FabricRegistryBuilder.createSimple(MultiblockStructure.class, Utils.resourceLocation(Techarium.MOD_ID + "/multiblock")).buildAndRegister();
 
 	@ImplementsBaseElement
-	public static <E extends BlockEntity> BlockEntityType<E> createBlockEntityType(RegistryHelper.BlockEntityFactory<E> factory, Block... blocks) {
-		return FabricBlockEntityTypeBuilder.create(factory::create, blocks).build();
-	}
-
-	@ImplementsBaseElement
 	public static <E extends AbstractContainerMenu> MenuType<E> createMenuType(RegistryHelper.MenuTypeFactory<E> factory) {
 		return new ExtendedScreenHandlerType<>(factory::create);
 	}

@@ -1,5 +1,8 @@
 package earth.terrarium.techarium.block.entity.selfdeploying;
 
+import earth.terrarium.botarium.api.BlockEnergyContainer;
+import earth.terrarium.botarium.api.EnergyBlock;
+import earth.terrarium.botarium.api.EnergyContainer;
 import earth.terrarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
 import earth.terrarium.techarium.inventory.BotariumMenu;
 import earth.terrarium.techarium.registry.TechariumBlockEntities;
@@ -26,7 +29,9 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import java.util.Map;
 
-public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer {
+public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer implements EnergyBlock {
+
+	private BlockEnergyContainer energyContainer;
 
 	public BotariumBlockEntity(BlockPos pos, BlockState state) {
 		super(TechariumBlockEntities.BOTARIUM.get(), pos, state);
@@ -49,7 +54,6 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer 
 			return false;
 		}
 		SimpleFluidContainer fluidInput = this.getFluidInput();
-
 		if (item == Items.BUCKET) {
 			if (fluidInput.isEmpty()) {
 				return false;
@@ -112,5 +116,13 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer 
 	@Override
 	protected SimpleFluidContainer createFluidInput() {
 		return new SimpleFluidContainer(SimpleFluidContainer.BUCKET_CAPACITY * 12);
+	}
+
+	@Override
+	public EnergyContainer getEnergyStorage() {
+		if (energyContainer == null) {
+			this.energyContainer = new BlockEnergyContainer(1000000);
+		}
+		return energyContainer;
 	}
 }
