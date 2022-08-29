@@ -28,47 +28,47 @@ import org.jetbrains.annotations.Nullable;
  */
 public class MachineCoreBlock extends Block implements EntityBlock {
 
-	public static final EnumProperty<MultiblockState> MULTIBLOCK_STATE = EnumProperty.create("multiblock_state", MultiblockState.class);
+    public static final EnumProperty<MultiblockState> MULTIBLOCK_STATE = EnumProperty.create("multiblock_state", MultiblockState.class);
 
-	public MachineCoreBlock() {
-		super(BlockBehaviour.Properties.of(Material.METAL));
-		this.registerDefaultState(this.stateDefinition.any()
-				.setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
-				.setValue(MULTIBLOCK_STATE, MultiblockState.NONE));
-	}
+    public MachineCoreBlock() {
+        super(BlockBehaviour.Properties.of(Material.METAL));
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
+                .setValue(MULTIBLOCK_STATE, MultiblockState.NONE));
+    }
 
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		builder.add(BlockStateProperties.HORIZONTAL_FACING, MULTIBLOCK_STATE);
-	}
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(BlockStateProperties.HORIZONTAL_FACING, MULTIBLOCK_STATE);
+    }
 
-	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		Direction dir = context.getPlayer().isShiftKeyDown() ? context.getHorizontalDirection() : context.getHorizontalDirection().getOpposite();
-		return super.getStateForPlacement(context).setValue(BlockStateProperties.HORIZONTAL_FACING, dir);
-	}
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Direction dir = context.getPlayer().isShiftKeyDown() ? context.getHorizontalDirection() : context.getHorizontalDirection().getOpposite();
+        return super.getStateForPlacement(context).setValue(BlockStateProperties.HORIZONTAL_FACING, dir);
+    }
 
-	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-		if (!level.isClientSide) {
-			BlockEntity be = level.getBlockEntity(pos);
-			if (be instanceof MachineCoreBlockEntity mbe) {
-				return mbe.onActivated(state, level, pos, player, hand);
-			}
-		}
-		return InteractionResult.CONSUME;
-	}
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!level.isClientSide) {
+            BlockEntity be = level.getBlockEntity(pos);
+            if (be instanceof MachineCoreBlockEntity mbe) {
+                return mbe.onActivated(state, level, pos, player, hand);
+            }
+        }
+        return InteractionResult.CONSUME;
+    }
 
-	@Nullable
-	@Override
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new MachineCoreBlockEntity(pos, state);
-	}
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new MachineCoreBlockEntity(pos, state);
+    }
 
-	@Nullable
-	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-		return blockEntityType == TechariumBlockEntities.MACHINE_CORE.get() ? (level1, pos, state1, be) -> ((MachineCoreBlockEntity) be).tick(level1, pos, state1) : null;
-	}
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return blockEntityType == TechariumBlockEntities.MACHINE_CORE.get() ? (level1, pos, state1, be) -> ((MachineCoreBlockEntity) be).tick(level1, pos, state1) : null;
+    }
 
 }
