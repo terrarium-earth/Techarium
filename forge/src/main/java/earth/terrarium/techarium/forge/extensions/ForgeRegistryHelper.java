@@ -27,11 +27,6 @@ public class ForgeRegistryHelper {
     public static final Supplier<IForgeRegistry<MultiblockStructure>> MULTIBLOCK_STRUCTURE_REGISTRY = TechariumForge.MULTIBLOCK_STRUCTURES.makeRegistry(() -> new RegistryBuilder<MultiblockStructure>().dataPackRegistry(MultiblockStructure.CODEC));
 
     @ImplementsBaseElement
-    public static <E extends BlockEntity> BlockEntityType<E> createBlockEntityType(RegistryHelper.BlockEntityFactory<E> factory, Block... blocks) {
-        return BlockEntityType.Builder.of(factory::create, blocks).build(null);
-    }
-
-    @ImplementsBaseElement
     public static <E extends AbstractContainerMenu> MenuType<E> createMenuType(RegistryHelper.MenuTypeFactory<E> factory) {
         return IForgeMenuType.create(factory::create);
     }

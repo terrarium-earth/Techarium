@@ -26,10 +26,10 @@ public class Techarium {
 	public static final boolean DEBUG_MODE = PlatformHelper.isDevelopmentEnvironment();  // if we want debug items/blocks
 
 	public static void init() {
-		TechariumBlocks.REGISTRAR.initialize();
-		TechariumItems.REGISTRAR.initialize();
-		TechariumBlockEntities.REGISTRAR.initialize();
-		TechariumMenuTypes.REGISTRAR.initialize();
+		TechariumBlocks.BLOCKS.initialize();
+		TechariumItems.ITEMS.initialize();
+		TechariumBlockEntities.BLOCK_ENTITIES.initialize();
+		TechariumMenuTypes.MENUS.initialize();
 	}
 
 }
