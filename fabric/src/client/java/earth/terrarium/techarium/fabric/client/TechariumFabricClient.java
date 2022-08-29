@@ -10,13 +10,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 
 public class TechariumFabricClient implements ClientModInitializer {
 
-	@Override
-	public void onInitializeClient() {
-		BlockEntityRendererRegistry.register(TechariumBlockEntities.EXCHANGE_STATION.get(), (renderer) -> new ExchangeStationRenderer());
-		BlockEntityRendererRegistry.register(TechariumBlockEntities.BOTARIUM.get(), (renderer) -> new BotariumRenderer());
+    @Override
+    public void onInitializeClient() {
+        BlockEntityRendererRegistry.register(TechariumBlockEntities.EXCHANGE_STATION.get(), (renderer) -> new ExchangeStationRenderer());
+        BlockEntityRendererRegistry.register(TechariumBlockEntities.BOTARIUM.get(), (renderer) -> new BotariumRenderer());
 		BlockEntityRendererRegistry.register(TechariumBlockEntities.GRAVMAGNET.get(), (renderer) -> new GravMagnetRenderer());
 
-		TechariumMenuScreens.register();
-	}
+        TechariumMenuScreens.register();
+    }
 
 }

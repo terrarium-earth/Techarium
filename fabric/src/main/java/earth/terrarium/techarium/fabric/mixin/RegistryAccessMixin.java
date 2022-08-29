@@ -15,9 +15,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(RegistryAccess.class)
 public interface RegistryAccessMixin {
 
-	@Inject(method = "method_30531", at = @At(target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;", value = "INVOKE"), locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
-	private static void beforeMapBuild(CallbackInfoReturnable<ImmutableMap<ResourceKey<? extends Registry<?>>, RegistryAccess.RegistryData<?>>> cir, ImmutableMap.Builder<ResourceKey<? extends Registry<?>>, RegistryAccess.RegistryData<?>> builder) {
-		builder.put(RegistryHelper.getMultiblockRegistryKey(), new RegistryAccess.RegistryData<>(RegistryHelper.getMultiblockRegistryKey(), MultiblockStructure.CODEC, null));
-	}
+    @Inject(method = "method_30531", at = @At(target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;", value = "INVOKE"), locals = LocalCapture.CAPTURE_FAILHARD, remap = false)
+    private static void beforeMapBuild(CallbackInfoReturnable<ImmutableMap<ResourceKey<? extends Registry<?>>, RegistryAccess.RegistryData<?>>> cir, ImmutableMap.Builder<ResourceKey<? extends Registry<?>>, RegistryAccess.RegistryData<?>> builder) {
+        builder.put(RegistryHelper.getMultiblockRegistryKey(), new RegistryAccess.RegistryData<>(RegistryHelper.getMultiblockRegistryKey(), MultiblockStructure.CODEC, null));
+    }
 
 }

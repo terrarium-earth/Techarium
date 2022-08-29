@@ -12,13 +12,13 @@ import software.bernie.geckolib3.renderers.geo.GeoBlockRenderer;
 
 public class ExchangeStationRenderer extends GeoBlockRenderer<ExchangeStationBlockEntity> {
 
-	public ExchangeStationRenderer(BlockEntityRendererProvider.Context context) {
-		super(context, new ExchangeStationModel());
-	}
+    public ExchangeStationRenderer(BlockEntityRendererProvider.Context context) {
+        super(context, new ExchangeStationModel());
+    }
 
-	@Override
-	public RenderType getRenderType(ExchangeStationBlockEntity animatable, float partialTicks, PoseStack stack, MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
-		return RenderType.entityCutoutNoCull(this.getTextureLocation(animatable));
-	}
+    @Override
+    public RenderType getRenderType(ExchangeStationBlockEntity animatable, float partialTicks, PoseStack stack, MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
+        return RenderType.entityCutoutNoCull(this.getTextureLocation(animatable));
+    }
 
 }

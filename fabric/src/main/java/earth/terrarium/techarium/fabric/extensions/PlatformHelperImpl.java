@@ -20,30 +20,30 @@ import net.msrandom.extensions.annotations.ImplementsBaseElement;
 
 @ClassExtension(PlatformHelper.class)
 public class PlatformHelperImpl {
-	@ImplementsBaseElement
-	public static boolean isDevelopmentEnvironment() {
-		return FabricLoader.getInstance().isDevelopmentEnvironment();
-	}
+    @ImplementsBaseElement
+    public static boolean isDevelopmentEnvironment() {
+        return FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
 
-	@ImplementsBaseElement
-	public static void openMenu(ServerPlayer player, ExtraDataMenuProvider provider) {
-		player.openMenu(new ExtraDataMenuProviderWrapper(provider));
-	}
+    @ImplementsBaseElement
+    public static void openMenu(ServerPlayer player, ExtraDataMenuProvider provider) {
+        player.openMenu(new ExtraDataMenuProviderWrapper(provider));
+    }
 
-	@ImplementsBaseElement
-	public static Fluid determineFluidFromItem(ItemStack stack) {
-		Storage<FluidVariant> storage = ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM);
-		if (storage == null) {
-			return Fluids.EMPTY;
-		}
-		for (StorageView<FluidVariant> storageView : storage) {
-			return storageView.getResource().getFluid();
-		}
-		return Fluids.EMPTY;
-	}
+    @ImplementsBaseElement
+    public static Fluid determineFluidFromItem(ItemStack stack) {
+        Storage<FluidVariant> storage = ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM);
+        if (storage == null) {
+            return Fluids.EMPTY;
+        }
+        for (StorageView<FluidVariant> storageView : storage) {
+            return storageView.getResource().getFluid();
+        }
+        return Fluids.EMPTY;
+    }
 
-	@ImplementsBaseElement
-	public static Component getFluidName(Fluid fluid) {
-		return FluidVariantAttributes.getName(FluidVariant.of(fluid));
-	}
+    @ImplementsBaseElement
+    public static Component getFluidName(Fluid fluid) {
+        return FluidVariantAttributes.getName(FluidVariant.of(fluid));
+    }
 }
