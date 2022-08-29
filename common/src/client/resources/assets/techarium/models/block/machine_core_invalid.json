@@ -1,9 +1,9 @@
 {
-	"parent": "minecraft:block/orientable_with_bottom",
-	"textures": {
-		"front": "techarium:block/machine_core_front_invalid",
-		"bottom": "techarium:block/machine_core_top_invalid",
-		"top": "techarium:block/machine_core_top_invalid",
-		"side": "techarium:block/machine_core_side_invalid"
-	}
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "front": "techarium:block/machine_core_front_invalid",
+    "bottom": "techarium:block/machine_core_top_invalid",
+    "top": "techarium:block/machine_core_top_invalid",
+    "side": "techarium:block/machine_core_side_invalid"
+  }
 }

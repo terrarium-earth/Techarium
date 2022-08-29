@@ -5,22 +5,22 @@ import net.minecraft.util.StringRepresentable;
 
 public enum MultiblockState implements StringRepresentable {
 
-	NONE("none"),  // multiblock not selected (blue)
-	INVALID("invalid"),  // multiblock selected but not valid (red)
-	VALID("valid");  //  multiblock selected and valid (green)
+    NONE("none"),  // multiblock not selected (blue)
+    INVALID("invalid"),  // multiblock selected but not valid (red)
+    VALID("valid");  //  multiblock selected and valid (green)
 
-	private final String name;
+    private final String name;
 
-	MultiblockState(String name) {
-		this.name = name;
-	}
+    MultiblockState(String name) {
+        this.name = name;
+    }
 
-	public String toString() {
-		return this.getSerializedName();
-	}
+    public String toString() {
+        return this.getSerializedName();
+    }
 
-	public String getSerializedName() {
-		return this.name;
-	}
+    public String getSerializedName() {
+        return this.name;
+    }
 
 }
