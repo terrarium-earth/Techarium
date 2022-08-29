@@ -43,7 +43,6 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
 
 	private final Map<BlockPos, SelfDeployingComponentBlock> components;
 	private final AnimationFactory factory = new AnimationFactory(this);
-	private EnergyContainer energyContainer;
 
 	public SelfDeployingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
 		super(type, pos, state);
