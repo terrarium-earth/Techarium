@@ -22,6 +22,6 @@ public class TechariumBlocks {
 	public static final Supplier<SelfDeployingComponentBlock> SELF_DEPLOYING_COMPONENT = REGISTRAR.register("self_deploying_component", () -> new SelfDeployingComponentBlock(BlockBehaviour.Properties.of(Material.METAL)));
 	public static final Supplier<SelfDeployingBlock> EXCHANGE_STATION = REGISTRAR.register("exchange_station", ExchangeStationBlock::new);
 	public static final Supplier<SelfDeployingBlock> BOTARIUM = REGISTRAR.register("botarium", BotariumBlock::new);
-	public static final Supplier<GravMagnetBlock> GRAVMAGNET = REGISTRAR.register("gravmagnet", () -> new GravMagnetBlock(BlockBehaviour.Properties.of(Material.METAL)));
+	public static final Supplier<GravMagnetBlock> GRAVMAGNET = REGISTRAR.register("gravmagnet", () -> new GravMagnetBlock(BlockBehaviour.Properties.of(Material.METAL).noOcclusion()));
 
 }
