@@ -1,6 +1,6 @@
 package earth.terrarium.techarium.registry;
 
-import earth.terrarium.botarium.api.RegistryHolder;
+import earth.terrarium.botarium.api.registry.RegistryHolder;
 import earth.terrarium.techarium.Techarium;
 import earth.terrarium.techarium.inventory.BotariumMenu;
 import earth.terrarium.techarium.inventory.ExchangeStationMenu;

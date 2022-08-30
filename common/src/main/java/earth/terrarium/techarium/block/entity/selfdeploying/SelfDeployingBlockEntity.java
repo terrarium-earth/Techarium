@@ -121,24 +121,9 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
     // TODO @Ketheroth: 17/06/2022 see if I can/should move this in the super-class
     public static abstract class WithContainer extends SelfDeployingBlockEntity implements ExtraDataMenuProvider, Container {
         private NonNullList<ItemStack> items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-        private SimpleFluidContainer fluidInput;
 
         public WithContainer(BlockEntityType<?> type, BlockPos pos, BlockState state) {
             super(type, pos, state);
-            fluidInput = this.createFluidInput();
-        }
-
-        /**
-         * Default implementation : empty fluid module
-         *
-         * @return the fluid input of the machine.
-         */
-        protected SimpleFluidContainer createFluidInput() {
-            return SimpleFluidContainer.EMPTY;
-        }
-
-        public SimpleFluidContainer getFluidInput() {
-            return this.fluidInput;
         }
 
         @Nullable
@@ -156,7 +141,6 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
         protected void saveAdditional(@NotNull CompoundTag tag) {
             super.saveAdditional(tag);
             ContainerHelper.saveAllItems(tag, this.items);
-            tag.put("FluidInput", this.fluidInput.save());
         }
 
         @Override
@@ -164,7 +148,6 @@ public abstract class SelfDeployingBlockEntity extends BlockEntity implements IA
             super.load(tag);
             this.items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
             ContainerHelper.loadAllItems(tag, this.items);
-            this.fluidInput = new SimpleFluidContainer(tag.getCompound("FluidInput"));
         }
 
         @Override

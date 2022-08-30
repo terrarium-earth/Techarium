@@ -1,8 +1,12 @@
 package earth.terrarium.techarium.block.entity.selfdeploying;
 
-import earth.terrarium.botarium.api.BlockEnergyContainer;
-import earth.terrarium.botarium.api.EnergyBlock;
-import earth.terrarium.botarium.api.EnergyContainer;
+import earth.terrarium.botarium.api.energy.BlockEnergyContainer;
+import earth.terrarium.botarium.api.energy.EnergyContainer;
+import earth.terrarium.botarium.api.energy.EnergyHoldable;
+import earth.terrarium.botarium.api.fluid.FilteredFluidContainer;
+import earth.terrarium.botarium.api.fluid.FluidContainer;
+import earth.terrarium.botarium.api.fluid.FluidHoldable;
+import earth.terrarium.botarium.api.fluid.FluidHooks;
 import earth.terrarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
 import earth.terrarium.techarium.inventory.BotariumMenu;
 import earth.terrarium.techarium.registry.TechariumBlockEntities;
@@ -29,9 +33,10 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import java.util.Map;
 
-public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer implements EnergyBlock {
+public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer implements EnergyHoldable, FluidHoldable {
 
     private BlockEnergyContainer energyContainer;
+    private FilteredFluidContainer fluidContainer;
 
     public BotariumBlockEntity(BlockPos pos, BlockState state) {
         super(TechariumBlockEntities.BOTARIUM.get(), pos, state);
@@ -40,14 +45,15 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer 
     @Override
     public InteractionResult onUse(Player player, InteractionHand hand) {
         if (player instanceof ServerPlayer serverPlayer) {
-            if (!this.handleBucketUse(serverPlayer)) {
+            //if (!this.handleBucketUse(serverPlayer)) {
                 PlatformHelper.openMenu(serverPlayer, this);
-            }
+            //}
         }
         return InteractionResult.sidedSuccess(this.level.isClientSide);
     }
 
     private boolean handleBucketUse(ServerPlayer player) {
+        /*
         Item item = player.getMainHandItem().getItem();
         if (!(item instanceof BucketItem) || item instanceof MobBucketItem) {
             // TODO @anyone: 18/06/2022 change this to allow other portable tank (like mekanism tank)
@@ -81,6 +87,8 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer 
                 }
             }
         }
+
+         */
         return true;
     }
 
@@ -114,15 +122,18 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer 
     }
 
     @Override
-    protected SimpleFluidContainer createFluidInput() {
-        return new SimpleFluidContainer(SimpleFluidContainer.BUCKET_CAPACITY * 12);
-    }
-
-    @Override
     public EnergyContainer getEnergyStorage() {
         if (energyContainer == null) {
             this.energyContainer = new BlockEnergyContainer(1000000);
         }
         return energyContainer;
+    }
+
+    @Override
+    public FluidContainer getFluidContainer() {
+        if (fluidContainer == null) {
+            this.fluidContainer = new FilteredFluidContainer(FluidHooks.buckets(12), 1, (integer, fluidHolder) -> fluidHolder.getFluid().isSame(Fluids.WATER));
+        }
+        return fluidContainer;
     }
 }
