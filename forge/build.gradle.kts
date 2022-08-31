@@ -5,6 +5,8 @@ architectury {
 val minecraftVersion: String by project
 val forgeVersion: String by project
 val geckolibVersion: String by project
+val resourcefulLibVersion: String by project
+val botariumVersion: String by project
 
 classExtensions {
     registerForSourceSet(sourceSets.main.get(), "earth.terrarium.techarium.forge.extensions", "earth.terrarium.techarium.forge.client.extensions")
@@ -26,13 +28,13 @@ sourceSets {
         val commonClient = commonSourceSets.named("client")
 
         java.srcDirs(
-            commonMain.map { it.java.srcDirs },
-            commonClient.map { it.java.srcDirs },
+                commonMain.map { it.java.srcDirs },
+                commonClient.map { it.java.srcDirs },
         )
 
         resources.srcDirs(
-            commonMain.map { it.resources.srcDirs },
-            commonClient.map { it.resources.srcDirs },
+                commonMain.map { it.resources.srcDirs },
+                commonClient.map { it.resources.srcDirs },
         )
 
         resources.srcDir("src/generated/resources")
@@ -40,8 +42,10 @@ sourceSets {
 }
 
 dependencies {
-    forge(group = "net.minecraftforge", name = "forge", version = "${minecraftVersion}-${forgeVersion}")
+    forge(group = "net.minecraftforge", name = "forge", version = "$minecraftVersion-$forgeVersion")
     modImplementation(group = "software.bernie.geckolib", name = "geckolib-forge-1.19", version = geckolibVersion)
+    include(modImplementation(group = "earth.terrarium", name = "botarium-forge-$minecraftVersion", version = botariumVersion))
+    include(modImplementation(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-forge-1.19.1", version = resourcefulLibVersion))
 
     compileOnly(projects.techariumCommon) { isTransitive = false }
 

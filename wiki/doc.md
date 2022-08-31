@@ -1,4 +1,3 @@
-
 MachineCore interactions
 
 | multiblock selected | multiblock valid | texture |        rclick        | shift-rclick |

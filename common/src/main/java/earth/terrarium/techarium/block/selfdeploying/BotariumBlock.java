@@ -11,19 +11,19 @@ import org.jetbrains.annotations.Nullable;
 
 public class BotariumBlock extends SelfDeployingBlock {
 
-	public BotariumBlock() {
-		super(BlockBehaviour.Properties.of(Material.METAL));
-	}
+    public BotariumBlock() {
+        super(BlockBehaviour.Properties.of(Material.METAL));
+    }
 
-	@Nullable
-	@Override
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new BotariumBlockEntity(pos, state);
-	}
+    @Nullable
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new BotariumBlockEntity(pos, state);
+    }
 
-	@Override
-	public BoundingBox getDeployedSize() {
-		return new BoundingBox(0, 0, 0, 1, 2, 1);
-	}
+    @Override
+    public BoundingBox getDeployedSize() {
+        return new BoundingBox(0, 0, 0, 1, 2, 1);
+    }
 
 }
