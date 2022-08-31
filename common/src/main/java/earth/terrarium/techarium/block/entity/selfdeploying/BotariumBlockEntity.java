@@ -3,6 +3,7 @@ package earth.terrarium.techarium.block.entity.selfdeploying;
 import earth.terrarium.botarium.api.BlockEnergyContainer;
 import earth.terrarium.botarium.api.EnergyBlock;
 import earth.terrarium.botarium.api.EnergyContainer;
+import earth.terrarium.botarium.api.EnergyManager;
 import earth.terrarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
 import earth.terrarium.techarium.inventory.BotariumMenu;
 import earth.terrarium.techarium.registry.TechariumBlockEntities;
@@ -10,6 +11,7 @@ import earth.terrarium.techarium.registry.TechariumBlocks;
 import earth.terrarium.techarium.util.PlatformHelper;
 import earth.terrarium.techarium.util.Utils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -120,7 +122,7 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer 
 
 	@Override
 	public EnergyContainer getEnergyStorage() {
-		if (energyContainer == null) {
+		if(energyContainer == null) {
 			this.energyContainer = new BlockEnergyContainer(1000000);
 		}
 		return energyContainer;
