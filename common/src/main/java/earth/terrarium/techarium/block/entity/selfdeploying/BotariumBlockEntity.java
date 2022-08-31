@@ -125,6 +125,6 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer 
 		if(energyContainer == null) {
 			this.energyContainer = new BlockEnergyContainer(1000000);
 		}
-		return energyContainer;
+		return new BlockEnergyContainer(1000000);
 	}
 }
