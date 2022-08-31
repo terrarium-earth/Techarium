@@ -1,7 +1,10 @@
 package earth.terrarium.techarium.block.entity.selfdeploying;
 
-import earth.terrarium.techarium.block.selfdeploying.SelfDeployingBlock;
+import earth.terrarium.botarium.api.BlockEnergyContainer;
+import earth.terrarium.botarium.api.EnergyBlock;
+import earth.terrarium.botarium.api.EnergyContainer;
 import earth.terrarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
+import earth.terrarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import earth.terrarium.techarium.inventory.ExtraDataMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -38,176 +41,176 @@ import java.util.Map;
  */
 public abstract class SelfDeployingBlockEntity extends BlockEntity implements IAnimatable {
 
-    private final Map<BlockPos, SelfDeployingComponentBlock> components;
-    private final AnimationFactory factory = new AnimationFactory(this);
+	private final Map<BlockPos, SelfDeployingComponentBlock> components;
+	private final AnimationFactory factory = new AnimationFactory(this);
 
-    public SelfDeployingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
-        this.components = this.getMachineComponentLocations();
-    }
+	public SelfDeployingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
+		this.components = this.getMachineComponentLocations();
+	}
 
-    /**
-     * Deploy the block.
-     * Default implementation place the component blocks.
-     */
-    public void deploy() {
-        if (this.level != null) {
-            for (Map.Entry<BlockPos, SelfDeployingComponentBlock> entry : components.entrySet()) {
-                this.level.setBlock(entry.getKey(), entry.getValue().defaultBlockState(), 3);
-                BlockEntity blockEntity = level.getBlockEntity(entry.getKey());
-                if (blockEntity instanceof SelfDeployingComponentBlockEntity componentBlockEntity) {
-                    componentBlockEntity.setControllerPosition(this.worldPosition);
-                }
-            }
-        }
-    }
+	/**
+	 * Deploy the block.
+	 * Default implementation place the component blocks.
+	 */
+	public void deploy() {
+		if (this.level != null) {
+			for (Map.Entry<BlockPos, SelfDeployingComponentBlock> entry : components.entrySet()) {
+				this.level.setBlock(entry.getKey(), entry.getValue().defaultBlockState(), 3);
+				BlockEntity blockEntity = level.getBlockEntity(entry.getKey());
+				if (blockEntity instanceof SelfDeployingComponentBlockEntity componentBlockEntity) {
+					componentBlockEntity.setControllerPosition(this.worldPosition);
+				}
+			}
+		}
+	}
 
-    /**
-     * Undeploy the block.
-     * Default implementation remove the component blocks alongside the controller.
-     *
-     * @param removeSelf        determine if this block should remove itself
-     * @param restoreMultiblock determine if the multiblock associated (if any) should be restored in the world.
-     * @param oldState          the state of the core block before it was removed
-     * @param initiator         the position of the block that initiated the removal of the self-deployed block
-     */
-    public void undeploy(boolean removeSelf, boolean restoreMultiblock, BlockState oldState, BlockPos initiator) {
-        if (level != null) {
-            this.level.removeBlockEntity(this.worldPosition);  // state changed but not yet the block entity so we do it now
-            if (removeSelf) {
-                // called from Block#onRemove, the state have already been changed. This is mainly used for when it is called from elsewhere.
-                level.setBlock(this.worldPosition, Blocks.AIR.defaultBlockState(), 3);
-            }
-            // TODO @Ketheroth: 11/06/2022 drop content if there is an inventory
-            for (BlockPos pos : components.keySet()) {
-                if (level.getBlockState(pos).getBlock() instanceof SelfDeployingComponentBlock) {
-                    level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-                }
-            }
-        }
-    }
+	/**
+	 * Undeploy the block.
+	 * Default implementation remove the component blocks alongside the controller.
+	 *
+	 * @param removeSelf        determine if this block should remove itself
+	 * @param restoreMultiblock determine if the multiblock associated (if any) should be restored in the world.
+	 * @param oldState          the state of the core block before it was removed
+	 * @param initiator         the position of the block that initiated the removal of the self-deployed block
+	 */
+	public void undeploy(boolean removeSelf, boolean restoreMultiblock, BlockState oldState, BlockPos initiator) {
+		if (level != null) {
+			this.level.removeBlockEntity(this.worldPosition);  // state changed but not yet the block entity so we do it now
+			if (removeSelf) {
+				// called from Block#onRemove, the state have already been changed. This is mainly used for when it is called from elsewhere.
+				level.setBlock(this.worldPosition, Blocks.AIR.defaultBlockState(), 3);
+			}
+			// TODO @Ketheroth: 11/06/2022 drop content if there is an inventory
+			for (BlockPos pos : components.keySet()) {
+				if (level.getBlockState(pos).getBlock() instanceof SelfDeployingComponentBlock) {
+					level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
+				}
+			}
+		}
+	}
 
-    /**
-     * Determine the locations of the component block of this self-deploying block.
-     * The locations are assumed to be real world position.
-     * <br>
-     * These locations should match the BlockRegion given by {@link SelfDeployingBlock#getDeployedSize()}.
-     *
-     * @return the locations of the components.
-     */
-    public abstract Map<BlockPos, SelfDeployingComponentBlock> getMachineComponentLocations();
+	/**
+	 * Determine the locations of the component block of this self-deploying block.
+	 * The locations are assumed to be real world position.
+	 * <br>
+	 * These locations should match the BlockRegion given by {@link SelfDeployingBlock#getDeployedSize()}.
+	 *
+	 * @return the locations of the components.
+	 */
+	public abstract Map<BlockPos, SelfDeployingComponentBlock> getMachineComponentLocations();
 
-    /**
-     * Called when the associated block is used.
-     */
-    public abstract InteractionResult onUse(Player player, InteractionHand hand);
+	/**
+	 * Called when the associated block is used.
+	 */
+	public abstract InteractionResult onUse(Player player, InteractionHand hand);
 
-    @Override
-    public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, "controller", 0, this::animationPredicate));
-    }
+	@Override
+	public void registerControllers(AnimationData animationData) {
+		animationData.addAnimationController(new AnimationController<>(this, "controller", 0, this::animationPredicate));
+	}
 
-    protected abstract <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> event);
+	protected abstract <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> event);
 
-    @Override
-    public AnimationFactory getFactory() {
-        return this.factory;
-    }
+	@Override
+	public AnimationFactory getFactory() {
+		return this.factory;
+	}
 
-    /**
-     * A self-deploying block entity with an inventory.
-     */
-    // TODO @anyone: 11/07/2022 change it, it is a wip
-    // TODO @Ketheroth: 17/06/2022 see if I can/should move this in the super-class
-    public static abstract class WithContainer extends SelfDeployingBlockEntity implements ExtraDataMenuProvider, Container {
-        private NonNullList<ItemStack> items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-        private SimpleFluidContainer fluidInput;
+	/**
+	 * A self-deploying block entity with an inventory.
+	 */
+	// TODO @anyone: 11/07/2022 change it, it is a wip
+	// TODO @Ketheroth: 17/06/2022 see if I can/should move this in the super-class
+	public static abstract class WithContainer extends SelfDeployingBlockEntity implements ExtraDataMenuProvider, Container {
+		private NonNullList<ItemStack> items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+		private SimpleFluidContainer fluidInput;
 
-        public WithContainer(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-            super(type, pos, state);
-            fluidInput = this.createFluidInput();
-        }
+		public WithContainer(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+			super(type, pos, state);
+			fluidInput = this.createFluidInput();
+		}
 
-        /**
-         * Default implementation : empty fluid module
-         *
-         * @return the fluid input of the machine.
-         */
-        protected SimpleFluidContainer createFluidInput() {
-            return SimpleFluidContainer.EMPTY;
-        }
+		/**
+		 * Default implementation : empty fluid module
+		 *
+		 * @return the fluid input of the machine.
+		 */
+		protected SimpleFluidContainer createFluidInput() {
+			return SimpleFluidContainer.EMPTY;
+		}
 
-        public SimpleFluidContainer getFluidInput() {
-            return this.fluidInput;
-        }
+		public SimpleFluidContainer getFluidInput() {
+			return this.fluidInput;
+		}
 
-        @Nullable
-        @Override
-        public Packet<ClientGamePacketListener> getUpdatePacket() {
-            return ClientboundBlockEntityDataPacket.create(this);
-        }
+		@Nullable
+		@Override
+		public Packet<ClientGamePacketListener> getUpdatePacket() {
+			return ClientboundBlockEntityDataPacket.create(this);
+		}
 
-        @Override
-        public CompoundTag getUpdateTag() {
-            return this.saveWithoutMetadata();
-        }
+		@Override
+		public CompoundTag getUpdateTag() {
+			return this.saveWithoutMetadata();
+		}
 
-        @Override
-        protected void saveAdditional(@NotNull CompoundTag tag) {
-            super.saveAdditional(tag);
-            ContainerHelper.saveAllItems(tag, this.items);
-            tag.put("FluidInput", this.fluidInput.save());
-        }
+		@Override
+		protected void saveAdditional(@NotNull CompoundTag tag) {
+			super.saveAdditional(tag);
+			ContainerHelper.saveAllItems(tag, this.items);
+			tag.put("FluidInput", this.fluidInput.save());
+		}
 
-        @Override
-        public void load(@NotNull CompoundTag tag) {
-            super.load(tag);
-            this.items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-            ContainerHelper.loadAllItems(tag, this.items);
-            this.fluidInput = new SimpleFluidContainer(tag.getCompound("FluidInput"));
-        }
+		@Override
+		public void load(@NotNull CompoundTag tag) {
+			super.load(tag);
+			this.items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+			ContainerHelper.loadAllItems(tag, this.items);
+			this.fluidInput = new SimpleFluidContainer(tag.getCompound("FluidInput"));
+		}
 
-        @Override
-        public void writeExtraData(ServerPlayer player, FriendlyByteBuf buffer) {
-            buffer.writeBlockPos(this.worldPosition);
-        }
+		@Override
+		public void writeExtraData(ServerPlayer player, FriendlyByteBuf buffer) {
+			buffer.writeBlockPos(this.worldPosition);
+		}
 
-        @Override
-        public boolean isEmpty() {
-            return this.items.stream().allMatch(ItemStack::isEmpty);
-        }
+		@Override
+		public boolean isEmpty() {
+			return this.items.stream().allMatch(ItemStack::isEmpty);
+		}
 
-        @Override
-        public ItemStack getItem(int slot) {
-            return items.get(slot);
-        }
+		@Override
+		public ItemStack getItem(int slot) {
+			return items.get(slot);
+		}
 
-        @Override
-        public ItemStack removeItem(int slot, int amount) {
-            ItemStack stack = ContainerHelper.removeItem(this.items, slot, amount);
-            if (!stack.isEmpty()) this.setChanged();
+		@Override
+		public ItemStack removeItem(int slot, int amount) {
+			ItemStack stack = ContainerHelper.removeItem(this.items, slot, amount);
+			if (!stack.isEmpty()) this.setChanged();
 
-            return stack;
-        }
+			return stack;
+		}
 
-        @Override
-        public ItemStack removeItemNoUpdate(int slot) {
-            return ContainerHelper.takeItem(this.items, slot);
-        }
+		@Override
+		public ItemStack removeItemNoUpdate(int slot) {
+			return ContainerHelper.takeItem(this.items, slot);
+		}
 
-        @Override
-        public void setItem(int slot, ItemStack stack) {
-            items.set(slot, stack);
-        }
+		@Override
+		public void setItem(int slot, ItemStack stack) {
+			items.set(slot, stack);
+		}
 
-        @Override
-        public boolean stillValid(Player player) {
-            return player.distanceToSqr(this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ()) <= 64.0D;
-        }
+		@Override
+		public boolean stillValid(Player player) {
+			return player.distanceToSqr(this.getBlockPos().getX(), this.getBlockPos().getY(), this.getBlockPos().getZ()) <= 64.0D;
+		}
 
-        @Override
-        public void clearContent() {
-            items.clear();
-        }
-    }
+		@Override
+		public void clearContent() {
+			items.clear();
+		}
+	}
 }

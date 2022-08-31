@@ -38,116 +38,116 @@ import java.util.List;
  */
 public abstract class SelfDeployingBlock extends Block implements EntityBlock {
 
-    public SelfDeployingBlock(Properties properties) {
-        super(properties);
-        this.registerDefaultState(this.stateDefinition.any()
-                .setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
-    }
+	public SelfDeployingBlock(Properties properties) {
+		super(properties);
+		this.registerDefaultState(this.stateDefinition.any()
+				.setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
+	}
 
-    @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        BoundingBox box = this.getDeployedSize();
-        return Shapes.box(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ());
-    }
+	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+		BoundingBox box = this.getDeployedSize();
+		return Shapes.box(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ());
+	}
 
-    @Override
-    public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
-    }
+	@Override
+	public RenderShape getRenderShape(BlockState state) {
+		return RenderShape.ENTITYBLOCK_ANIMATED;
+	}
 
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(BlockStateProperties.HORIZONTAL_FACING);
-    }
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+		builder.add(BlockStateProperties.HORIZONTAL_FACING);
+	}
 
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        Direction dir = context.getPlayer().isShiftKeyDown() ? context.getHorizontalDirection() : context.getHorizontalDirection().getOpposite();
-        return super.getStateForPlacement(context).setValue(BlockStateProperties.HORIZONTAL_FACING, dir);
-    }
+	@Override
+	public BlockState getStateForPlacement(BlockPlaceContext context) {
+		Direction dir = context.getPlayer().isShiftKeyDown() ? context.getHorizontalDirection() : context.getHorizontalDirection().getOpposite();
+		return super.getStateForPlacement(context).setValue(BlockStateProperties.HORIZONTAL_FACING, dir);
+	}
 
-    @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
-            selfDeployingBlockEntity.deploy();
-        }
-    }
+	@Override
+	public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if (blockEntity instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
+			selfDeployingBlockEntity.deploy();
+		}
+	}
 
-    @Override
-    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
-        super.playerDestroy(level, player, pos, state, blockEntity, stack);
-        if (blockEntity instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
-            // default : the machine is removed and if it was from a multiblock the multiblock is restored
-            selfDeployingBlockEntity.undeploy(false, !(stack.is(TechariumItems.TECH_TOOL.get()) || player.isShiftKeyDown()), state, pos);
-        }
-    }
+	@Override
+	public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
+		super.playerDestroy(level, player, pos, state, blockEntity, stack);
+		if (blockEntity instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
+			// default : the machine is removed and if it was from a multiblock the multiblock is restored
+			selfDeployingBlockEntity.undeploy(false, !(stack.is(TechariumItems.TECH_TOOL.get()) || player.isShiftKeyDown()), state, pos);
+		}
+	}
 
-    @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
-            return selfDeployingBlockEntity.onUse(player, hand);
-        }
-        return InteractionResult.PASS;
-    }
+	@Override
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if (blockEntity instanceof SelfDeployingBlockEntity selfDeployingBlockEntity) {
+			return selfDeployingBlockEntity.onUse(player, hand);
+		}
+		return InteractionResult.PASS;
+	}
 
-    /**
-     * Determine if the block can be deployed according to its size after deployment.
-     *
-     * @param level the level.
-     * @param pos   the position of the block.
-     * @param state the state of the block.
-     * @return true if the block can be placed.
-     */
-    public boolean canDeploy(Level level, BlockPos pos, BlockState state) {
-        Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-        BoundingBox region = this.getDeployedSize();
-        for (int x = region.minX(); x < region.maxX(); x++) {
-            for (int y = region.minY(); y < region.maxY(); y++) {
-                for (int z = region.minZ(); z < region.maxZ(); z++) {
-                    BlockPos offset = new BlockPos(x, y, z);
-                    BlockPos rotated = MathUtils.rotate(offset, direction);
-                    BlockState blockState = level.getBlockState(pos.offset(rotated));
-                    if (!blockState.getMaterial().isReplaceable() && !(blockState.getBlock() instanceof SelfDeployingBlock)) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
+	/**
+	 * Determine if the block can be deployed according to its size after deployment.
+	 *
+	 * @param level the level.
+	 * @param pos   the position of the block.
+	 * @param state the state of the block.
+	 * @return true if the block can be placed.
+	 */
+	public boolean canDeploy(Level level, BlockPos pos, BlockState state) {
+		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+		BoundingBox region = this.getDeployedSize();
+		for (int x = region.minX(); x < region.maxX(); x++) {
+			for (int y = region.minY(); y < region.maxY(); y++) {
+				for (int z = region.minZ(); z < region.maxZ(); z++) {
+					BlockPos offset = new BlockPos(x, y, z);
+					BlockPos rotated = MathUtils.rotate(offset, direction);
+					BlockState blockState = level.getBlockState(pos.offset(rotated));
+					if (!blockState.getMaterial().isReplaceable() && !(blockState.getBlock() instanceof SelfDeployingBlock)) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
 
-    /**
-     * @param level the level of the multiblock.
-     * @param pos   the position of the multiblock core.
-     * @return a list of the blocks that obstruct the self-deploying block to be deployed.
-     */
-    public List<BlockPos> getObstructingBlocks(Level level, BlockPos pos) {
-        List<BlockPos> positions = new ArrayList<>();
-        BlockState state = level.getBlockState(pos);
-        Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-        BoundingBox region = this.getDeployedSize();
-        for (int x = region.minX(); x < region.maxX(); x++) {
-            for (int y = region.minY(); y < region.maxY(); y++) {
-                for (int z = region.minZ(); z < region.maxZ(); z++) {
-                    BlockPos offset = new BlockPos(x, y, z);
-                    BlockPos rotated = MathUtils.rotate(offset, direction);
-                    BlockState blockState = level.getBlockState(pos.offset(rotated));
-                    if (!(blockState.getMaterial().isReplaceable() || blockState.getBlock() instanceof SelfDeployingBlock)) {
-                        positions.add(rotated);
-                    }
-                }
-            }
-        }
-        return positions;
-    }
+	/**
+	 * @param level the level of the multiblock.
+	 * @param pos   the position of the multiblock core.
+	 * @return a list of the blocks that obstruct the self-deploying block to be deployed.
+	 */
+	public List<BlockPos> getObstructingBlocks(Level level, BlockPos pos) {
+		List<BlockPos> positions = new ArrayList<>();
+		BlockState state = level.getBlockState(pos);
+		Direction direction = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+		BoundingBox region = this.getDeployedSize();
+		for (int x = region.minX(); x < region.maxX(); x++) {
+			for (int y = region.minY(); y < region.maxY(); y++) {
+				for (int z = region.minZ(); z < region.maxZ(); z++) {
+					BlockPos offset = new BlockPos(x, y, z);
+					BlockPos rotated = MathUtils.rotate(offset, direction);
+					BlockState blockState = level.getBlockState(pos.offset(rotated));
+					if (!(blockState.getMaterial().isReplaceable() || blockState.getBlock() instanceof SelfDeployingBlock)) {
+						positions.add(rotated);
+					}
+				}
+			}
+		}
+		return positions;
+	}
 
-    /**
-     * @return the size of the block after deployment.
-     */
-    public BoundingBox getDeployedSize() {
-        return new BoundingBox(0, 0, 0, 1, 1, 1);
-    }
+	/**
+	 * @return the size of the block after deployment.
+	 */
+	public BoundingBox getDeployedSize() {
+		return new BoundingBox(0, 0, 0, 1, 1, 1);
+	}
 
 }

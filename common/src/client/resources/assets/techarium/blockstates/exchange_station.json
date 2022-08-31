@@ -1,19 +1,19 @@
 {
-  "variants": {
-    "facing=north": {
-      "model": "techarium:block/exchange_station"
-    },
-    "facing=south": {
-      "model": "techarium:block/exchange_station",
-      "y": 180
-    },
-    "facing=west": {
-      "model": "techarium:block/exchange_station",
-      "y": 270
-    },
-    "facing=east": {
-      "model": "techarium:block/exchange_station",
-      "y": 90
-    }
-  }
+	"variants": {
+		"facing=north": {
+			"model": "techarium:block/exchange_station"
+		},
+		"facing=south": {
+			"model": "techarium:block/exchange_station",
+			"y": 180
+		},
+		"facing=west": {
+			"model": "techarium:block/exchange_station",
+			"y": 270
+		},
+		"facing=east": {
+			"model": "techarium:block/exchange_station",
+			"y": 90
+		}
+	}
 }

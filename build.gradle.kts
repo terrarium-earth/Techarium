@@ -1,7 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
-import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.util.Constants
+import net.fabricmc.loom.api.LoomGradleExtensionAPI
 
 plugins {
     java
@@ -12,6 +12,8 @@ plugins {
 
 val modVersion: String by project
 val minecraftVersion: String by project
+val resourcefulLibVersion: String by project
+val botariumVersion: String by project
 
 architectury {
     minecraft = minecraftVersion
@@ -55,12 +57,12 @@ subprojects {
         Constants.Configurations.MINECRAFT(group = "com.mojang", name = "minecraft", version = minecraftVersion)
 
         Constants.Configurations.MAPPINGS(
-                loom.layered {
-                    val parchmentVersion: String by project
+            loom.layered {
+                val parchmentVersion: String by project
 
-                    officialMojangMappings()
-                    parchment(create(group = "org.parchmentmc.data", name = "parchment-$minecraftVersion", version = parchmentVersion, ext = "zip"))
-                }
+                officialMojangMappings()
+                parchment(create(group = "org.parchmentmc.data", name = "parchment-$minecraftVersion", version = parchmentVersion, ext = "zip"))
+            }
         )
     }
 
@@ -73,22 +75,24 @@ subprojects {
 
         manifest {
             attributes(
-                    "Specification-Title" to rootProject.name,
-                    "Specification-Vendor" to authorName,
-                    "Specification-Version" to project.version,
-                    "Implementation-Title" to name,
-                    "Implementation-Version" to project.version,
-                    "Implementation-Vendor" to authorName,
-                    "Built-On-Java" to "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})",
-                    "Build-On-Minecraft" to minecraftVersion
+                "Specification-Title" to rootProject.name,
+                "Specification-Vendor" to authorName,
+                "Specification-Version" to project.version,
+                "Implementation-Title" to name,
+                "Implementation-Version" to project.version,
+                "Implementation-Vendor" to authorName,
+                "Built-On-Java" to "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})",
+                "Build-On-Minecraft" to minecraftVersion
             )
         }
     }
 
-    // Disables Gradle's custom module metadata from being published to maven. The
-    // metadata includes mapped dependencies which are not reasonably consumable by
-    // other mod developers.
-    tasks.withType<GenerateModuleMetadata> {
-        enabled = false
+    if (name != rootProject.projects.techariumCommon.name) {
+        // Disables Gradle's custom module metadata from being published to maven. The
+        // metadata includes mapped dependencies which are not reasonably consumable by
+        // other mod developers.
+        tasks.withType<GenerateModuleMetadata> {
+            enabled = false
+        }
     }
 }

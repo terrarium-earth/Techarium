@@ -1,28 +1,28 @@
-modLoader = "javafml"
-loaderVersion = "[41,)"
-license = "MIT"
+modLoader="javafml"
+loaderVersion="[41,)"
+license="MIT"
 #issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/"
 [[mods]]
-modId = "techarium"
-version = "${version}"
-displayName = "Techarium"
+modId="techarium"
+version="${version}"
+displayName="Techarium"
 #updateJSONURL="https://change.me.example.invalid/updates.json"
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/"
 #logoFile="multiloader.png"
 #credits="Thanks for this example mod goes to Java"
-authors = "Ketheroth"
-description = '''
+authors="Ketheroth"
+description='''
 ditto
 '''
 [[dependencies.techarium]]
-modId = "forge"
-mandatory = true
-versionRange = "[41,)"
-ordering = "NONE"
-side = "BOTH"
+    modId="forge"
+    mandatory=true
+    versionRange="[41,)"
+    ordering="NONE"
+    side="BOTH"
 [[dependencies.techarium]]
-modId = "minecraft"
-mandatory = true
-versionRange = "[1.19,1.20)"
-ordering = "NONE"
-side = "BOTH"
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.19,1.20)"
+    ordering="NONE"
+    side="BOTH"

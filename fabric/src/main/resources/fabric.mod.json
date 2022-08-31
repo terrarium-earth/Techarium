@@ -1,38 +1,38 @@
 {
-  "schemaVersion": 1,
-  "id": "techarium",
-  "version": "${version}",
-  "name": "Techarium",
-  "description": "ditto",
-  "authors": [
-    "Ketheroth"
-  ],
-  "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
-  },
-  "license": "MIT",
-  "icon": "assets/techarium/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      "earth.terrarium.techarium.Techarium::init"
+    "schemaVersion": 1,
+    "id": "techarium",
+    "version": "${version}",
+    "name": "Techarium",
+    "description": "ditto",
+    "authors": [
+      "Ketheroth"
     ],
-    "client": [
-      "earth.terrarium.techarium.fabric.client.TechariumFabricClient"
-    ]
-  },
-  "mixins": [
-    "techarium.mixins.json"
-  ],
-  "depends": {
-    "fabricloader": ">=0.14",
-    "fabric": "*",
-    "minecraft": "1.19.x",
-    "java": ">=17"
-  },
-  "suggests": {
-    "another-mod": "*"
+    "contact": {
+      "homepage": "https://fabricmc.net/",
+      "sources": "https://github.com/FabricMC/fabric-example-mod"
+    },
+    "license": "MIT",
+    "icon": "assets/techarium/icon.png",
+    "environment": "*",
+    "entrypoints": {
+      "main": [
+        "earth.terrarium.techarium.Techarium::init"
+      ],
+      "client": [
+        "earth.terrarium.techarium.fabric.client.TechariumFabricClient"
+      ]
+    },
+    "mixins": [
+        "techarium.mixins.json"
+    ],
+    "depends": {
+      "fabricloader": ">=0.14",
+      "fabric": "*",
+      "minecraft": "1.19.x",
+      "java": ">=17"
+    },
+    "suggests": {
+      "another-mod": "*"
+    }
   }
-}
   

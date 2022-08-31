@@ -12,13 +12,13 @@ import software.bernie.geckolib3.renderers.geo.GeoBlockRenderer;
 
 public class BotariumRenderer extends GeoBlockRenderer<BotariumBlockEntity> {
 
-    public BotariumRenderer() {
-        super(new BotariumModel());
-    }
+	public BotariumRenderer() {
+		super(new BotariumModel());
+	}
 
-    @Override
-    public RenderType getRenderType(BotariumBlockEntity animatable, float partialTicks, PoseStack stack, MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
-        return RenderType.entityCutoutNoCull(this.getTextureResource(animatable));
-    }
+	@Override
+	public RenderType getRenderType(BotariumBlockEntity animatable, float partialTicks, PoseStack stack, MultiBufferSource renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
+		return RenderType.entityCutoutNoCull(this.getTextureResource(animatable));
+	}
 
 }

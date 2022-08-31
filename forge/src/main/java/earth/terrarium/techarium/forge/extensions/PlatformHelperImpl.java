@@ -16,27 +16,27 @@ import net.msrandom.extensions.annotations.ImplementsBaseElement;
 
 @ClassExtension(PlatformHelper.class)
 public class PlatformHelperImpl {
-    @ImplementsBaseElement
-    public static boolean isDevelopmentEnvironment() {
-        return !FMLLoader.isProduction();
-    }
+	@ImplementsBaseElement
+	public static boolean isDevelopmentEnvironment() {
+		return !FMLLoader.isProduction();
+	}
 
-    @ImplementsBaseElement
-    public static void openMenu(ServerPlayer player, ExtraDataMenuProvider provider) {
-        NetworkHooks.openScreen(player, provider, (data) -> provider.writeExtraData(player, data));
-    }
+	@ImplementsBaseElement
+	public static void openMenu(ServerPlayer player, ExtraDataMenuProvider provider) {
+		NetworkHooks.openScreen(player, provider, (data) -> provider.writeExtraData(player, data));
+	}
 
-    @ImplementsBaseElement
-    public static Fluid determineFluidFromItem(ItemStack stack) {
-        FluidStack fluidStack = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
-        if (fluidStack.isEmpty()) {
-            return Fluids.EMPTY;
-        }
-        return fluidStack.getFluid();
-    }
+	@ImplementsBaseElement
+	public static Fluid determineFluidFromItem(ItemStack stack) {
+		FluidStack fluidStack = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
+		if (fluidStack.isEmpty()) {
+			return Fluids.EMPTY;
+		}
+		return fluidStack.getFluid();
+	}
 
-    @ImplementsBaseElement
-    public static Component getFluidName(Fluid fluid) {
-        return fluid.getFluidType().getDescription();
-    }
+	@ImplementsBaseElement
+	public static Component getFluidName(Fluid fluid) {
+		return fluid.getFluidType().getDescription();
+	}
 }

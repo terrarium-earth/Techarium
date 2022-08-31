@@ -1,9 +1,9 @@
 {
-  "parent": "minecraft:block/orientable_with_bottom",
-  "textures": {
-    "front": "techarium:block/botarium_side",
-    "bottom": "techarium:block/box_top",
-    "top": "techarium:block/box_top",
-    "side": "techarium:block/botarium_side"
-  }
+	"parent": "minecraft:block/orientable_with_bottom",
+	"textures": {
+		"front": "techarium:block/botarium_side",
+		"bottom": "techarium:block/box_top",
+		"top": "techarium:block/box_top",
+		"side": "techarium:block/botarium_side"
+	}
 }

@@ -1,8 +1,7 @@
 # Multiblock Datapack
 
 Multiblocks can be added, modified or removed via datapack.  
-They are placed in `data/<your_namespace>/techarium/multiblock/` (default techarium multiblocks are
-in `data/techarium/techarium/multiblock`).
+They are placed in `data/<your_namespace>/techarium/multiblock/` (default techarium multiblocks are in `data/techarium/techarium/multiblock`).
 
 ## JSON Format
 
