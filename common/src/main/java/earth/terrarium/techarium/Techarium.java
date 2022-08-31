@@ -25,6 +25,7 @@ public class Techarium {
         TechariumItems.ITEMS.initialize();
         TechariumBlockEntities.BLOCK_ENTITIES.initialize();
         TechariumMenuTypes.MENUS.initialize();
+        TechariumRecipes.SERIALIZERS.initialize();
     }
 
 }

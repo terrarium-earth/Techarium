@@ -2,13 +2,14 @@ package earth.terrarium.techarium.block.entity.singleblock;
 
 import earth.terrarium.techarium.block.singleblock.GravMagnetBlock;
 import earth.terrarium.techarium.registry.TechariumBlockEntities;
-import earth.terrarium.techarium.util.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,6 +29,8 @@ import software.bernie.geckolib3.resource.GeckoLibCache;
 
 public class GravMagnetBlockEntity extends BlockEntity implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
+
+    public SimpleContainer container = new SimpleContainer();
 
     //3 for 3 blocks
     //4.9 for 5 blocks
@@ -94,12 +97,11 @@ public class GravMagnetBlockEntity extends BlockEntity implements IAnimatable {
         if (level == null){
             return;
         }
-        for (Entity entity : level.getEntitiesOfClass(Entity.class , new AABB(this.getBlockPos().offset(0, dir == Direction.UP || dir == Direction.DOWN ? -1 : 1, 0) , new BlockPos(MathUtils.vec3FromOffset(new Vec3(this.worldPosition.getX() , this.worldPosition.getY(), this.worldPosition.getZ()), dir, isPull() ? power : power-1)).relative(dir.getAxis() != Direction.Axis.Y ? dir.getClockWise().getAxis() : Direction.Axis.X, 1).relative(Direction.Axis.Z, dir.getAxis() != Direction.Axis.Y ? 0 :1).relative(Direction.Axis.Y, dir.getAxis() != Direction.Axis.Y ? 0 :1).relative(dir, dir == Direction.SOUTH || dir == Direction.EAST ? 1 : 0)))){
+        for (Entity entity : level.getEntitiesOfClass(Entity.class , new AABB(this.getBlockPos().offset(0, dir == Direction.UP || dir == Direction.DOWN ? -1 : 1, 0) , new BlockPos(new Vec3(this.worldPosition.getX() , this.worldPosition.getY(), this.worldPosition.getZ()).relative(dir, isPull() ? power : power-1)).relative(dir.getAxis() != Direction.Axis.Y ? dir.getClockWise().getAxis() : Direction.Axis.X, 1).relative(Direction.Axis.Z, dir.getAxis() != Direction.Axis.Y ? 0 :1).relative(Direction.Axis.Y, dir.getAxis() != Direction.Axis.Y ? 0 :1).relative(dir, dir == Direction.SOUTH || dir == Direction.EAST ? 1 : 0)))){
             Vec3 force = getForceWithDistance(entity, dir, isPull());
             entity.hurtMarked = true;
             entity.setDeltaMovement(force);
         }
-
     }
 
     private Vec3 getForceWithDistance(Entity entity, Direction dir, boolean isPull){
@@ -115,6 +117,12 @@ public class GravMagnetBlockEntity extends BlockEntity implements IAnimatable {
 
         if(isPull && dist < 1){
             distPower = 0;
+        }
+
+        if (!isPull && entity instanceof ServerPlayer player && dir == Direction.UP && !player.isShiftKeyDown()){
+            var velocity =  entity.getDeltaMovement();
+            return new Vec3(velocity.x + (dir.getStepX() * distPower * mul),velocity.y + (dir.getStepY() * distPower * mul),
+                    velocity.z + (dir.getStepZ() * distPower * mul));
         }
 
         return entity.getDeltaMovement().add(dir.getStepX() * distPower * mul, dir.getStepY() * distPower * mul,
