@@ -10,7 +10,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +55,7 @@ public abstract class SelfDeployingMultiblockBlockEntity extends SelfDeployingBl
 	}
 
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag) {
+	protected void saveAdditional(CompoundTag tag) {
 		super.saveAdditional(tag);
 		ListTag list = new ListTag();
 		for (Map.Entry<BlockPos, BlockState> entry : states.entrySet()) {
@@ -69,7 +68,7 @@ public abstract class SelfDeployingMultiblockBlockEntity extends SelfDeployingBl
 	}
 
 	@Override
-	public void load(@NotNull CompoundTag tag) {
+	public void load(CompoundTag tag) {
 		super.load(tag);
 		ListTag list = tag.getList("states", Tag.TAG_COMPOUND);
 		int size = list.size();

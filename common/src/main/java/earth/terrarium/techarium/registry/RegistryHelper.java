@@ -22,6 +22,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Supplier;
 
 public final class RegistryHelper {
+    @ImplementedByExtension
+    public static <E extends BlockEntity> BlockEntityType<E> createBlockEntityType(BlockEntityFactory<E> factory, Block... blocks) {
+        throw new NotImplementedException("createBlockEntityType was not implemented.");
+    }
 
     @ImplementedByExtension
     public static <E extends AbstractContainerMenu> MenuType<E> createMenuType(MenuTypeFactory<E> factory) {
@@ -36,6 +40,13 @@ public final class RegistryHelper {
     @ImplementedByExtension
     public static CreativeModeTab registerCreativeTab(ResourceLocation tab, Supplier<ItemStack> icon) {
         throw new NotImplementedException("registerCreativeTab was not implemented.");
+    }
+
+    @FunctionalInterface
+    public interface BlockEntityFactory<T extends BlockEntity> {
+
+        @NotNull T create(BlockPos blockPos, BlockState blockState);
+
     }
 
     @FunctionalInterface

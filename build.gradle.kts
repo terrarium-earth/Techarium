@@ -12,8 +12,6 @@ plugins {
 
 val modVersion: String by project
 val minecraftVersion: String by project
-val resourcefulLibVersion: String by project
-val botariumVersion: String by project
 
 architectury {
     minecraft = minecraftVersion
@@ -33,7 +31,11 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven(url = "https://nexus.resourcefulbees.com/repository/maven-public/")
+
+        maven(url = "https://maven.parchmentmc.org")
+        maven(url = "https://repo.spongepowered.org/repository/maven-public/")
+        maven(url = "https://maven.blamejared.com")
+        maven(url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/")
     }
 
     tasks.withType<JavaCompile> {
