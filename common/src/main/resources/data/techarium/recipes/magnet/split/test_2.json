@@ -1,0 +1,15 @@
+{
+  "type": "techarium:magnet_splitting",
+  "input": {
+    "item": "minecraft:diamond_ore"
+  },
+  "craftingTime": 100,
+  "outputs": [
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "minecraft:stone"
+    }
+  ]
+}

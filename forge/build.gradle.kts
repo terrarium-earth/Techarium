@@ -17,6 +17,7 @@ loom {
         dataGen {
             mod("techarium")
         }
+        mixinConfig( "techarium.mixins.json")
     }
 }
 

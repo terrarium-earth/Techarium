@@ -23,6 +23,7 @@
     ]
   },
   "mixins": [
+    "techarium.fabric.mixins.json",
     "techarium.mixins.json"
   ],
   "depends": {

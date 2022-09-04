@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class MagnetCompressRecipe implements Recipe<WorldContainer> {
+public class MagnetSplitRecipe implements Recipe<WorldContainer> {
     private final ResourceLocation id;
     private final List<ItemStack> outputs;
     private final Ingredient input;
     private final int time;
 
-    public MagnetCompressRecipe(ResourceLocation id, List<ItemStack> outputs, Ingredient input, int time) {
+    public MagnetSplitRecipe(ResourceLocation id, List<ItemStack> outputs, Ingredient input, int time) {
         this.id = id;
         this.outputs = outputs;
         this.input = input;
@@ -37,15 +37,12 @@ public class MagnetCompressRecipe implements Recipe<WorldContainer> {
         return container.getItems().stream().anyMatch(input);
     }
 
-    public boolean isValid(ItemStack input){
-        return this.input.test(input);
-    }
-
     public int getTime() {
         return time;
     }
-    public Ingredient getInput(){
-        return input;
+
+    public boolean isValid(ItemStack input){
+        return this.input.test(input);
     }
 
     /**
@@ -86,40 +83,38 @@ public class MagnetCompressRecipe implements Recipe<WorldContainer> {
         return Type.INSTANCE;
     }
 
-    public static class Type implements RecipeType<MagnetCompressRecipe> {
+    public static class Type implements RecipeType<MagnetSplitRecipe> {
         private Type() { }
         public static final Type INSTANCE = new Type();
-        public static final String ID = "magnet_compressing";
+        public static final String ID = "magnet_splitting";
     }
 
 
-    public static class Serializer implements RecipeSerializer<MagnetCompressRecipe> {
+    public static class Serializer implements RecipeSerializer<MagnetSplitRecipe> {
         public static final Serializer INSTANCE = new Serializer();
-        public static final ResourceLocation ID =
-                new ResourceLocation(Techarium.MOD_ID, "magnet_compressing");
-
+        public static final ResourceLocation ID = new ResourceLocation(Techarium.MOD_ID, "magnet_splitting");
 
         @Override
-        public MagnetCompressRecipe fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject serializedRecipe) {
+        public MagnetSplitRecipe fromJson(@NotNull ResourceLocation recipeId, @NotNull JsonObject serializedRecipe) {
             Ingredient input = Ingredient.fromJson(GsonHelper.getAsJsonObject(serializedRecipe, "input"));
             int time = GsonHelper.getAsInt(serializedRecipe, "craftingTime");
             JsonArray outputArray = GsonHelper.getAsJsonArray(serializedRecipe, "outputs");
             List<ItemStack> outputs = new ArrayList<>(StreamSupport.stream(outputArray.spliterator(), false).map(output -> ShapedRecipe.itemStackFromJson(output.getAsJsonObject())).toList());
 
-            return new MagnetCompressRecipe(recipeId, outputs, input, time);
+            return new MagnetSplitRecipe(recipeId, outputs, input, time);
         }
 
         @Override
-        public MagnetCompressRecipe fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
+        public MagnetSplitRecipe fromNetwork(@NotNull ResourceLocation recipeId, @NotNull FriendlyByteBuf buffer) {
             Ingredient input = Ingredient.fromNetwork(buffer);
             int time = buffer.readInt();
             List<ItemStack> outputs = buffer.readList(FriendlyByteBuf::readNbt).stream().map(ItemStack::of).toList();
 
-            return new MagnetCompressRecipe(recipeId, outputs, input, time);
+            return new MagnetSplitRecipe(recipeId, outputs, input, time);
         }
 
         @Override
-        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull MagnetCompressRecipe recipe) {
+        public void toNetwork(@NotNull FriendlyByteBuf buffer, @NotNull MagnetSplitRecipe recipe) {
             recipe.input.toNetwork(buffer);
             buffer.writeInt(recipe.time);
             buffer.writeCollection(recipe.outputs, (buf, output) -> buf.writeNbt(output.save(new CompoundTag())));
