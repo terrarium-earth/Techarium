@@ -5,6 +5,7 @@ import earth.terrarium.techarium.client.screen.TechariumMenuScreens;
 import earth.terrarium.techarium.forge.client.render.BotariumRenderer;
 import earth.terrarium.techarium.forge.client.render.ExchangeStationRenderer;
 import earth.terrarium.techarium.forge.client.render.GravMagnetRenderer;
+import earth.terrarium.techarium.forge.client.render.MagneticAcceleratorRenderer;
 import earth.terrarium.techarium.registry.TechariumBlockEntities;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,6 +22,7 @@ public class ModEventHandler {
 		BlockEntityRenderers.register(TechariumBlockEntities.EXCHANGE_STATION.get(), ExchangeStationRenderer::new);
 		BlockEntityRenderers.register(TechariumBlockEntities.BOTARIUM.get(), BotariumRenderer::new);
 		BlockEntityRenderers.register(TechariumBlockEntities.GRAVMAGNET.get(), GravMagnetRenderer::new);
+		BlockEntityRenderers.register(TechariumBlockEntities.MAGNETIC_ACCELORATOR.get(), MagneticAcceleratorRenderer::new);
 	}
 
     @SubscribeEvent

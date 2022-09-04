@@ -1,13 +1,13 @@
 {
   "type": "techarium:magnet_compressing",
   "input": {
-    "item": "minecraft:coal",
-    "count": 64
+    "item": "minecraft:coal"
   },
+  "count": 64,
   "craftingTime": 100,
   "outputs": [
     {
-      "item": "minecraft:diamond",
+      "id": "minecraft:diamond",
       "count": 3
     }
   ]

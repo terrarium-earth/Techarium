@@ -123,14 +123,15 @@ public class WorldContainer extends SimpleContainer {
         List<ItemEntity> entitiesOfClass = getEntities();
         var toReturn = ItemStack.EMPTY;
         for (ItemEntity item : entitiesOfClass) {
-            if (amount > 0 && getItems().stream().anyMatch(i -> ItemStack.isSameItemSameTags(stack, item.getItem()))) {
-                amount--;
-                var itemCopy = item.getItem().copy();
-                itemCopy.setCount(item.getItem().getCount()-1);
-                item.setItem(itemCopy);
-                toReturn = super.removeItem(IntStream.range(0, getItems().size()).filter(i -> ItemStack.isSameItemSameTags(getItems().get(i), stack)).findFirst().orElse(-1), 1);
-            } else {
-                return toReturn;
+            for (int i = 0; i < amount; i++) {
+                if (getItems().stream().anyMatch(j -> ItemStack.isSameItemSameTags(stack, j))) {
+                    var itemCopy = item.getItem().copy();
+                    itemCopy.setCount(item.getItem().getCount()-1);
+                    item.setItem(itemCopy);
+                    toReturn = super.removeItem(IntStream.range(0, getItems().size()).filter(j -> ItemStack.isSameItemSameTags(getItems().get(j), stack)).findFirst().orElse(-1), 1);
+                } else {
+                    return toReturn;
+                }
             }
         }
         return ItemStack.EMPTY;

@@ -3,12 +3,12 @@ package earth.terrarium.techarium.block.entity.singleblock;
 import earth.terrarium.techarium.block.singleblock.GravMagnetBlock;
 import earth.terrarium.techarium.data.recipes.MagnetCompressRecipe;
 import earth.terrarium.techarium.data.recipes.MagnetSplitRecipe;
-import earth.terrarium.techarium.util.MagnetTarget;
+import earth.terrarium.techarium.data.recipes.SyncedData;
 import earth.terrarium.techarium.registry.TechariumBlockEntities;
+import earth.terrarium.techarium.util.MagnetTarget;
 import earth.terrarium.techarium.util.WorldContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -16,11 +16,9 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -44,10 +42,6 @@ import java.util.stream.IntStream;
 public class GravMagnetBlockEntity extends BlockEntity implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
 
-    //3 for 3 blocks
-    //4.9 for 5 blocks
-    //7 for 8 blocks
-    //9.5 for 12 blocks
     public float power = 3f;
 
     private final WorldContainer container;
@@ -104,10 +98,6 @@ public class GravMagnetBlockEntity extends BlockEntity implements IAnimatable {
     }
 
     private  <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> event) {
-        //26 for 3 blocks
-        //55 for 5 blocks
-        //100 for 8 blocks
-        //160 for 12 blocks
         GeckoLibCache.getInstance().parser.setValue("variable.distance", (power-1)*15);
 
         String animation = isPull() ? "pulling" : "pushing";
@@ -125,27 +115,28 @@ public class GravMagnetBlockEntity extends BlockEntity implements IAnimatable {
         pushPullEntities();
     }
 
-    private void craft(Recipe<? extends SimpleContainer> recipe, ItemEntity target){
+    private <T extends SyncedData> void craft(T recipe, ItemEntity target){
         if (!(level instanceof ServerLevel)){
             return;
         }
         ((ServerLevel) level).sendParticles(ParticleTypes.SONIC_BOOM, target.getX(), target.getY(), target.getZ(), 0, 0, 0, 0, 0);
-        container.removeItem(target.getItem(), 1);
-        if (!target.isRemoved()){
-            ((MagnetTarget) target).Techarium$setProgress(0);
-        }
         if (recipe instanceof MagnetSplitRecipe splitRecipe){
+            container.removeItem(target.getItem(), splitRecipe.count());
             for (ItemStack itemStack : splitRecipe.result(container)) {
                 container.addItem(itemStack);
             }
         } else if (recipe instanceof MagnetCompressRecipe compressRecipe){
+            container.removeItem(target.getItem(), compressRecipe.count());
             for (ItemStack itemStack : compressRecipe.result(container)) {
                 container.addItem(itemStack);
             }
         }
+        if (!target.isRemoved()){
+            ((MagnetTarget) target).Techarium$setProgress(0);
+        }
     }
 
-    private void handleItems(){
+    protected void handleItems(){
         if(container.getLevel() == null){
             container.setLevel(level);
         }
@@ -162,7 +153,9 @@ public class GravMagnetBlockEntity extends BlockEntity implements IAnimatable {
                         craft(confirmedRecipe, target.get());
                     } else {
                         ((MagnetTarget) target.get()).Techarium$setProgress(((MagnetTarget) target.get()).Techarium$getProgress() + 0.5f);
-                        ((ServerLevel) level).sendParticles(ParticleTypes.GLOW, target.get().getX(), target.get().getY(), target.get().getZ(), 0, 0, 0, 0, 0);
+                        if (level instanceof ServerLevel){
+                            ((ServerLevel) level).sendParticles(ParticleTypes.GLOW, target.get().getX(), target.get().getY(), target.get().getZ(), 0, 0, 0, 0, 0);
+                        }
                     }
                 } else {
                     var confirmedRecipe = ((MagnetCompressRecipe) recipe.get());
@@ -170,6 +163,9 @@ public class GravMagnetBlockEntity extends BlockEntity implements IAnimatable {
                         craft(confirmedRecipe, target.get());
                     } else {
                         ((MagnetTarget) target.get()).Techarium$setProgress(((MagnetTarget) target.get()).Techarium$getProgress() + 0.5f);
+                        if (level instanceof ServerLevel){
+                            ((ServerLevel) level).sendParticles(ParticleTypes.GLOW, target.get().getX(), target.get().getY(), target.get().getZ(), 0, 0, 0, 0, 0);
+                        }
                     }
                 }
             }
@@ -178,9 +174,9 @@ public class GravMagnetBlockEntity extends BlockEntity implements IAnimatable {
         itemStack.ifPresent(itemEntity -> ((MagnetTarget) itemEntity).Techarium$setIsTarget(true));
     }
 
-    private Optional<? extends Recipe<? extends SimpleContainer>> hasRecipe(ItemStack itemStack) {
-        return this.isPull() ? Objects.requireNonNull(level).getRecipeManager().getAllRecipesFor(MagnetSplitRecipe.Type.INSTANCE).stream().filter(r -> r.isValid(itemStack)).findFirst()
-                : Objects.requireNonNull(level).getRecipeManager().getAllRecipesFor(MagnetCompressRecipe.Type.INSTANCE).stream().filter(r -> r.isValid(itemStack)).findFirst();
+    private Optional<? extends SyncedData> hasRecipe(ItemStack itemStack) {
+        return this.isPull() ? MagnetSplitRecipe.getRecipesForStack(itemStack, level.getRecipeManager()).stream().findFirst()
+                : MagnetCompressRecipe.getRecipesForStack(itemStack, level.getRecipeManager()).stream().findFirst();
     }
 
     @Nullable
@@ -189,7 +185,7 @@ public class GravMagnetBlockEntity extends BlockEntity implements IAnimatable {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    private void pushPullEntities(){
+    protected void pushPullEntities(){
         Direction dir = getBlockState().getValue(BlockStateProperties.FACING);
         if (level == null){
             return;

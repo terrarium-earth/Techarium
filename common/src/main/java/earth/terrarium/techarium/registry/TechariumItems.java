@@ -15,6 +15,7 @@ public class TechariumItems {
     public static final Supplier<Item> COMMUNICATION_DEVICE_ELEMENT = ITEMS.register("com_device_element", () -> new BlockItem(TechariumBlocks.COMMUNICATION_DEVICE_ELEMENT.get(), new Item.Properties().tab(Techarium.TAB)));
     public static final Supplier<Item> BOTARIUM = ITEMS.register("botarium", () -> new BlockItem(TechariumBlocks.BOTARIUM.get(), new Item.Properties().tab(Techarium.TAB)));
 	public static final Supplier<Item> GRAVMAGNET = ITEMS.register("gravmagnet", () -> new BlockItem(TechariumBlocks.GRAVMAGNET.get(), new Item.Properties().tab(Techarium.TAB)));
+    public static final Supplier<Item> MAGNETIC_ACCELERATOR = ITEMS.register("magnetic_accelerator", () -> new BlockItem(TechariumBlocks.MAGNETIC_ACCELERATOR.get(), new Item.Properties().tab(Techarium.TAB)));
 
     public static final Supplier<Item> EXCHANGE_STATION = Techarium.DEBUG_MODE ? ITEMS.register("exchange_station", () -> new BlockItem(TechariumBlocks.EXCHANGE_STATION.get(), new Item.Properties().tab(Techarium.TAB))) : () -> null;
 

@@ -6,10 +6,10 @@
   "craftingTime": 100,
   "outputs": [
     {
-      "item": "minecraft:diamond"
+      "id": "minecraft:diamond"
     },
     {
-      "item": "minecraft:stone"
+      "id": "minecraft:stone"
     }
   ]
 }

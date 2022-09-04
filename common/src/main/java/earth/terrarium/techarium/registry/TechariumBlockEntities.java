@@ -8,6 +8,7 @@ import earth.terrarium.techarium.block.entity.selfdeploying.BotariumBlockEntity;
 import earth.terrarium.techarium.block.entity.selfdeploying.ExchangeStationBlockEntity;
 import earth.terrarium.techarium.block.entity.selfdeploying.SelfDeployingComponentBlockEntity;
 import earth.terrarium.techarium.block.entity.singleblock.GravMagnetBlockEntity;
+import earth.terrarium.techarium.block.entity.singleblock.MagneticAcceleratorBlockEntity;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -32,4 +33,6 @@ public class TechariumBlockEntities {
 			() -> RegistryHelpers.createBlockEntityType(GravMagnetBlockEntity::new, TechariumBlocks.GRAVMAGNET.get()));
 
 
+    public static final Supplier<BlockEntityType<MagneticAcceleratorBlockEntity>> MAGNETIC_ACCELORATOR = BLOCK_ENTITIES.register("magnetic_accelerator",
+            () -> RegistryHelpers.createBlockEntityType(MagneticAcceleratorBlockEntity::new, TechariumBlocks.MAGNETIC_ACCELERATOR.get()));
 }

@@ -8,6 +8,7 @@ import earth.terrarium.techarium.block.selfdeploying.ExchangeStationBlock;
 import earth.terrarium.techarium.block.selfdeploying.SelfDeployingBlock;
 import earth.terrarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
 import earth.terrarium.techarium.block.singleblock.GravMagnetBlock;
+import earth.terrarium.techarium.block.singleblock.MagneticAcceleratorBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -24,5 +25,5 @@ public class TechariumBlocks {
     public static final Supplier<SelfDeployingBlock> EXCHANGE_STATION = BLOCKS.register("exchange_station", ExchangeStationBlock::new);
     public static final Supplier<SelfDeployingBlock> BOTARIUM = BLOCKS.register("botarium", BotariumBlock::new);
 	public static final Supplier<GravMagnetBlock> GRAVMAGNET = BLOCKS.register("gravmagnet", () -> new GravMagnetBlock(BlockBehaviour.Properties.of(Material.METAL).noOcclusion()));
-
+	public static final Supplier<MagneticAcceleratorBlock> MAGNETIC_ACCELERATOR = BLOCKS.register("magnetic_accelerator", () -> new MagneticAcceleratorBlock(BlockBehaviour.Properties.of(Material.METAL).noOcclusion()));
 }
