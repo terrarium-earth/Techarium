@@ -49,6 +49,7 @@ subprojects {
 
     repositories {
         maven(url = "https://maven.msrandom.net/repository/root/")
+        maven(url = "https://cursemaven.com")
     }
 
     dependencies {

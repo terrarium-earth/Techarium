@@ -1,10 +1,11 @@
 package earth.terrarium.techarium.registry;
 
-import earth.terrarium.botarium.api.RegistryHolder;
+import earth.terrarium.botarium.api.registry.RegistryHolder;
 import earth.terrarium.techarium.Techarium;
 import earth.terrarium.techarium.inventory.BotariumMenu;
 import earth.terrarium.techarium.inventory.ExchangeStationMenu;
 import earth.terrarium.techarium.inventory.MachineCoreMenu;
+import earth.terrarium.techarium.machine.DeployableMachineMenu;
 import net.minecraft.core.Registry;
 import net.minecraft.world.inventory.MenuType;
 
@@ -16,5 +17,6 @@ public class TechariumMenuTypes {
     public static final Supplier<MenuType<BotariumMenu>> BOTARIUM = MENUS.register("botarium", () -> RegistryHelper.createMenuType(BotariumMenu::new));
     public static final Supplier<MenuType<ExchangeStationMenu>> EXCHANGE_STATION = MENUS.register("exchange_station", () -> RegistryHelper.createMenuType(ExchangeStationMenu::new));
     public static final Supplier<MenuType<MachineCoreMenu>> MACHINE_CORE = MENUS.register("machine_core", () -> RegistryHelper.createMenuType(MachineCoreMenu::new));
+	public static final Supplier<MenuType<DeployableMachineMenu>> DEPLOYABLE_MACHINE = MENUS.register("deployable_machine", () -> RegistryHelper.createMenuType(DeployableMachineMenu::new));
 
 }

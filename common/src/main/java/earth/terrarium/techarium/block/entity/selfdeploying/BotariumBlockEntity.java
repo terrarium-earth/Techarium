@@ -1,8 +1,8 @@
 package earth.terrarium.techarium.block.entity.selfdeploying;
 
-import earth.terrarium.botarium.api.BlockEnergyContainer;
-import earth.terrarium.botarium.api.EnergyBlock;
-import earth.terrarium.botarium.api.EnergyContainer;
+import earth.terrarium.botarium.api.energy.EnergyBlock;
+import earth.terrarium.botarium.api.energy.SimpleUpdatingEnergyContainer;
+import earth.terrarium.botarium.api.energy.StatefulEnergyContainer;
 import earth.terrarium.techarium.block.selfdeploying.SelfDeployingComponentBlock;
 import earth.terrarium.techarium.inventory.BotariumMenu;
 import earth.terrarium.techarium.registry.TechariumBlockEntities;
@@ -18,6 +18,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -31,7 +32,7 @@ import java.util.Map;
 
 public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer implements EnergyBlock {
 
-    private BlockEnergyContainer energyContainer;
+    private SimpleUpdatingEnergyContainer energyContainer;
 
     public BotariumBlockEntity(BlockPos pos, BlockState state) {
         super(TechariumBlockEntities.BOTARIUM.get(), pos, state);
@@ -119,10 +120,16 @@ public class BotariumBlockEntity extends SelfDeployingBlockEntity.WithContainer 
     }
 
     @Override
-    public EnergyContainer getEnergyStorage() {
+    public SimpleUpdatingEnergyContainer getEnergyStorage() {
         if (energyContainer == null) {
-            this.energyContainer = new BlockEnergyContainer(1000000);
+            this.energyContainer = new SimpleUpdatingEnergyContainer(this, 1000000);
         }
         return energyContainer;
+    }
+
+    @Override
+    public void update() {
+        this.setChanged();
+        this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
     }
 }

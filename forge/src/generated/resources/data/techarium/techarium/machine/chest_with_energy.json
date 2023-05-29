@@ -1,0 +1,21 @@
+{
+  "modules": [
+    {
+      "type": "energy",
+      "capacity": 1000,
+      "input-rate": 100,
+      "output-rate": 100
+    },
+    {
+      "type": "item",
+      "capacity": 6,
+      "input-rate": 1,
+      "output-rate": 1
+    }
+  ],
+  "size": [
+    1,
+    1,
+    1
+  ]
+}

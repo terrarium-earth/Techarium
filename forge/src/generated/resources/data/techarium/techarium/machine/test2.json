@@ -1,0 +1,15 @@
+{
+  "modules": [
+    {
+      "type": "item",
+      "capacity": 8,
+      "input-rate": 10,
+      "output-rate": 0
+    }
+  ],
+  "size": [
+    2,
+    2,
+    2
+  ]
+}

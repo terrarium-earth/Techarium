@@ -1,7 +1,8 @@
 package earth.terrarium.techarium.registry;
 
-import earth.terrarium.botarium.api.RegistryHolder;
+import earth.terrarium.botarium.api.registry.RegistryHolder;
 import earth.terrarium.techarium.Techarium;
+import earth.terrarium.techarium.machine.DeployableMachineItem;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -14,6 +15,7 @@ public class TechariumItems {
     public static final Supplier<Item> MACHINE_CORE = ITEMS.register("machine_core", () -> new BlockItem(TechariumBlocks.MACHINE_CORE.get(), new Item.Properties().tab(Techarium.TAB)));
     public static final Supplier<Item> COMMUNICATION_DEVICE_ELEMENT = ITEMS.register("com_device_element", () -> new BlockItem(TechariumBlocks.COMMUNICATION_DEVICE_ELEMENT.get(), new Item.Properties().tab(Techarium.TAB)));
     public static final Supplier<Item> BOTARIUM = ITEMS.register("botarium", () -> new BlockItem(TechariumBlocks.BOTARIUM.get(), new Item.Properties().tab(Techarium.TAB)));
+    public static final Supplier<Item> DEPLOYABLE_MACHINE = ITEMS.register("deployable_machine", () -> new DeployableMachineItem(new Item.Properties().tab(Techarium.TAB)));
 
     public static final Supplier<Item> EXCHANGE_STATION = Techarium.DEBUG_MODE ? ITEMS.register("exchange_station", () -> new BlockItem(TechariumBlocks.EXCHANGE_STATION.get(), new Item.Properties().tab(Techarium.TAB))) : () -> null;
 

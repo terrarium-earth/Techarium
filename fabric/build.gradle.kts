@@ -46,7 +46,7 @@ dependencies {
     modImplementation(group = "net.fabricmc.fabric-api", name = "fabric-api", version = fabricApiVersion)
     modImplementation(group = "software.bernie.geckolib", name = "geckolib-fabric-1.19", version = geckolibVersion)
     include(modImplementation(group = "earth.terrarium", name = "botarium-fabric-$minecraftVersion", version = botariumVersion))
-    include(modImplementation(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-fabric-1.19.1", version = resourcefulLibVersion))
+//    include(modImplementation(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-fabric-1.19.1", version = resourcefulLibVersion))
 
     compileOnly(projects.techariumCommon) { isTransitive = false }
 

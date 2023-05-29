@@ -3,6 +3,7 @@ package earth.terrarium.techarium;
 import earth.terrarium.techarium.registry.*;
 import earth.terrarium.techarium.util.PlatformHelper;
 import earth.terrarium.techarium.util.Utils;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -10,6 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.function.Consumer;
 
 public class Techarium {
 
@@ -19,12 +22,26 @@ public class Techarium {
     public static final Style STYLE = Style.EMPTY.withFont(FONT);
     public static final boolean DEBUG_MODE = PlatformHelper.isDevelopmentEnvironment();  // if we want debug items/blocks
     public static CreativeModeTab TAB = RegistryHelper.registerCreativeTab(new ResourceLocation(MOD_ID, "tab"), () -> new ItemStack(Blocks.DIAMOND_BLOCK));
+    private static Consumer<NonNullList<ItemStack>> populateMachines;
 
     public static void init() {
         TechariumBlocks.BLOCKS.initialize();
         TechariumItems.ITEMS.initialize();
         TechariumBlockEntities.BLOCK_ENTITIES.initialize();
         TechariumMenuTypes.MENUS.initialize();
+    }
+
+    public static void setPopulateMachinesConsumer(Consumer<NonNullList<ItemStack>> consumer) {
+        if (populateMachines != null) {
+            throw new UnsupportedOperationException("Can only set the populateMachines consumer once");
+        }
+        populateMachines = consumer;
+    }
+
+    public static void populateMachines(NonNullList<ItemStack> items) {
+        if (populateMachines != null) {
+            populateMachines.accept(items);
+        }
     }
 
 }

@@ -45,7 +45,7 @@ dependencies {
     forge(group = "net.minecraftforge", name = "forge", version = "$minecraftVersion-$forgeVersion")
     modImplementation(group = "software.bernie.geckolib", name = "geckolib-forge-1.19", version = geckolibVersion)
     include(modImplementation(group = "earth.terrarium", name = "botarium-forge-$minecraftVersion", version = botariumVersion))
-    include(modImplementation(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-forge-1.19.1", version = resourcefulLibVersion))
+//    include(modImplementation(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-forge-1.19.1", version = resourcefulLibVersion))
 
     compileOnly(projects.techariumCommon) { isTransitive = false }
 

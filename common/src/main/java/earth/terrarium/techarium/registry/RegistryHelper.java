@@ -1,5 +1,7 @@
 package earth.terrarium.techarium.registry;
 
+import earth.terrarium.techarium.machine.definition.MachineDefinition;
+import earth.terrarium.techarium.machine.definition.MachineGUIDefinition;
 import earth.terrarium.techarium.multiblock.MultiblockStructure;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
@@ -25,6 +27,16 @@ public final class RegistryHelper {
     @ImplementedByExtension
     public static ResourceKey<Registry<MultiblockStructure>> getMultiblockRegistryKey() {
         throw new NotImplementedException("getMultiblockRegistryKey was not implemented.");
+    }
+
+    @ImplementedByExtension
+    public static ResourceKey<Registry<MachineDefinition>> getMachineDefinitionRegistryKey() {
+        throw new NotImplementedException("getMachineDefinitionRegistryKey was not implemented.");
+    }
+
+    @ImplementedByExtension
+    public static ResourceKey<Registry<MachineGUIDefinition>> getMachineGUIDefinitionRegistryKey() {
+        throw new NotImplementedException("getMachineGUIDefinitionRegistryKey was not implemented.");
     }
 
     @ImplementedByExtension

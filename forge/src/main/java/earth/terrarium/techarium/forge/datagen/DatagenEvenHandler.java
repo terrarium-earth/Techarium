@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
 import earth.terrarium.techarium.Techarium;
+import earth.terrarium.techarium.machine.definition.MachineDefinition;
+import earth.terrarium.techarium.machine.definition.MachineModuleDefinition;
 import earth.terrarium.techarium.multiblock.MultiblockElement;
 import earth.terrarium.techarium.multiblock.MultiblockStructure;
 import earth.terrarium.techarium.registry.RegistryHelper;
@@ -18,6 +20,7 @@ import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.List;
 import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = Techarium.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -32,7 +35,10 @@ public class DatagenEvenHandler {
 
         JsonCodecProvider<MultiblockStructure> multiblockProvider = JsonCodecProvider.forDatapackRegistry(
                 generator, existingFileHelper, Techarium.MOD_ID, registryOps, RegistryHelper.getMultiblockRegistryKey(), createMultiblocks());
+        JsonCodecProvider<MachineDefinition> machineDefinitionProvider = JsonCodecProvider.forDatapackRegistry(
+                generator, existingFileHelper, Techarium.MOD_ID, registryOps, RegistryHelper.getMachineDefinitionRegistryKey(), createMachineDefinitions());
         generator.addProvider(event.includeServer(), multiblockProvider);
+        generator.addProvider(event.includeServer(), machineDefinitionProvider);
     }
 
     private static Map<ResourceLocation, MultiblockStructure> createMultiblocks() {
@@ -79,6 +85,18 @@ public class DatagenEvenHandler {
 
     private static MultiblockElement block(String rl) {
         return new MultiblockElement.Builder().block(rl).build();
+    }
+
+    private static Map<ResourceLocation, MachineDefinition> createMachineDefinitions() {
+        MachineDefinition test1 = new MachineDefinition(List.of(), List.of(1, 2, 1));
+        MachineDefinition test2 = new MachineDefinition(List.of(new MachineModuleDefinition(MachineModuleDefinition.ModuleType.ITEM, 8, 10, 0)), List.of(2, 2, 2));
+        MachineDefinition energyCell = new MachineDefinition(List.of(new MachineModuleDefinition(MachineModuleDefinition.ModuleType.ENERGY, 1000, 100, 100)), List.of(1,1,1));
+        MachineDefinition chestWithEnergy = new MachineDefinition(List.of(new MachineModuleDefinition(MachineModuleDefinition.ModuleType.ENERGY, 1000, 100, 100),
+                new MachineModuleDefinition(MachineModuleDefinition.ModuleType.ITEM, 6, 1, 1)), List.of(1,1,1));
+        return Map.of(Utils.resourceLocation("test1"), test1,
+                Utils.resourceLocation("test2"), test2,
+                Utils.resourceLocation("energy_cell"), energyCell,
+                Utils.resourceLocation("chest_with_energy"), chestWithEnergy);
     }
 
 }

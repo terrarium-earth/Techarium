@@ -1,13 +1,16 @@
 package earth.terrarium.techarium.registry;
 
-import earth.terrarium.botarium.api.RegistryHelpers;
-import earth.terrarium.botarium.api.RegistryHolder;
+import earth.terrarium.botarium.api.registry.RegistryHelpers;
+import earth.terrarium.botarium.api.registry.RegistryHolder;
 import earth.terrarium.techarium.Techarium;
 import earth.terrarium.techarium.block.entity.multiblock.MachineCoreBlockEntity;
 import earth.terrarium.techarium.block.entity.selfdeploying.BotariumBlockEntity;
 import earth.terrarium.techarium.block.entity.selfdeploying.ExchangeStationBlockEntity;
 import earth.terrarium.techarium.block.entity.selfdeploying.SelfDeployingComponentBlockEntity;
+import earth.terrarium.techarium.machine.DeployableMachineBlock;
+import earth.terrarium.techarium.machine.DeployableMachineBlockEntity;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 import java.util.function.Supplier;
@@ -27,4 +30,8 @@ public class TechariumBlockEntities {
 
     public static final Supplier<BlockEntityType<BotariumBlockEntity>> BOTARIUM = BLOCK_ENTITIES.register("botarium",
             () -> RegistryHelpers.createBlockEntityType(BotariumBlockEntity::new, TechariumBlocks.BOTARIUM.get()));
+
+    public static final Supplier<BlockEntityType<DeployableMachineBlockEntity>> DEPLOYABLE_MACHINE = BLOCK_ENTITIES.register("deployable_machine",
+            () -> RegistryHelpers.createBlockEntityType(DeployableMachineBlockEntity::new, TechariumBlocks.DEPLOYABLE_MACHINE.get()));
+
 }

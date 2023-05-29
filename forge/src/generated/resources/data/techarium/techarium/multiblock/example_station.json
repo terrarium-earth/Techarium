@@ -1,0 +1,58 @@
+{
+  "deployed": "techarium:exchange_station",
+  "keys": {
+    "c": {
+      "block": "minecraft:orange_wool"
+    },
+    "d": {
+      "block": "minecraft:purple_wool"
+    },
+    "e": {
+      "block": "minecraft:blue_wool"
+    },
+    "f": {
+      "block": "minecraft:brown_wool"
+    },
+    "l": {
+      "block": "minecraft:magenta_wool"
+    },
+    "n": {
+      "block": "minecraft:yellow_wool"
+    },
+    "o": {
+      "block": "minecraft:lime_wool"
+    },
+    "t": {
+      "block": "minecraft:gray_wool"
+    },
+    "u": {
+      "block": "minecraft:light_gray_wool"
+    },
+    "v": {
+      "block": "minecraft:cyan_wool"
+    },
+    "w": {
+      "block": "minecraft:white_wool"
+    },
+    "z": {
+      "block": "minecraft:cut_copper_slab"
+    }
+  },
+  "pattern": [
+    [
+      "  c",
+      "def",
+      "   "
+    ],
+    [
+      "  l",
+      " @n",
+      "o  "
+    ],
+    [
+      "  t",
+      "uvw",
+      "  z"
+    ]
+  ]
+}

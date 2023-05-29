@@ -9,5 +9,6 @@ public class TechariumMenuScreens {
         MenuScreens.register(TechariumMenuTypes.BOTARIUM.get(), BotariumScreen::new);
         MenuScreens.register(TechariumMenuTypes.EXCHANGE_STATION.get(), ExchangeStationScreen::new);
         MenuScreens.register(TechariumMenuTypes.MACHINE_CORE.get(), MachineCoreScreen::new);
+        MenuScreens.register(TechariumMenuTypes.DEPLOYABLE_MACHINE.get(), DeployableMachineScreen::new);
     }
 }

@@ -27,3 +27,13 @@ So this fucks everything cause the player can't reset it. (And I don't want to s
 reset timer pls").
 
 So, well, this should be looked at in the future.
+
+
+/*
+adrian I'm going to need your help later (not today) with botarium, I'm getting a nullpointerexception with your AutoSerializable while trying to sync energy blocks.
+`Cannot invoke "earth.terrarium.botarium.api.Serializable.serialize(net.minecraft.nbt.CompoundTag)" because the return value of "earth.terrarium.botarium.forge.AutoSerializable.getSerializable()" is null`
+From what I understood, the getSerializable return the storage got from EnergyBlock#getEnergyStorage but it is somehow null and I'm sure the energy storage is never null in my code. might come from item or fluid storage but they are never null too.
+I don't know what happening ;(
+*/
+
+https://fabricmc.net/wiki/tutorial:custom_resources
