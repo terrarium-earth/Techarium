@@ -1,38 +1,45 @@
 {
-  "schemaVersion": 1,
-  "id": "techarium",
-  "version": "${version}",
-  "name": "Techarium",
-  "description": "ditto",
-  "authors": [
-    "Ketheroth"
-  ],
-  "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
-  },
-  "license": "MIT",
-  "icon": "assets/techarium/icon.png",
-  "environment": "*",
-  "entrypoints": {
-    "main": [
-      "earth.terrarium.techarium.Techarium::init"
+    "schemaVersion": 1,
+    "id": "techarium",
+    "version": "${version}",
+    "name": "Techarium",
+    "description": "Cool tech mod",
+    "authors": [
+        "Alex Nijjar",
+        "Cybronaut",
+        "Ycar"
     ],
-    "client": [
-      "earth.terrarium.techarium.fabric.client.TechariumFabricClient"
-    ]
-  },
-  "mixins": [
-    "techarium.mixins.json"
-  ],
-  "depends": {
-    "fabricloader": ">=0.14",
-    "fabric": "*",
-    "minecraft": "1.19.x",
-    "java": ">=17"
-  },
-  "suggests": {
-    "another-mod": "*"
+    "contributors": [
+        "Squishy"
+    ],
+    "contact": {
+        "website": "https://modrinth.com/mod/techarium",
+        "repo": "https://github.com/terrarium-earth/techarium",
+        "issues": "https://github.com/terrarium-earth/techarium/issues"
+    },
+    "license": "MIT",
+    "icon": "icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "earth.terrarium.techarium.fabric.TechariumFabric::init"
+        ]
+        ,
+        "client": [
+            "earth.terrarium.techarium.client.fabric.TechariumClientFabric::init"
+        ]
+    },
+    "mixins": [
+        "techarium-common.mixins.json",
+        "techarium.mixins.json"
+    ],
+    "depends": {
+        "fabric": "*",
+        "minecraft": ">=1.20",
+        "java": ">=17",
+        "resourcefullib": ">=2.1.11",
+        "resourcefulconfig": ">=2.0.0",
+        "botarium": ">=2.2.0",
+        "geckolib": ">=4.2.2"
   }
 }
-  

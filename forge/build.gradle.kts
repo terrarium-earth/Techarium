@@ -1,70 +1,46 @@
 architectury {
-    platformSetupLoomIde()
-}
-
-val minecraftVersion: String by project
-val forgeVersion: String by project
-val geckolibVersion: String by project
-val resourcefulLibVersion: String by project
-val botariumVersion: String by project
-
-classExtensions {
-    registerForSourceSet(sourceSets.main.get(), "earth.terrarium.techarium.forge.extensions", "earth.terrarium.techarium.forge.client.extensions")
+    forge()
 }
 
 loom {
     forge {
-        dataGen {
-            mod("techarium")
+        mixinConfig("techarium-common.mixins.json")
+        mixinConfig("techarium.mixins.json")
+    }
+    runs {
+        create("data") {
+            data()
+            programArgs("--all", "--mod", "techarium")
+            programArgs("--output", project(":common").file("src/main/generated/resources").absolutePath)
+            programArgs("--existing", project(":common").file("src/main/resources").absolutePath)
         }
     }
 }
 
-sourceSets {
-    main {
-        val commonSourceSets = projects.techariumCommon.dependencyProject.sourceSets
-
-        val commonMain = commonSourceSets.main
-        val commonClient = commonSourceSets.named("client")
-
-        java.srcDirs(
-                commonMain.map { it.java.srcDirs },
-                commonClient.map { it.java.srcDirs },
-        )
-
-        resources.srcDirs(
-                commonMain.map { it.resources.srcDirs },
-                commonClient.map { it.resources.srcDirs },
-        )
-
-        resources.srcDir("src/generated/resources")
-    }
+val common: Configuration by configurations.creating {
+    configurations.compileClasspath.get().extendsFrom(this)
+    configurations.runtimeClasspath.get().extendsFrom(this)
+    configurations["developmentForge"].extendsFrom(this)
 }
 
 dependencies {
-    forge(group = "net.minecraftforge", name = "forge", version = "$minecraftVersion-$forgeVersion")
-    modImplementation(group = "software.bernie.geckolib", name = "geckolib-forge-1.19", version = geckolibVersion)
-    include(modImplementation(group = "earth.terrarium", name = "botarium-forge-$minecraftVersion", version = botariumVersion))
-    include(modImplementation(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-forge-1.19.1", version = resourcefulLibVersion))
-
-    compileOnly(projects.techariumCommon) { isTransitive = false }
-
-    compileOnly(projects.techariumCommon) {
-        targetConfiguration = "clientApiElements"
+    common(project(":common", configuration = "namedElements")) {
         isTransitive = false
     }
-}
-
-tasks.processResources {
-    inputs.property("version", version)
-
-    filesMatching("META-INF/mods.toml") {
-        expand(mapOf("version" to version))
+    shadowCommon(project(path = ":common", configuration = "transformProductionForge")) {
+        isTransitive = false
     }
 
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-}
+    val minecraftVersion: String by project
+    val forgeVersion: String by project
+    val reiVersion: String by project
 
-tasks.sourcesJar {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    forge(group = "net.minecraftforge", name = "forge", version = "$minecraftVersion-$forgeVersion")
+    modCompileOnly(group = "me.shedaniel", name = "RoughlyEnoughItems-api-forge", version = reiVersion)
+    modLocalRuntime(group = "me.shedaniel", name = "RoughlyEnoughItems-forge", version = reiVersion)
+
+    modLocalRuntime(group = "maven.modrinth", name = "jade", version = "2iRQrBk4")
+
+    // comment out if downloaded from source
+    modLocalRuntime(files("run/lol/secretmod.jar"))
 }

@@ -4,20 +4,13 @@ rootProject.name = "techarium"
 
 pluginManagement {
     repositories {
-        gradlePluginPortal()
-        maven(url = "https://maven.fabricmc.net/")
-        maven(url = "https://files.minecraftforge.net/maven/")
         maven(url = "https://maven.architectury.dev/")
-        maven(url = "https://maven.msrandom.net/repository/root/")
+        maven(url = "https://maven.neoforged.net/releases/")
+        maven(url = "https://maven.resourcefulbees.com/repository/maven-public/")
+        gradlePluginPortal()
     }
 }
 
-includeNamed("common", "fabric", "forge")
-
-fun includeNamed(vararg projectPaths: String) {
-    include(*projectPaths)
-
-    for (path in projectPaths) {
-        project(":$path").name = "${rootProject.name}-$path"
-    }
-}
+include("common")
+include("fabric")
+include("forge")

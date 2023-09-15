@@ -1,9 +1,0 @@
-{
-  "parent": "minecraft:block/orientable_with_bottom",
-  "textures": {
-    "front": "techarium:block/machine_core_front",
-    "bottom": "techarium:block/machine_core_top",
-    "top": "techarium:block/machine_core_top",
-    "side": "techarium:block/machine_core_side"
-  }
-}

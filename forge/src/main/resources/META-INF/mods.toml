@@ -1,28 +1,56 @@
 modLoader = "javafml"
-loaderVersion = "[41,)"
+loaderVersion = "[47,)"
 license = "MIT"
-#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/"
+issueTrackerURL = "https://github.com/terrarium-earth/techarium/issues"
+
 [[mods]]
 modId = "techarium"
 version = "${version}"
 displayName = "Techarium"
-#updateJSONURL="https://change.me.example.invalid/updates.json"
-#displayURL="https://change.me.to.your.mods.homepage.example.invalid/"
-#logoFile="multiloader.png"
-#credits="Thanks for this example mod goes to Java"
-authors = "Ketheroth"
-description = '''
-ditto
-'''
+displayURL = "https://modrinth.com/mod/techarium"
+logoFile = "icon.png"
+authors = "Alex Nijjar, Cybronaut, Ycar"
+credits = ""
+description = "Cool tech mod"
+
 [[dependencies.techarium]]
 modId = "forge"
 mandatory = true
-versionRange = "[41,)"
+versionRange = "[47,)"
 ordering = "NONE"
 side = "BOTH"
+
 [[dependencies.techarium]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19,1.20)"
+versionRange = "[1.20,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.techarium]]
+modId = "resourcefullib"
+mandatory = true
+versionRange = "[2.1.11,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.techarium]]
+modId = "resourcefulconfig"
+mandatory = true
+versionRange = "[2.0.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.techarium]]
+modId = "botarium"
+mandatory = true
+versionRange = "[2.2.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.techarium]]
+modId = "geckolib"
+mandatory = true
+versionRange = "[4.2.2,)"
 ordering = "NONE"
 side = "BOTH"
