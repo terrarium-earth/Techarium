@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefullib.common.registry.RegistryEntry;
 import com.teamresourceful.resourcefullib.common.registry.ResourcefulRegistries;
 import com.teamresourceful.resourcefullib.common.registry.ResourcefulRegistry;
 import earth.terrarium.techarium.Techarium;
+import earth.terrarium.techarium.common.blocks.machines.BotariumBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -16,6 +17,8 @@ public class ModBlocks {
     public static final ResourcefulRegistry<Block> MACHINES = ResourcefulRegistries.create(BLOCKS);
     public static final ResourcefulRegistry<Block> FLUIDS = ResourcefulRegistries.create(BLOCKS);
     public static final ResourcefulRegistry<Block> CUBES = ResourcefulRegistries.create(BLOCKS);
+
+    public static final RegistryEntry<Block> BOTARIUM = MACHINES.register("botarium", () -> new BotariumBlock(BlockBehaviour.Properties.copy(Blocks.COPPER_BLOCK)));
 
     public static final RegistryEntry<Block> ALUMINIUM_ORE = CUBES.register("aluminium_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.copy(Blocks.IRON_ORE)));
     public static final RegistryEntry<Block> LEAD_ORE = CUBES.register("lead_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.copy(Blocks.IRON_ORE)));

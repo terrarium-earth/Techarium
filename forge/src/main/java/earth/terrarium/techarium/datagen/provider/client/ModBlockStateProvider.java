@@ -8,7 +8,6 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -24,6 +23,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
     protected void registerStatesAndModels() {
         ModBlocks.FLUIDS.stream().map(RegistryEntry::get).forEach(this::fluidBlock);
         ModBlocks.CUBES.stream().map(RegistryEntry::get).forEach(this::basicBlock);
+
+        basicRenderedBlock(ModBlocks.BOTARIUM.get());
 
         basicBlockNoState(ModBlocks.COPPER_FACTORY_BLOCK.get());
         basicBlockNoState(ModBlocks.ALUMINIUM_FACTORY_BLOCK.get());
@@ -45,6 +46,20 @@ public class ModBlockStateProvider extends BlockStateProvider {
     public void basicBlockNoState(Block block) {
         simpleBlockItem(block, models().getBuilder(name(block)));
         cubeAll(block);
+    }
+
+    public void basicRenderedBlock(Block block) {
+        basicRenderedBlock(block, ModItemModelProvider.RENDERED_ITEM);
+    }
+
+    public void basicRenderedBlock(Block block, ResourceLocation itemModel) {
+        simpleBlockItem(block, itemModels().getExistingFile(itemModel));
+        simpleBlock(block);
+    }
+
+    public void basicRenderedBlock(Block block, ResourceLocation itemModel, ResourceLocation texture) {
+        simpleBlockItem(block, itemModels().getExistingFile(itemModel));
+        simpleBlock(block, this.models().cubeAll(this.name(block), texture));
     }
 
     private void fluidBlock(Block block) {

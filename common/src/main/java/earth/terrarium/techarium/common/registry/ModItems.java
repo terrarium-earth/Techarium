@@ -23,6 +23,8 @@ public final class ModItems {
         .addRegistry(ITEMS)
         .build();
 
+    public static final RegistryEntry<Item> BOTARIUM = ITEMS.register("botarium", () -> new BlockItem(ModBlocks.BOTARIUM.get(), new Item.Properties()));
+
     public static final RegistryEntry<Item> ALUMINIUM_ORE = ITEMS.register("aluminium_ore", () -> new BlockItem(ModBlocks.ALUMINIUM_ORE.get(), new Item.Properties()));
     public static final RegistryEntry<Item> LEAD_ORE = ITEMS.register("lead_ore", () -> new BlockItem(ModBlocks.LEAD_ORE.get(), new Item.Properties()));
     public static final RegistryEntry<Item> NICKEL_ORE = ITEMS.register("nickel_ore", () -> new BlockItem(ModBlocks.NICKEL_ORE.get(), new Item.Properties()));

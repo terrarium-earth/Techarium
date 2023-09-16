@@ -14,8 +14,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import software.bernie.geckolib.animatable.GeoBlockEntity;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public abstract class MachineBlockEntity extends BlockEntity {
+public abstract class MachineBlockEntity extends BlockEntity implements GeoBlockEntity {
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
+
     private boolean initialized;
 
     public MachineBlockEntity(BlockPos pos, BlockState state) {
@@ -72,5 +77,10 @@ public abstract class MachineBlockEntity extends BlockEntity {
         if (this.level() instanceof ServerLevel l) {
             l.getChunkSource().blockChanged(this.worldPosition);
         }
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 }
