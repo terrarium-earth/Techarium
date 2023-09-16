@@ -1,0 +1,13 @@
+// 1.20.1	2023-09-15T19:56:47.536221	Block States: techarium
+dd31b4f588ccad84b909157a2a7ad8b7535cab0d assets/techarium/blockstates/aluminium_ore.json
+fbdb7a44ef9f38d2c4327a0b996953209d701c1a assets/techarium/blockstates/lead_ore.json
+b1d368a28192fda9c0cb68343da556fa68b7f5e2 assets/techarium/blockstates/nickel_ore.json
+afa1503aabfd8416c8b0f5c9216c3da75f9940a4 assets/techarium/blockstates/zinc_ore.json
+54c7c188edd26a9bba1ccbca4496a0404c54e5bc assets/techarium/models/block/aluminium_ore.json
+31a1372d2fe3d8bc6dbc60a4df6c3f888901ec19 assets/techarium/models/block/lead_ore.json
+1b1e639baabcfdaa50af1b4e0b5709e4fa4fa3cc assets/techarium/models/block/nickel_ore.json
+23ad787b752cb6fceace63ac9dfd801c8dd884e8 assets/techarium/models/block/zinc_ore.json
+4959ebe3c5024dabb5f07cc01ede20a9ab903328 assets/techarium/models/item/aluminium_ore.json
+16530d03a6c040a161aff3530d2deebddf90d9dc assets/techarium/models/item/lead_ore.json
+c62ba24c038993eb29ba15c8a9ea619e06d0e9b0 assets/techarium/models/item/nickel_ore.json
+46f38f851b24364df208da0336d0ad94f2da21bc assets/techarium/models/item/zinc_ore.json

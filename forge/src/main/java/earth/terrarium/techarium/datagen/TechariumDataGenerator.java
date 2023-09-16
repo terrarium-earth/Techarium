@@ -1,6 +1,9 @@
 package earth.terrarium.techarium.datagen;
 
 import earth.terrarium.techarium.Techarium;
+import earth.terrarium.techarium.datagen.provider.client.ModBlockStateProvider;
+import earth.terrarium.techarium.datagen.provider.client.ModItemModelProvider;
+import earth.terrarium.techarium.datagen.provider.client.ModLangProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -20,5 +23,9 @@ public final class TechariumDataGenerator {
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
         PackOutput packOutput = generator.getPackOutput();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+
+        generator.addProvider(event.includeClient(), new ModLangProvider(packOutput));
+        generator.addProvider(event.includeClient(), new ModBlockStateProvider(packOutput, existingFileHelper));
+        generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
     }
 }
