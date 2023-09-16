@@ -1,0 +1,15 @@
+{
+    "athena:loader": "athena:ctm",
+    "ctm_textures": {
+        "center": "techarium:block/ctm/aluminium_factory_block/3",
+        "empty": "techarium:block/ctm/empty",
+        "horizontal": "techarium:block/ctm/aluminium_factory_block/2",
+        "particle": "techarium:block/aluminium_factory_block",
+        "vertical": "techarium:block/ctm/aluminium_factory_block/1"
+    },
+    "variants": {
+        "": {
+            "model": "techarium:block/aluminium_factory_block"
+        }
+    }
+}

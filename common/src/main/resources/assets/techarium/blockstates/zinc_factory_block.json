@@ -1,0 +1,15 @@
+{
+    "athena:loader": "athena:ctm",
+    "ctm_textures": {
+        "center": "techarium:block/ctm/zinc_factory_block/3",
+        "empty": "techarium:block/ctm/empty",
+        "horizontal": "techarium:block/ctm/zinc_factory_block/2",
+        "particle": "techarium:block/zinc_factory_block",
+        "vertical": "techarium:block/ctm/zinc_factory_block/1"
+    },
+    "variants": {
+        "": {
+            "model": "techarium:block/zinc_factory_block"
+        }
+    }
+}

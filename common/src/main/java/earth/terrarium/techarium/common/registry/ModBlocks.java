@@ -21,4 +21,10 @@ public class ModBlocks {
     public static final RegistryEntry<Block> LEAD_ORE = CUBES.register("lead_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.copy(Blocks.IRON_ORE)));
     public static final RegistryEntry<Block> NICKEL_ORE = CUBES.register("nickel_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.copy(Blocks.IRON_ORE)));
     public static final RegistryEntry<Block> ZINC_ORE = CUBES.register("zinc_ore", () -> new DropExperienceBlock(BlockBehaviour.Properties.copy(Blocks.IRON_ORE)));
+
+    public static final RegistryEntry<Block> COPPER_FACTORY_BLOCK = BLOCKS.register("copper_factory_block", () -> new Block(BlockBehaviour.Properties.copy(Blocks.COPPER_BLOCK)));
+    public static final RegistryEntry<Block> ALUMINIUM_FACTORY_BLOCK = BLOCKS.register("aluminium_factory_block", () -> new Block(BlockBehaviour.Properties.copy(Blocks.COPPER_BLOCK)));
+    public static final RegistryEntry<Block> LEAD_FACTORY_BLOCK = BLOCKS.register("lead_factory_block", () -> new Block(BlockBehaviour.Properties.copy(Blocks.COPPER_BLOCK)));
+    public static final RegistryEntry<Block> NICKEL_FACTORY_BLOCK = BLOCKS.register("nickel_factory_block", () -> new Block(BlockBehaviour.Properties.copy(Blocks.COPPER_BLOCK)));
+    public static final RegistryEntry<Block> ZINC_FACTORY_BLOCK = BLOCKS.register("zinc_factory_block", () -> new Block(BlockBehaviour.Properties.copy(Blocks.COPPER_BLOCK)));
 }

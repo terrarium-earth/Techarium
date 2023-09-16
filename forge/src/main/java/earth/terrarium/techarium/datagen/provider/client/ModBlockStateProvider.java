@@ -8,6 +8,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -23,6 +24,12 @@ public class ModBlockStateProvider extends BlockStateProvider {
     protected void registerStatesAndModels() {
         ModBlocks.FLUIDS.stream().map(RegistryEntry::get).forEach(this::fluidBlock);
         ModBlocks.CUBES.stream().map(RegistryEntry::get).forEach(this::basicBlock);
+
+        basicBlockNoState(ModBlocks.COPPER_FACTORY_BLOCK.get());
+        basicBlockNoState(ModBlocks.ALUMINIUM_FACTORY_BLOCK.get());
+        basicBlockNoState(ModBlocks.LEAD_FACTORY_BLOCK.get());
+        basicBlockNoState(ModBlocks.NICKEL_FACTORY_BLOCK.get());
+        basicBlockNoState(ModBlocks.ZINC_FACTORY_BLOCK.get());
     }
 
     public void basicBlock(Block block) {
@@ -35,12 +42,9 @@ public class ModBlockStateProvider extends BlockStateProvider {
         simpleBlock(block, model);
     }
 
-    public void basicCubeColumn(Block block) {
-        basicBlock(block,
-            models().cubeColumn(
-                name(block),
-                modLoc("block/" + name(block)),
-                modLoc("block/" + name(block) + "_top")));
+    public void basicBlockNoState(Block block) {
+        simpleBlockItem(block, models().getBuilder(name(block)));
+        cubeAll(block);
     }
 
     private void fluidBlock(Block block) {

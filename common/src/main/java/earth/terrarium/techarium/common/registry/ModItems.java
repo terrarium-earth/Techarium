@@ -19,7 +19,7 @@ public final class ModItems {
     public static final ResourcefulRegistry<Item> ITEMS = ResourcefulRegistries.create(BuiltInRegistries.ITEM, Techarium.MOD_ID);
     public static final ResourcefulRegistry<Item> BASIC_ITEMS = ResourcefulRegistries.create(ITEMS);
     public static final Supplier<CreativeModeTab> TAB = new ResourcefulCreativeTab(new ResourceLocation(Techarium.MOD_ID, "main"))
-        .setItemIcon(() -> Items.DIRT)
+        .setItemIcon(() -> ModItems.ALUMINIUM_GEAR.get())
         .addRegistry(ITEMS)
         .build();
 
@@ -27,6 +27,12 @@ public final class ModItems {
     public static final RegistryEntry<Item> LEAD_ORE = ITEMS.register("lead_ore", () -> new BlockItem(ModBlocks.LEAD_ORE.get(), new Item.Properties()));
     public static final RegistryEntry<Item> NICKEL_ORE = ITEMS.register("nickel_ore", () -> new BlockItem(ModBlocks.NICKEL_ORE.get(), new Item.Properties()));
     public static final RegistryEntry<Item> ZINC_ORE = ITEMS.register("zinc_ore", () -> new BlockItem(ModBlocks.ZINC_ORE.get(), new Item.Properties()));
+
+    public static final RegistryEntry<Item> COPPER_FACTORY_BLOCK = ITEMS.register("copper_factory_block", () -> new BlockItem(ModBlocks.COPPER_FACTORY_BLOCK.get(), new Item.Properties()));
+    public static final RegistryEntry<Item> ALUMINIUM_FACTORY_BLOCK = ITEMS.register("aluminium_factory_block", () -> new BlockItem(ModBlocks.ALUMINIUM_FACTORY_BLOCK.get(), new Item.Properties()));
+    public static final RegistryEntry<Item> LEAD_FACTORY_BLOCK = ITEMS.register("lead_factory_block", () -> new BlockItem(ModBlocks.LEAD_FACTORY_BLOCK.get(), new Item.Properties()));
+    public static final RegistryEntry<Item> NICKEL_FACTORY_BLOCK = ITEMS.register("nickel_factory_block", () -> new BlockItem(ModBlocks.NICKEL_FACTORY_BLOCK.get(), new Item.Properties()));
+    public static final RegistryEntry<Item> ZINC_FACTORY_BLOCK = ITEMS.register("zinc_factory_block", () -> new BlockItem(ModBlocks.ZINC_FACTORY_BLOCK.get(), new Item.Properties()));
 
     public static final RegistryEntry<Item> COPPER_NUGGET = BASIC_ITEMS.register("copper_nugget", () -> new Item(new Item.Properties()));
     public static final RegistryEntry<Item> COPPER_PLATE = BASIC_ITEMS.register("copper_plate", () -> new Item(new Item.Properties()));

@@ -60,7 +60,7 @@ public class ModLangProvider extends LanguageProvider {
 //                    .getPath()
 //                    .replace("_", " "))));
 
-        add(ConstantComponents.ITEM_GROUP.getString(), "Ad Astra");
+        add(ConstantComponents.ITEM_GROUP.getString(), "Techarium");
     }
 
     public void addFluid(Supplier<? extends Fluid> key, String name) {

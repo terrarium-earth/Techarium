@@ -1,7 +1,12 @@
 {
+  "block.techarium.aluminium_factory_block": "Aluminium Factory Block",
   "block.techarium.aluminium_ore": "Aluminium Ore",
+  "block.techarium.copper_factory_block": "Copper Factory Block",
+  "block.techarium.lead_factory_block": "Lead Factory Block",
   "block.techarium.lead_ore": "Lead Ore",
+  "block.techarium.nickel_factory_block": "Nickel Factory Block",
   "block.techarium.nickel_ore": "Nickel Ore",
+  "block.techarium.zinc_factory_block": "Zinc Factory Block",
   "block.techarium.zinc_ore": "Zinc Ore",
   "item.techarium.aluminium_gear": "Aluminium Gear",
   "item.techarium.aluminium_ingot": "Aluminium Ingot",
@@ -22,5 +27,5 @@
   "item.techarium.zinc_ingot": "Zinc Ingot",
   "item.techarium.zinc_nugget": "Zinc Nugget",
   "item.techarium.zinc_plate": "Zinc Plate",
-  "itemGroup.techarium.main": "Ad Astra"
+  "itemGroup.techarium.main": "Techarium"
 }
