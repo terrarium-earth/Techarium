@@ -25,6 +25,7 @@ public class ModBlockTagProvider extends TagsProvider<Block> {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         add(BlockTags.CLIMBABLE, ModBlocks.ALUMINIUM_LADDER.get());
+        add(BlockTags.CLIMBABLE, ModBlocks.METAL_SCAFFOLDING.get());
     }
 
     private void add(TagKey<Block> tag, Block block) {

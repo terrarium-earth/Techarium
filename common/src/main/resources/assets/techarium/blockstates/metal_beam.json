@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "type=single": {
+      "model": "techarium:block/metal_beam/single"
+    },
+    "type=upper": {
+      "model": "techarium:block/metal_beam/upper"
+    },
+    "type=middle": {
+      "model": "techarium:block/metal_beam/middle"
+    },
+    "type=lower": {
+      "model": "techarium:block/metal_beam/lower"
+    }
+  }
+}

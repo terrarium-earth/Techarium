@@ -62,6 +62,8 @@ public final class ModItems {
 
     public static final RegistryEntry<Item> ALUMINIUM_LADDER = ITEMS.register("aluminium_ladder", () -> new BlockItem(ModBlocks.ALUMINIUM_LADDER.get(), new Item.Properties()));
 
+    public static final RegistryEntry<Item> METAL_BEAM = ITEMS.register("metal_beam", () -> new BlockItem(ModBlocks.METAL_BEAM.get(), new Item.Properties()));
+
     public static final RegistryEntry<Item> COPPER_NUGGET = BASIC_ITEMS.register("copper_nugget", () -> new Item(new Item.Properties()));
     public static final RegistryEntry<Item> COPPER_PLATE = BASIC_ITEMS.register("copper_plate", () -> new Item(new Item.Properties()));
     public static final RegistryEntry<Item> COPPER_GEAR = BASIC_ITEMS.register("copper_gear", () -> new Item(new Item.Properties()));

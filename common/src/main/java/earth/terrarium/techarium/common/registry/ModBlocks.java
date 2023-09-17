@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefullib.common.registry.RegistryEntry;
 import com.teamresourceful.resourcefullib.common.registry.ResourcefulRegistries;
 import com.teamresourceful.resourcefullib.common.registry.ResourcefulRegistry;
 import earth.terrarium.techarium.Techarium;
+import earth.terrarium.techarium.common.blockentities.BeamBlock;
 import earth.terrarium.techarium.common.blocks.machines.BotariumBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
@@ -53,4 +54,6 @@ public class ModBlocks {
     public static final RegistryEntry<Block> METAL_SCAFFOLDING = CUBE_COLUMNS.register("metal_scaffolding", () -> new Block(BlockBehaviour.Properties.copy(Blocks.COPPER_BLOCK).noOcclusion()));
 
     public static final RegistryEntry<Block> ALUMINIUM_LADDER = BLOCKS.register("aluminium_ladder", () -> new LadderBlock(BlockBehaviour.Properties.copy(Blocks.COPPER_BLOCK).noOcclusion()));
+
+    public static final RegistryEntry<Block> METAL_BEAM = BLOCKS.register("metal_beam", () -> new BeamBlock(BlockBehaviour.Properties.copy(Blocks.COPPER_BLOCK).noOcclusion()));
 }
