@@ -5,12 +5,20 @@ import com.teamresourceful.resourcefullib.common.registry.ResourcefulRegistries;
 import com.teamresourceful.resourcefullib.common.registry.ResourcefulRegistry;
 import earth.terrarium.botarium.common.registry.RegistryHelpers;
 import earth.terrarium.techarium.Techarium;
+import earth.terrarium.techarium.common.blockentities.base.ContainerMachineExtensionBlockEntity;
 import earth.terrarium.techarium.common.blockentities.machines.BotariumBlockEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class ModBlockEntityTypes {
     public static final ResourcefulRegistry<BlockEntityType<?>> BLOCK_ENTITY_TYPES = ResourcefulRegistries.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, Techarium.MOD_ID);
+
+    public static final RegistryEntry<BlockEntityType<ContainerMachineExtensionBlockEntity>> MACHINE_EXTENSION = BLOCK_ENTITY_TYPES.register(
+        "machine_extension",
+        () -> RegistryHelpers.createBlockEntityType(
+            ContainerMachineExtensionBlockEntity::new,
+            ModBlocks.MACHINES.stream().map(RegistryEntry::get).toArray(Block[]::new)));
 
     public static final RegistryEntry<BlockEntityType<BotariumBlockEntity>> BOTARIUM = BLOCK_ENTITY_TYPES.register(
         "botarium",

@@ -5,12 +5,13 @@ import com.teamresourceful.resourcefullib.common.registry.RegistryEntry;
 import com.teamresourceful.resourcefullib.common.registry.ResourcefulRegistries;
 import com.teamresourceful.resourcefullib.common.registry.ResourcefulRegistry;
 import earth.terrarium.techarium.Techarium;
+import earth.terrarium.techarium.common.blockentities.machines.BotariumBlockEntity;
+import earth.terrarium.techarium.common.items.base.CustomGeoBlockItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 
 import java.util.function.Supplier;
 
@@ -19,11 +20,15 @@ public final class ModItems {
     public static final ResourcefulRegistry<Item> ITEMS = ResourcefulRegistries.create(BuiltInRegistries.ITEM, Techarium.MOD_ID);
     public static final ResourcefulRegistry<Item> BASIC_ITEMS = ResourcefulRegistries.create(ITEMS);
     public static final Supplier<CreativeModeTab> TAB = new ResourcefulCreativeTab(new ResourceLocation(Techarium.MOD_ID, "main"))
-        .setItemIcon(() -> ModItems.ALUMINIUM_GEAR.get())
+        .setItemIcon(() -> ModItems.BOTARIUM.get())
         .addRegistry(ITEMS)
         .build();
 
-    public static final RegistryEntry<Item> BOTARIUM = ITEMS.register("botarium", () -> new BlockItem(ModBlocks.BOTARIUM.get(), new Item.Properties()));
+    public static final RegistryEntry<Item> BOTARIUM = ITEMS.register("botarium", () -> new CustomGeoBlockItem(
+        ModBlocks.BOTARIUM.get(),
+        new Item.Properties(),
+        BotariumBlockEntity.IDLE
+    ));
 
     public static final RegistryEntry<Item> ALUMINIUM_ORE = ITEMS.register("aluminium_ore", () -> new BlockItem(ModBlocks.ALUMINIUM_ORE.get(), new Item.Properties()));
     public static final RegistryEntry<Item> LEAD_ORE = ITEMS.register("lead_ore", () -> new BlockItem(ModBlocks.LEAD_ORE.get(), new Item.Properties()));

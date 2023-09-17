@@ -24,7 +24,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         ModBlocks.FLUIDS.stream().map(RegistryEntry::get).forEach(this::fluidBlock);
         ModBlocks.CUBES.stream().map(RegistryEntry::get).forEach(this::basicBlock);
 
-        basicRenderedBlock(ModBlocks.BOTARIUM.get());
+        basicRenderedBlock(ModBlocks.BOTARIUM.get(), ModItemModelProvider.SMALL_RENDERED_ITEM);
 
         basicBlockNoState(ModBlocks.COPPER_FACTORY_BLOCK.get());
         basicBlockNoState(ModBlocks.ALUMINIUM_FACTORY_BLOCK.get());

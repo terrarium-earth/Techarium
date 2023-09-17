@@ -1,4 +1,4 @@
-package earth.terrarium.techarium.config;
+package earth.terrarium.techarium.common.config;
 
 import com.teamresourceful.resourcefulconfig.common.annotations.Config;
 import com.teamresourceful.resourcefulconfig.web.annotations.Gradient;

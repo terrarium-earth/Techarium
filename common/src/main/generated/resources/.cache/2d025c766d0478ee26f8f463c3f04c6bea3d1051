@@ -1,4 +1,4 @@
-// 1.20.1	2023-09-16T12:14:02.225629	Block States: techarium
+// 1.20.1	2023-09-16T17:17:39.344723	Block States: techarium
 dd31b4f588ccad84b909157a2a7ad8b7535cab0d assets/techarium/blockstates/aluminium_ore.json
 fb0036d06df98c1f6df300091c12ceab3f2e678b assets/techarium/blockstates/botarium.json
 fbdb7a44ef9f38d2c4327a0b996953209d701c1a assets/techarium/blockstates/lead_ore.json
@@ -16,7 +16,7 @@ df7592d8f5b70497dd98e61fb024dc92a23555ff assets/techarium/models/block/lead_fact
 23ad787b752cb6fceace63ac9dfd801c8dd884e8 assets/techarium/models/block/zinc_ore.json
 6eaac5b5acfc79a54fe3aaba64c3dd7037a1a248 assets/techarium/models/item/aluminium_factory_block.json
 4959ebe3c5024dabb5f07cc01ede20a9ab903328 assets/techarium/models/item/aluminium_ore.json
-76fdf18993183c4073735bbb8f0f063719026585 assets/techarium/models/item/botarium.json
+ef94d552799bc314d5474b6f1d78f0b9a8e3f4c2 assets/techarium/models/item/botarium.json
 6c428589319ea75dc82cf35fe226fcd32633221b assets/techarium/models/item/copper_factory_block.json
 816f0d552b1655717b2bc79ad8a446184ea48ae8 assets/techarium/models/item/lead_factory_block.json
 16530d03a6c040a161aff3530d2deebddf90d9dc assets/techarium/models/item/lead_ore.json

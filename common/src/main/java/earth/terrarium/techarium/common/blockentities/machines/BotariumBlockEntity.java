@@ -6,7 +6,7 @@ import earth.terrarium.botarium.common.fluid.base.BotariumFluidBlock;
 import earth.terrarium.botarium.common.fluid.impl.InsertOnlyFluidContainer;
 import earth.terrarium.botarium.common.fluid.impl.WrappedBlockFluidContainer;
 import earth.terrarium.botarium.common.fluid.utils.FluidHooks;
-import earth.terrarium.techarium.common.blockentities.base.ContainerMachineBlockEntity;
+import earth.terrarium.techarium.common.blockentities.base.DeployableBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
@@ -18,7 +18,7 @@ import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 
-public class BotariumBlockEntity extends ContainerMachineBlockEntity implements BotariumFluidBlock<WrappedBlockFluidContainer> {
+public class BotariumBlockEntity extends DeployableBlockEntity implements BotariumFluidBlock<WrappedBlockFluidContainer> {
     public static final RawAnimation DEPLOY = RawAnimation.begin().thenPlayAndHold("Deploy");
     public static final RawAnimation IDLE = RawAnimation.begin().thenPlayAndHold("Idle");
     public static final RawAnimation SPRINKLE = RawAnimation.begin().thenPlayAndHold("Sprinkle");
@@ -32,7 +32,7 @@ public class BotariumBlockEntity extends ContainerMachineBlockEntity implements 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
         controllerRegistrar.add(new AnimationController<>(this, state -> {
-            return state.setAndContinue(DEPLOY);
+            return isDeployed() ? state.setAndContinue(IDLE) : state.setAndContinue(DEPLOY);
         }));
     }
 
@@ -68,5 +68,15 @@ public class BotariumBlockEntity extends ContainerMachineBlockEntity implements 
     @Override
     public int[] getSlotsForFace(Direction side) {
         return new int[]{0, 1, 2, 3, 4, 5};
+    }
+
+    @Override
+    public int getPartialDeploymentTime() {
+        return 25;
+    }
+
+    @Override
+    public int getDeploymentTime() {
+        return 75;
     }
 }

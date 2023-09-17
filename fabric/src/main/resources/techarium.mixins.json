@@ -4,6 +4,7 @@
   "package": "earth.terrarium.techarium.mixins.fabric",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "common.CustomGeoBlockItemMixin"
   ],
   "client": [
   ],

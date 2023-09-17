@@ -11,6 +11,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class ModItemModelProvider extends ItemModelProvider {
     public static final ResourceLocation RENDERED_ITEM = new ResourceLocation(Techarium.MOD_ID, "item/rendered_item");
+    public static final ResourceLocation SMALL_RENDERED_ITEM = new ResourceLocation(Techarium.MOD_ID, "item/small_rendered_item");
 
     public ModItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, Techarium.MOD_ID, existingFileHelper);

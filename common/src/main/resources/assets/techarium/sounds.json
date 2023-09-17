@@ -1,0 +1,12 @@
+{
+  "botarium_deploy": {
+    "category": "block",
+    "subtitle": "subtitles.techarium.botarium_deploy",
+    "sounds": [
+      {
+        "name": "techarium:botarium_deploy",
+        "stream": false
+      }
+    ]
+  }
+}
