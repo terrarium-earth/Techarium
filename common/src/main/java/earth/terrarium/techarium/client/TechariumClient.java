@@ -5,8 +5,11 @@ import earth.terrarium.techarium.Techarium;
 import earth.terrarium.techarium.client.config.TechariumConfigClient;
 import earth.terrarium.techarium.client.renderers.blocks.base.CustomGeoBlockRenderer;
 import earth.terrarium.techarium.client.renderers.items.base.CustomGeoItemRenderer;
+import earth.terrarium.techarium.client.screens.BotariumScreen;
 import earth.terrarium.techarium.common.registry.ModBlockEntityTypes;
 import earth.terrarium.techarium.common.registry.ModBlocks;
+import earth.terrarium.techarium.common.registry.ModMenus;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.Item;
@@ -20,9 +23,14 @@ public class TechariumClient {
 
     public static void init() {
         Techarium.CONFIGURATOR.registerConfig(TechariumConfigClient.class);
+        registerScreens();
         registerBlockRenderTypes();
         registerBlockEntityRenderers();
         registerItemRenderers();
+    }
+
+    private static void registerScreens() {
+        MenuScreens.register(ModMenus.BOTARIUM.get(), BotariumScreen::new);
     }
 
     private static void registerBlockRenderTypes() {

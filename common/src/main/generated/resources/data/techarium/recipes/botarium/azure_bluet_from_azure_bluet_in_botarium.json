@@ -1,0 +1,19 @@
+{
+  "type": "techarium:botarium",
+  "cookingtime": 600,
+  "energy": 5,
+  "fertilizer": {
+    "buckets": 0.002,
+    "fluid": "minecraft:water"
+  },
+  "result": {
+    "count": 3,
+    "id": "minecraft:azure_bluet"
+  },
+  "seed": {
+    "item": "minecraft:azure_bluet"
+  },
+  "soil": {
+    "tag": "techarium:fertilizers"
+  }
+}

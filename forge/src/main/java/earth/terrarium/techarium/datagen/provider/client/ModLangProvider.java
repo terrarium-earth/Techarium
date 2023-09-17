@@ -61,6 +61,26 @@ public class ModLangProvider extends LanguageProvider {
 //                    .replace("_", " "))));
 
         add(ConstantComponents.ITEM_GROUP.getString(), "Techarium");
+
+        add("tooltip.techarium.energy", "%s ⚡ / %s ⚡");
+        add("tooltip.techarium.energy_in", "In: %s ⚡/t");
+        add("tooltip.techarium.energy_out", "Out: %s ⚡/t");
+        add("tooltip.techarium.max_energy_in", "Max In: %s ⚡/t");
+        add("tooltip.techarium.max_energy_out", "Max Out: %s ⚡/t");
+        add("tooltip.techarium.energy_use_per_tick", "Uses %s ⚡ per tick");
+        add("tooltip.techarium.energy_generation_per_tick", "Generates %s ⚡ per tick");
+
+        add("tooltip.techarium.fluid", "%s 🪣 / %s 🪣 %s");
+        add("tooltip.techarium.fluid_in", "In: %s 🪣/t");
+        add("tooltip.techarium.fluid_out", "Out: %s 🪣/t");
+        add("tooltip.techarium.max_fluid_in", "Max In: %s 🪣/t");
+        add("tooltip.techarium.max_fluid_out", "Max Out: %s 🪣/t");
+        add("tooltip.techarium.fluid_use_per_iteration", "Uses %s 🪣 per iteration");
+        add("tooltip.techarium.fluid_generation_per_iteration", "Generates %s 🪣 per iteration");
+
+        add("tooltip.techarium.ticks_per_iteration", "Takes %s ticks per iteration");
+
+        add(ConstantComponents.CLEAR_FLUID_TANK.getString(), "Shift-right-click to clear");
     }
 
     public void addFluid(Supplier<? extends Fluid> key, String name) {

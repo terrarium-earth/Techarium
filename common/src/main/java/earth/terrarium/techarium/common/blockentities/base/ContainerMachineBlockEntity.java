@@ -106,6 +106,10 @@ public abstract class ContainerMachineBlockEntity extends MachineBlockEntity imp
         return this.items;
     }
 
+    public boolean canFunction() {
+        return true;
+    }
+
     @Override
     public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack itemStack, @Nullable Direction direction) {
         return true;

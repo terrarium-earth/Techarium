@@ -1,12 +1,9 @@
 package earth.terrarium.techarium;
 
 import com.teamresourceful.resourcefulconfig.common.config.Configurator;
-import earth.terrarium.techarium.common.networking.NetworkHandler;
-import earth.terrarium.techarium.common.registry.ModBlockEntityTypes;
-import earth.terrarium.techarium.common.registry.ModBlocks;
-import earth.terrarium.techarium.common.registry.ModItems;
-import earth.terrarium.techarium.common.registry.ModSoundEvents;
 import earth.terrarium.techarium.common.config.TechariumConfig;
+import earth.terrarium.techarium.common.networking.NetworkHandler;
+import earth.terrarium.techarium.common.registry.*;
 
 public class Techarium {
 
@@ -21,5 +18,8 @@ public class Techarium {
         ModItems.ITEMS.init();
         ModBlockEntityTypes.BLOCK_ENTITY_TYPES.init();
         ModSoundEvents.SOUND_EVENTS.init();
+        ModMenus.MENUS.init();
+        ModRecipeTypes.RECIPE_TYPES.init();
+        ModRecipeSerializers.RECIPE_SERIALIZERS.init();
     }
 }

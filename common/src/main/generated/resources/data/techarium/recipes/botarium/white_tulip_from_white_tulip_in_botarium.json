@@ -1,0 +1,19 @@
+{
+  "type": "techarium:botarium",
+  "cookingtime": 600,
+  "energy": 5,
+  "fertilizer": {
+    "buckets": 0.002,
+    "fluid": "minecraft:water"
+  },
+  "result": {
+    "count": 3,
+    "id": "minecraft:white_tulip"
+  },
+  "seed": {
+    "item": "minecraft:white_tulip"
+  },
+  "soil": {
+    "tag": "techarium:fertilizers"
+  }
+}

@@ -45,5 +45,21 @@
   "item.techarium.zinc_ingot": "Zinc Ingot",
   "item.techarium.zinc_nugget": "Zinc Nugget",
   "item.techarium.zinc_plate": "Zinc Plate",
-  "itemGroup.techarium.main": "Techarium"
+  "itemGroup.techarium.main": "Techarium",
+  "tooltip.techarium.clear_fluid_tank": "Shift-right-click to clear",
+  "tooltip.techarium.energy": "%s ⚡ / %s ⚡",
+  "tooltip.techarium.energy_generation_per_tick": "Generates %s ⚡ per tick",
+  "tooltip.techarium.energy_in": "In: %s ⚡/t",
+  "tooltip.techarium.energy_out": "Out: %s ⚡/t",
+  "tooltip.techarium.energy_use_per_tick": "Uses %s ⚡ per tick",
+  "tooltip.techarium.fluid": "%s 🪣 / %s 🪣 %s",
+  "tooltip.techarium.fluid_generation_per_iteration": "Generates %s 🪣 per iteration",
+  "tooltip.techarium.fluid_in": "In: %s 🪣/t",
+  "tooltip.techarium.fluid_out": "Out: %s 🪣/t",
+  "tooltip.techarium.fluid_use_per_iteration": "Uses %s 🪣 per iteration",
+  "tooltip.techarium.max_energy_in": "Max In: %s ⚡/t",
+  "tooltip.techarium.max_energy_out": "Max Out: %s ⚡/t",
+  "tooltip.techarium.max_fluid_in": "Max In: %s 🪣/t",
+  "tooltip.techarium.max_fluid_out": "Max Out: %s 🪣/t",
+  "tooltip.techarium.ticks_per_iteration": "Takes %s ticks per iteration"
 }

@@ -23,6 +23,7 @@ val common: Configuration by configurations.creating {
     configurations["developmentForge"].extendsFrom(this)
 }
 
+
 dependencies {
     common(project(":common", configuration = "namedElements")) {
         isTransitive = false

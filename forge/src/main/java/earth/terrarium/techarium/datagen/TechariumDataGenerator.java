@@ -4,7 +4,9 @@ import earth.terrarium.techarium.Techarium;
 import earth.terrarium.techarium.datagen.provider.client.ModBlockStateProvider;
 import earth.terrarium.techarium.datagen.provider.client.ModItemModelProvider;
 import earth.terrarium.techarium.datagen.provider.client.ModLangProvider;
+import earth.terrarium.techarium.datagen.provider.server.ModRecipeProvider;
 import earth.terrarium.techarium.datagen.provider.server.tags.ModBlockTagProvider;
+import earth.terrarium.techarium.datagen.provider.server.tags.ModItemTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -29,6 +31,9 @@ public final class TechariumDataGenerator {
         generator.addProvider(event.includeClient(), new ModBlockStateProvider(packOutput, existingFileHelper));
         generator.addProvider(event.includeClient(), new ModItemModelProvider(packOutput, existingFileHelper));
 
+        generator.addProvider(event.includeServer(), new ModRecipeProvider(packOutput));
+
         generator.addProvider(event.includeServer(), new ModBlockTagProvider(packOutput, lookupProvider, existingFileHelper));
+        generator.addProvider(event.includeServer(), new ModItemTagProvider(packOutput, lookupProvider, existingFileHelper));
     }
 }
