@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "techarium:block/metal_scaffolding_top",
+    "side": "techarium:block/metal_scaffolding"
+  }
+}

@@ -8,6 +8,7 @@ import earth.terrarium.techarium.client.renderers.items.base.CustomGeoItemRender
 import earth.terrarium.techarium.common.registry.ModBlockEntityTypes;
 import earth.terrarium.techarium.common.registry.ModBlocks;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 
@@ -19,8 +20,14 @@ public class TechariumClient {
 
     public static void init() {
         Techarium.CONFIGURATOR.registerConfig(TechariumConfigClient.class);
+        registerBlockRenderTypes();
         registerBlockEntityRenderers();
         registerItemRenderers();
+    }
+
+    private static void registerBlockRenderTypes() {
+        ClientHooks.setRenderLayer(ModBlocks.ALUMINIUM_LADDER.get(), RenderType.cutout());
+        ClientHooks.setRenderLayer(ModBlocks.METAL_SCAFFOLDING.get(), RenderType.cutout());
     }
 
     private static void registerBlockEntityRenderers() {

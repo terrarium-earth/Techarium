@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/ladder",
+  "textures": {
+    "particle": "techarium:block/aluminium_ladder",
+    "texture": "techarium:block/aluminium_ladder"
+  }
+}

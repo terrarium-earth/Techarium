@@ -4,16 +4,21 @@ package earth.terrarium.techarium.datagen.provider.client;
 import com.teamresourceful.resourcefullib.common.registry.RegistryEntry;
 import earth.terrarium.techarium.Techarium;
 import earth.terrarium.techarium.common.registry.ModBlocks;
+import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LadderBlock;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ModBlockStateProvider extends BlockStateProvider {
     public static final ResourceLocation WATER_STILL = new ResourceLocation("block/water_still");
+    public static final ResourceLocation LADDER = new ResourceLocation("block/ladder");
 
     public ModBlockStateProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, Techarium.MOD_ID, existingFileHelper);
@@ -23,6 +28,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
     protected void registerStatesAndModels() {
         ModBlocks.FLUIDS.stream().map(RegistryEntry::get).forEach(this::fluidBlock);
         ModBlocks.CUBES.stream().map(RegistryEntry::get).forEach(this::basicBlock);
+        ModBlocks.CUBE_COLUMNS.stream().map(RegistryEntry::get).forEach(this::basicCubeColumn);
 
         basicRenderedBlock(ModBlocks.BOTARIUM.get(), ModItemModelProvider.SMALL_RENDERED_ITEM);
 
@@ -31,6 +37,8 @@ public class ModBlockStateProvider extends BlockStateProvider {
         basicBlockNoState(ModBlocks.LEAD_FACTORY_BLOCK.get());
         basicBlockNoState(ModBlocks.NICKEL_FACTORY_BLOCK.get());
         basicBlockNoState(ModBlocks.ZINC_FACTORY_BLOCK.get());
+
+        basicLadder(ModBlocks.ALUMINIUM_LADDER.get());
     }
 
     public void basicBlock(Block block) {
@@ -46,6 +54,30 @@ public class ModBlockStateProvider extends BlockStateProvider {
     public void basicBlockNoState(Block block) {
         simpleBlockItem(block, models().getBuilder(name(block)));
         cubeAll(block);
+    }
+
+    public void basicCubeColumn(Block block) {
+        basicBlock(block,
+            models().cubeColumn(
+                name(block),
+                modLoc("block/" + name(block)),
+                modLoc("block/" + name(block) + "_top")));
+    }
+
+    private void basicLadder(Block block) {
+        BlockModelBuilder model = models().getBuilder(name(block))
+            .parent(models().getExistingFile(LADDER))
+            .texture("texture", modLoc("block/" + name(block)))
+            .texture("particle", modLoc("block/" + name(block)));
+
+        getVariantBuilder(block)
+            .forAllStates(state -> {
+                Direction dir = state.getValue(LadderBlock.FACING);
+                return ConfiguredModel.builder()
+                    .modelFile(model)
+                    .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + 180) % 360)
+                    .build();
+            });
     }
 
     public void basicRenderedBlock(Block block) {
