@@ -1,0 +1,20 @@
+{
+  "type": "techarium:botarium",
+  "cookingtime": 600,
+  "crop_block": "minecraft:nether_wart",
+  "energy": 5,
+  "fertilizer": {
+    "buckets": 0.002,
+    "fluid": "minecraft:water"
+  },
+  "result_crop": {
+    "count": 3,
+    "id": "minecraft:nether_wart"
+  },
+  "seed": {
+    "item": "minecraft:nether_wart"
+  },
+  "soil": {
+    "item": "minecraft:soul_sand"
+  }
+}

@@ -17,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,16 +29,19 @@ public class BotariumRecipeBuilder implements RecipeBuilder {
     private final FluidHolder fertilizer;
     private final Ingredient seed;
     private final Ingredient soil;
-    private final ItemStack result;
+    private final Block cropBlock;
+    private final ItemStack resultCrop;
 
+    private ItemStack resultSeed = ItemStack.EMPTY;
     private int cookingtime = 600;
     private int energy = 5;
 
-    public BotariumRecipeBuilder(FluidHolder fertilizer, Ingredient seed, Ingredient soil, ItemStack result) {
+    public BotariumRecipeBuilder(FluidHolder fertilizer, Ingredient seed, Ingredient soil, Block cropBlock, ItemStack resultCrop) {
         this.fertilizer = fertilizer;
         this.seed = seed;
         this.soil = soil;
-        this.result = result;
+        this.cropBlock = cropBlock;
+        this.resultCrop = resultCrop;
     }
 
     public BotariumRecipeBuilder cookingTime(int cookingtime) {
@@ -47,6 +51,11 @@ public class BotariumRecipeBuilder implements RecipeBuilder {
 
     public BotariumRecipeBuilder energy(int energy) {
         this.energy = energy;
+        return this;
+    }
+
+    public BotariumRecipeBuilder resultSeed(ItemStack resultSeed) {
+        this.resultSeed = resultSeed;
         return this;
     }
 
@@ -63,7 +72,7 @@ public class BotariumRecipeBuilder implements RecipeBuilder {
 
     @Override
     public @NotNull Item getResult() {
-        return this.result.getItem();
+        return this.resultCrop.getItem();
     }
 
     @Override
@@ -77,7 +86,8 @@ public class BotariumRecipeBuilder implements RecipeBuilder {
         finishedRecipeConsumer.accept(new Result(
             recipeId, this.fertilizer,
             this.seed, this.soil,
-            this.result,
+            this.cropBlock,
+            this.resultCrop, this.resultSeed,
             this.cookingtime, this.energy,
             this.advancement, new ResourceLocation(recipeId.getNamespace(), "recipes/botarium/" + recipeId.getPath()))
         );
@@ -87,7 +97,8 @@ public class BotariumRecipeBuilder implements RecipeBuilder {
         ResourceLocation id,
         FluidHolder fertilizer,
         Ingredient seed, Ingredient soil,
-        ItemStack result,
+        Block cropBlock,
+        ItemStack resultCrop, ItemStack resultSeed,
         int cookingtime, int energy,
         Advancement.Builder advancement, ResourceLocation advancementId
     ) implements FinishedRecipe {
@@ -95,7 +106,7 @@ public class BotariumRecipeBuilder implements RecipeBuilder {
         @Override
         public void serializeRecipeData(@NotNull JsonObject json) {
             BotariumRecipe.codec(id)
-                .encodeStart(JsonOps.INSTANCE, new BotariumRecipe(id, cookingtime, energy, fertilizer, seed, soil, result))
+                .encodeStart(JsonOps.INSTANCE, new BotariumRecipe(id, cookingtime, energy, fertilizer, seed, soil, cropBlock, resultCrop, resultSeed))
                 .resultOrPartial(Constants.LOGGER::error)
                 .ifPresent(out ->
                     out.getAsJsonObject().entrySet().forEach(entry -> json.add(entry.getKey(), entry.getValue()))

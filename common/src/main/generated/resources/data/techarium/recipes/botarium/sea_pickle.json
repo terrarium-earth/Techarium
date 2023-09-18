@@ -1,0 +1,20 @@
+{
+  "type": "techarium:botarium",
+  "cookingtime": 600,
+  "crop_block": "minecraft:sea_pickle",
+  "energy": 5,
+  "fertilizer": {
+    "buckets": 0.002,
+    "fluid": "minecraft:water"
+  },
+  "result_crop": {
+    "count": 3,
+    "id": "minecraft:sea_pickle"
+  },
+  "seed": {
+    "item": "minecraft:sea_pickle"
+  },
+  "soil": {
+    "tag": "minecraft:sand"
+  }
+}

@@ -8,6 +8,7 @@ import com.teamresourceful.resourcefullib.common.recipe.CodecRecipe;
 import earth.terrarium.botarium.common.fluid.base.FluidHolder;
 import earth.terrarium.techarium.common.registry.ModRecipeSerializers;
 import earth.terrarium.techarium.common.registry.ModRecipeTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -15,6 +16,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
 public record BotariumRecipe(
@@ -23,7 +25,9 @@ public record BotariumRecipe(
     FluidHolder fertilizer,
     Ingredient seed,
     Ingredient soil,
-    ItemStack result
+    Block cropBlock,
+    ItemStack resultCrop,
+    ItemStack resultSeed
 ) implements CodecRecipe<Container> {
 
     public static Codec<BotariumRecipe> codec(ResourceLocation id) {
@@ -34,7 +38,9 @@ public record BotariumRecipe(
             FluidHolder.CODEC.fieldOf("fertilizer").forGetter(BotariumRecipe::fertilizer),
             IngredientCodec.CODEC.fieldOf("seed").forGetter(BotariumRecipe::seed),
             IngredientCodec.CODEC.fieldOf("soil").forGetter(BotariumRecipe::soil),
-            ItemStackCodec.CODEC.fieldOf("result").forGetter(BotariumRecipe::result)
+            BuiltInRegistries.BLOCK.byNameCodec().fieldOf("crop_block").forGetter(BotariumRecipe::cropBlock),
+            ItemStackCodec.CODEC.fieldOf("result_crop").forGetter(BotariumRecipe::resultCrop),
+            ItemStackCodec.CODEC.optionalFieldOf("result_seed", ItemStack.EMPTY).forGetter(BotariumRecipe::resultSeed)
         ).apply(instance, BotariumRecipe::new));
     }
 

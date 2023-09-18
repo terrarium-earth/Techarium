@@ -1,0 +1,20 @@
+{
+  "type": "techarium:botarium",
+  "cookingtime": 600,
+  "crop_block": "minecraft:lily_of_the_valley",
+  "energy": 5,
+  "fertilizer": {
+    "buckets": 0.0,
+    "fluid": "minecraft:empty"
+  },
+  "result_crop": {
+    "count": 3,
+    "id": "minecraft:lily_of_the_valley"
+  },
+  "seed": {
+    "item": "minecraft:lily_of_the_valley"
+  },
+  "soil": {
+    "tag": "techarium:fertilizers"
+  }
+}

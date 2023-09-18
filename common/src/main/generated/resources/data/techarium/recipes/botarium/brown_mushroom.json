@@ -1,0 +1,20 @@
+{
+  "type": "techarium:botarium",
+  "cookingtime": 600,
+  "crop_block": "minecraft:brown_mushroom",
+  "energy": 5,
+  "fertilizer": {
+    "buckets": 0.002,
+    "fluid": "minecraft:water"
+  },
+  "result_crop": {
+    "count": 3,
+    "id": "minecraft:brown_mushroom"
+  },
+  "seed": {
+    "item": "minecraft:brown_mushroom"
+  },
+  "soil": {
+    "tag": "techarium:mushroom_fertilizers"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "techarium:botarium",
+  "cookingtime": 600,
+  "crop_block": "minecraft:pumpkin_stem",
+  "energy": 5,
+  "fertilizer": {
+    "buckets": 0.002,
+    "fluid": "minecraft:water"
+  },
+  "result_crop": {
+    "count": 1,
+    "id": "minecraft:pumpkin"
+  },
+  "result_seed": {
+    "count": 2,
+    "id": "minecraft:pumpkin_seeds"
+  },
+  "seed": {
+    "item": "minecraft:pumpkin_seeds"
+  },
+  "soil": {
+    "tag": "techarium:fertilizers"
+  }
+}

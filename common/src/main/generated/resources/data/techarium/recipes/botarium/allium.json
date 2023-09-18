@@ -1,0 +1,20 @@
+{
+  "type": "techarium:botarium",
+  "cookingtime": 600,
+  "crop_block": "minecraft:allium",
+  "energy": 5,
+  "fertilizer": {
+    "buckets": 0.0,
+    "fluid": "minecraft:empty"
+  },
+  "result_crop": {
+    "count": 3,
+    "id": "minecraft:allium"
+  },
+  "seed": {
+    "item": "minecraft:allium"
+  },
+  "soil": {
+    "tag": "techarium:fertilizers"
+  }
+}

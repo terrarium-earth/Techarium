@@ -16,13 +16,19 @@ import earth.terrarium.techarium.common.utils.ItemUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib.core.animation.AnimatableManager;
 import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
@@ -34,6 +40,8 @@ public class BotariumBlockEntity extends RecipeMachineBlockEntity<BotariumRecipe
 
     private long lastFluid;
     private long fluidDifference;
+    @Nullable
+    private Block cropBlock;
     private WrappedBlockFluidContainer fluidContainer;
     private final DeploymentManager deploymentManager = new DeploymentManager(this, 25, 75, ModSoundEvents.BOTARIUM_DEPLOY.get());
 
@@ -52,6 +60,22 @@ public class BotariumBlockEntity extends RecipeMachineBlockEntity<BotariumRecipe
     @Override
     public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
         return deploymentManager.isDeployed() ? new BotariumMenu(i, inventory, this) : null;
+    }
+
+    @Override
+    public void load(@NotNull CompoundTag tag) {
+        super.load(tag);
+        if (tag.contains("CropBlock")) {
+            cropBlock = BuiltInRegistries.BLOCK.get(new ResourceLocation(tag.getString("CropBlock")));
+        }
+    }
+
+    @Override
+    protected void saveAdditional(@NotNull CompoundTag tag) {
+        super.saveAdditional(tag);
+        if (cropBlock != null) {
+            tag.putString("CropBlock", BuiltInRegistries.BLOCK.getKey(cropBlock).toString());
+        }
     }
 
     @Override
@@ -123,7 +147,8 @@ public class BotariumBlockEntity extends RecipeMachineBlockEntity<BotariumRecipe
         if (energyStorage.internalExtract(recipe.energy(), true) < recipe.energy()) return false;
         if (!recipe.seed().test(getItem(4))) return false;
         if (!recipe.soil().test(getItem(5))) return false;
-        if (!ItemUtils.canAddItem(this, recipe.result(), 6, 7, 8)) return false;
+        if (!ItemUtils.canAddItem(this, recipe.resultCrop(), 6, 7, 8)) return false;
+        if (!ItemUtils.canAddItem(this, recipe.resultSeed(), 6, 7, 8)) return false;
         return fluidContainer.internalExtract(recipe.fertilizer(), true).getFluidAmount() >= recipe.fertilizer().getFluidAmount();
     }
 
@@ -132,7 +157,8 @@ public class BotariumBlockEntity extends RecipeMachineBlockEntity<BotariumRecipe
         if (recipe == null) return;
 
         getItem(4).shrink(1);
-        ItemUtils.addItem(this, recipe.result(), 6, 7, 8);
+        ItemUtils.addItem(this, recipe.resultCrop(), 6, 7, 8);
+        ItemUtils.addItem(this, recipe.resultSeed(), 6, 7, 8);
 
         updateSlots();
 
@@ -147,12 +173,20 @@ public class BotariumBlockEntity extends RecipeMachineBlockEntity<BotariumRecipe
             .stream()
             .filter(r -> r.fertilizer().matches(getFluidContainer().getFluids().get(0)))
             .filter(r -> r.seed().test(getItem(4)))
+            .filter(r -> r.soil().test(getItem(5)))
             .findFirst()
             .ifPresent(r -> {
                 recipe = r;
                 cookTimeTotal = r.cookingTime();
+                cropBlock = r.cropBlock();
             });
         updateSlots();
+    }
+
+    @Override
+    public void clearRecipe() {
+        super.clearRecipe();
+        cropBlock = null;
     }
 
     @Override
@@ -170,5 +204,10 @@ public class BotariumBlockEntity extends RecipeMachineBlockEntity<BotariumRecipe
     @Override
     public int[] getSlotsForFace(Direction side) {
         return new int[]{4, 5, 6, 7, 8, 9};
+    }
+
+    @Nullable
+    public Block cropBlock() {
+        return cropBlock;
     }
 }

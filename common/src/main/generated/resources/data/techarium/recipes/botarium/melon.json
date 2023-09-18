@@ -1,0 +1,24 @@
+{
+  "type": "techarium:botarium",
+  "cookingtime": 600,
+  "crop_block": "minecraft:melon_stem",
+  "energy": 5,
+  "fertilizer": {
+    "buckets": 0.002,
+    "fluid": "minecraft:water"
+  },
+  "result_crop": {
+    "count": 1,
+    "id": "minecraft:melon"
+  },
+  "result_seed": {
+    "count": 2,
+    "id": "minecraft:melon_seeds"
+  },
+  "seed": {
+    "item": "minecraft:melon_seeds"
+  },
+  "soil": {
+    "tag": "techarium:fertilizers"
+  }
+}

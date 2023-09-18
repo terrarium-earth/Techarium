@@ -1,0 +1,20 @@
+{
+  "type": "techarium:botarium",
+  "cookingtime": 600,
+  "crop_block": "minecraft:red_tulip",
+  "energy": 5,
+  "fertilizer": {
+    "buckets": 0.002,
+    "fluid": "minecraft:water"
+  },
+  "result_crop": {
+    "count": 3,
+    "id": "minecraft:red_tulip"
+  },
+  "seed": {
+    "item": "minecraft:red_tulip"
+  },
+  "soil": {
+    "tag": "techarium:fertilizers"
+  }
+}
