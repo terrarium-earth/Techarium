@@ -7,10 +7,7 @@ import earth.terrarium.techarium.Techarium;
 import earth.terrarium.techarium.common.blocks.BeamBlock;
 import earth.terrarium.techarium.common.blocks.machines.BotariumBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.DropExperienceBlock;
-import net.minecraft.world.level.block.LadderBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class ModBlocks {
@@ -56,4 +53,6 @@ public class ModBlocks {
     public static final RegistryEntry<Block> ALUMINIUM_LADDER = BLOCKS.register("aluminium_ladder", () -> new LadderBlock(BlockBehaviour.Properties.copy(Blocks.COPPER_BLOCK).noOcclusion()));
 
     public static final RegistryEntry<Block> METAL_BEAM = BLOCKS.register("metal_beam", () -> new BeamBlock(BlockBehaviour.Properties.copy(Blocks.COPPER_BLOCK).noOcclusion()));
+
+    public static final RegistryEntry<Block> CORN = BLOCKS.register("corn", () -> new CropBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT)));
 }

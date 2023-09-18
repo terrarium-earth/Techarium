@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.LadderBlock;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
@@ -16,9 +17,13 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ModBlockStateProvider extends BlockStateProvider {
     public static final ResourceLocation WATER_STILL = new ResourceLocation("block/water_still");
     public static final ResourceLocation LADDER = new ResourceLocation("block/ladder");
+    public static final ResourceLocation CORN = new ResourceLocation(Techarium.MOD_ID, "block/corn");
 
     public ModBlockStateProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
         super(output, Techarium.MOD_ID, existingFileHelper);
@@ -39,6 +44,7 @@ public class ModBlockStateProvider extends BlockStateProvider {
         basicBlockNoState(ModBlocks.ZINC_FACTORY_BLOCK.get());
 
         basicLadder(ModBlocks.ALUMINIUM_LADDER.get());
+        cornBlock(ModBlocks.CORN.get());
     }
 
     public void basicBlock(Block block) {
@@ -92,6 +98,20 @@ public class ModBlockStateProvider extends BlockStateProvider {
     public void basicRenderedBlock(Block block, ResourceLocation itemModel, ResourceLocation texture) {
         simpleBlockItem(block, itemModels().getExistingFile(itemModel));
         simpleBlock(block, this.models().cubeAll(this.name(block), texture));
+    }
+
+    public void cornBlock(Block block) {
+        this.getVariantBuilder(block)
+            .forAllStates(state -> {
+                int age = state.getValue(CropBlock.AGE);
+                return ConfiguredModel.builder()
+                    .modelFile(
+                        models().getBuilder(name(block) + "_" + age)
+                            .parent(models().getExistingFile(CORN))
+                            .texture("stage", modLoc("block/" + name(block) + "/corn_stage_" + age))
+                    )
+                    .build();
+            });
     }
 
     private void fluidBlock(Block block) {

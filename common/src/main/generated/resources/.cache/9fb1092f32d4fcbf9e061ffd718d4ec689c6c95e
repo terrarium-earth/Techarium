@@ -1,4 +1,4 @@
-// 1.20.1	2023-09-18T00:54:23.653623	Recipes
+// 1.20.1	2023-09-18T12:53:34.734661	Recipes
 1b05b608e944c802c0379b9dd1f3567dee1c9cee data/techarium/advancements/recipes/botarium/botarium/allium.json
 9f1214565662bc6c47a13eadc092851edbea691d data/techarium/advancements/recipes/botarium/botarium/azure_bluet.json
 1f3337c07783aa84de93f1c1a02ffe2217b0ff8a data/techarium/advancements/recipes/botarium/botarium/bamboo.json
@@ -9,6 +9,7 @@ add2984602f15c43eefc8d5b3c054f34c749a086 data/techarium/advancements/recipes/bot
 2e1fae3ef8f0137e93e3cde5e3891b9e55d3bcfc data/techarium/advancements/recipes/botarium/botarium/carrot.json
 51df1967f15ca3f92b68d1305a25286f99724623 data/techarium/advancements/recipes/botarium/botarium/chorus_fruit.json
 c62b6722b8dcf77d66f1242646a16194df507244 data/techarium/advancements/recipes/botarium/botarium/cocoa_beans.json
+6eb5d99aca4e33cdad2e41ecf07a73312c385d09 data/techarium/advancements/recipes/botarium/botarium/corn.json
 b52c99282592722a477a66eb08444a3c9d549bc2 data/techarium/advancements/recipes/botarium/botarium/cornflower.json
 01257d4c93da42a8c4277a6fb2fa673817a122b2 data/techarium/advancements/recipes/botarium/botarium/crimson_fungus.json
 1415c07d03ba7fdb65df24082a8980a909135e5f data/techarium/advancements/recipes/botarium/botarium/dandelion.json
@@ -45,6 +46,7 @@ bf36b84f6f6e44ab27a18f44015e6a2a0dc7eeed data/techarium/recipes/botarium/cactus.
 6da23aa480245749cfdfead00f70c57aa2f08982 data/techarium/recipes/botarium/carrot.json
 2242b1c88510e49a5e0fd5985cb641cd70eb7e0d data/techarium/recipes/botarium/chorus_fruit.json
 175486aecd18692e770c6531d3d2082718af6575 data/techarium/recipes/botarium/cocoa_beans.json
+ae0874599c27facad4f768d66a12193e7d01bb89 data/techarium/recipes/botarium/corn.json
 3c014f7211bb69fa58597a2fcd469ada4f823dde data/techarium/recipes/botarium/cornflower.json
 2abd977de870761b39611b22597328dea9c4ea6c data/techarium/recipes/botarium/crimson_fungus.json
 7c73f6659800bb25158f5599ce0fbfe93eb73619 data/techarium/recipes/botarium/dandelion.json

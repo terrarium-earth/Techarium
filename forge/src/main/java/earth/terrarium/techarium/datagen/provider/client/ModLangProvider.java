@@ -61,6 +61,7 @@ public class ModLangProvider extends LanguageProvider {
 //                    .replace("_", " "))));
 
         add(ConstantComponents.ITEM_GROUP.getString(), "Techarium");
+        add(ModItems.CORN.get(), "Corn");
 
         add("tooltip.techarium.energy", "%s ⚡ / %s ⚡");
         add("tooltip.techarium.energy_in", "In: %s ⚡/t");

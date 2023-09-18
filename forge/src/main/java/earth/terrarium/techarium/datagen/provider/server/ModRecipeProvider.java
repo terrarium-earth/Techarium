@@ -3,6 +3,8 @@ package earth.terrarium.techarium.datagen.provider.server;
 import earth.terrarium.botarium.common.fluid.base.FluidHolder;
 import earth.terrarium.botarium.common.fluid.utils.FluidHooks;
 import earth.terrarium.techarium.Techarium;
+import earth.terrarium.techarium.common.registry.ModBlocks;
+import earth.terrarium.techarium.common.registry.ModItems;
 import earth.terrarium.techarium.common.tags.ModItemTags;
 import earth.terrarium.techarium.datagen.builder.BotariumRecipeBuilder;
 import net.minecraft.data.PackOutput;
@@ -30,6 +32,13 @@ public class ModRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes(@NotNull Consumer<FinishedRecipe> writer) {
+        createBotarium(writer, 600, 5,
+            FluidHooks.newFluidHolder(Fluids.WATER, FluidHooks.buckets(0.002), null),
+            ModItems.CORN.get(),
+            Ingredient.of(ModItemTags.FERTILIZERS),
+            ModBlocks.CORN.get(),
+            new ItemStack(ModItems.CORN.get(), 3));
+
         createBotarium(writer, 600, 5,
             FluidHooks.newFluidHolder(Fluids.WATER, FluidHooks.buckets(0.002), null),
             Items.WHEAT_SEEDS,

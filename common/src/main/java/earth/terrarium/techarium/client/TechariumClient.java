@@ -36,6 +36,7 @@ public class TechariumClient {
     private static void registerBlockRenderTypes() {
         ClientHooks.setRenderLayer(ModBlocks.ALUMINIUM_LADDER.get(), RenderType.cutout());
         ClientHooks.setRenderLayer(ModBlocks.METAL_SCAFFOLDING.get(), RenderType.cutout());
+        ClientHooks.setRenderLayer(ModBlocks.CORN.get(), RenderType.cutout());
     }
 
     private static void registerBlockEntityRenderers() {

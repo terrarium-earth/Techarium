@@ -9,9 +9,11 @@ import earth.terrarium.techarium.common.blockentities.machines.BotariumBlockEnti
 import earth.terrarium.techarium.common.items.base.CustomGeoBlockItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemNameBlockItem;
 
 import java.util.function.Supplier;
 
@@ -63,6 +65,13 @@ public final class ModItems {
     public static final RegistryEntry<Item> ALUMINIUM_LADDER = ITEMS.register("aluminium_ladder", () -> new BlockItem(ModBlocks.ALUMINIUM_LADDER.get(), new Item.Properties()));
 
     public static final RegistryEntry<Item> METAL_BEAM = ITEMS.register("metal_beam", () -> new BlockItem(ModBlocks.METAL_BEAM.get(), new Item.Properties()));
+
+    public static final RegistryEntry<Item> CORN = BASIC_ITEMS.register("corn", () -> new ItemNameBlockItem(ModBlocks.CORN.get(),
+        new Item.Properties().food(
+            new FoodProperties.Builder()
+                .nutrition(4)
+                .saturationMod(0.8f)
+                .build())));
 
     public static final RegistryEntry<Item> COPPER_NUGGET = BASIC_ITEMS.register("copper_nugget", () -> new Item(new Item.Properties()));
     public static final RegistryEntry<Item> COPPER_PLATE = BASIC_ITEMS.register("copper_plate", () -> new Item(new Item.Properties()));

@@ -1,4 +1,4 @@
-// 1.20.1	2023-09-16T20:09:58.253009	Block States: techarium
+// 1.20.1	2023-09-18T12:53:34.73645	Block States: techarium
 b8ab6f63b5628c2d1b4da971c58513c2cecb68f0 assets/techarium/blockstates/aluminium_ladder.json
 dd31b4f588ccad84b909157a2a7ad8b7535cab0d assets/techarium/blockstates/aluminium_ore.json
 e1390868599eca02c44e4bece9ad40a5ce6ad9c8 assets/techarium/blockstates/aluminium_plateblock.json
@@ -8,6 +8,7 @@ f4b0bedcb81aa549a5756d9e7469e6642d703491 assets/techarium/blockstates/block_of_a
 ac553effdb216d6d36d007ea06ccbf3479b78782 assets/techarium/blockstates/block_of_zinc.json
 fb0036d06df98c1f6df300091c12ceab3f2e678b assets/techarium/blockstates/botarium.json
 24a9397dac41705bdce1b35944a7a9f110686640 assets/techarium/blockstates/copper_plateblock.json
+eecbf153f907557555e4497e8d0ef2a89aac7699 assets/techarium/blockstates/corn.json
 75f3cd53f75199bc68f8712acc09bdc47c4425be assets/techarium/blockstates/encased_aluminium_block.json
 4c4ee9668e584a7d0c4a23efce11be0c2a255ba7 assets/techarium/blockstates/encased_copper_block.json
 01da9ca4bf364e2e9205d7c5392f62f035919406 assets/techarium/blockstates/encased_lead_block.json
@@ -31,6 +32,14 @@ a63e09aa42ff608352099336fa7f5f29aad95cd3 assets/techarium/models/block/block_of_
 a2b60b1325d0bb6e066b2fc385df18fb96f38b2d assets/techarium/models/block/botarium.json
 97fb8ec1be0dd1d3db1612a1808cae9699ed96e8 assets/techarium/models/block/copper_factory_block.json
 8d3da1907eeca1e6297da6724807fb3ea2a5c04d assets/techarium/models/block/copper_plateblock.json
+c6c6b0465cd86a924a20bd329d11feddb3ce0b39 assets/techarium/models/block/corn_0.json
+c4ad62bb46db14ac4b135c89b77f1440450e3fd3 assets/techarium/models/block/corn_1.json
+720067b3bf6172c83418d0e40e9956fb93f00d61 assets/techarium/models/block/corn_2.json
+e505e4389998d9ca5d52c6afa31f39f01143ddec assets/techarium/models/block/corn_3.json
+2c45cbc2087073c26fead877ac6d7406bc588e0c assets/techarium/models/block/corn_4.json
+e5bb6f12cebf47db5c4ac1a46baf21fcaada6556 assets/techarium/models/block/corn_5.json
+af3c1eebafefe4559608c11650555e08d5011234 assets/techarium/models/block/corn_6.json
+e74a874661e5b7463e0a5966763496a895ff24f9 assets/techarium/models/block/corn_7.json
 94e8e2021e5c976596d02b75ac06a0eb471179c1 assets/techarium/models/block/encased_aluminium_block.json
 2d935e41cd9bd4ef49067ac6d0f1a2b959e02dbe assets/techarium/models/block/encased_copper_block.json
 2e92854bd6e4228310335bc55b3348e13773002c assets/techarium/models/block/encased_lead_block.json

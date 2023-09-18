@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "age=0": {
+      "model": "techarium:block/corn_0"
+    },
+    "age=1": {
+      "model": "techarium:block/corn_1"
+    },
+    "age=2": {
+      "model": "techarium:block/corn_2"
+    },
+    "age=3": {
+      "model": "techarium:block/corn_3"
+    },
+    "age=4": {
+      "model": "techarium:block/corn_4"
+    },
+    "age=5": {
+      "model": "techarium:block/corn_5"
+    },
+    "age=6": {
+      "model": "techarium:block/corn_6"
+    },
+    "age=7": {
+      "model": "techarium:block/corn_7"
+    }
+  }
+}
