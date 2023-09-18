@@ -1,6 +1,5 @@
 package earth.terrarium.techarium.common.blocks.base;
 
-import earth.terrarium.techarium.common.blocks.base.DoubleMachineBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Block;

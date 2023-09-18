@@ -34,8 +34,8 @@ import software.bernie.geckolib.core.animation.AnimationController;
 import software.bernie.geckolib.core.animation.RawAnimation;
 
 public class BotariumBlockEntity extends RecipeMachineBlockEntity<BotariumRecipe> implements BotariumFluidBlock<WrappedBlockFluidContainer> {
-    public static final RawAnimation DEPLOY = RawAnimation.begin().thenPlayAndHold("Deploy");
-    public static final RawAnimation IDLE = RawAnimation.begin().thenPlayAndHold("Idle");
+    public static final RawAnimation DEPLOY = RawAnimation.begin().thenPlay("Deploy").thenLoop("Idle");
+    public static final RawAnimation IDLE = RawAnimation.begin().thenLoop("Idle");
     public static final RawAnimation SPRINKLE = RawAnimation.begin().thenLoop("Sprinkle");
 
     private long lastFluid;
@@ -148,7 +148,7 @@ public class BotariumBlockEntity extends RecipeMachineBlockEntity<BotariumRecipe
         if (!recipe.seed().test(getItem(4))) return false;
         if (!recipe.soil().test(getItem(5))) return false;
         if (!ItemUtils.canAddItem(this, recipe.resultCrop(), 6, 7, 8)) return false;
-        if (!ItemUtils.canAddItem(this, recipe.resultSeed(), 6, 7, 8)) return false;
+        if (!recipe.resultSeed().isEmpty() && !ItemUtils.canAddItem(this, recipe.resultSeed(), 6, 7, 8)) return false;
         return fluidContainer.internalExtract(recipe.fertilizer(), true).getFluidAmount() >= recipe.fertilizer().getFluidAmount();
     }
 
@@ -169,6 +169,7 @@ public class BotariumBlockEntity extends RecipeMachineBlockEntity<BotariumRecipe
     @Override
     public void update() {
         if (level().isClientSide()) return;
+        if (!canCraft(getEnergyStorage())) return;
         level().getRecipeManager().getAllRecipesFor(ModRecipeTypes.BOTARIUM.get())
             .stream()
             .filter(r -> r.fertilizer().matches(getFluidContainer().getFluids().get(0)))
