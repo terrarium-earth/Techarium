@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.*;
@@ -19,12 +18,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import software.bernie.geckolib.cache.object.BakedGeoModel;
 
 public class BotariumBlockEntityRenderer extends CustomGeoBlockRenderer<BotariumBlockEntity> {
-    private final ItemRenderer itemRenderer;
     private final BlockRenderDispatcher blockRenderer;
 
     public BotariumBlockEntityRenderer(RegistryEntry<Block> block) {
         super(block);
-        itemRenderer = Minecraft.getInstance().getItemRenderer();
         blockRenderer = Minecraft.getInstance().getBlockRenderer();
     }
 

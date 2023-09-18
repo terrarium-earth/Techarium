@@ -1,4 +1,4 @@
-package earth.terrarium.techarium.common.blockentities;
+package earth.terrarium.techarium.common.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.StringRepresentable;

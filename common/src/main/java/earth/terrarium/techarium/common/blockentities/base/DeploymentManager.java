@@ -1,5 +1,6 @@
 package earth.terrarium.techarium.common.blockentities.base;
 
+import earth.terrarium.techarium.common.blocks.base.DeployableBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;

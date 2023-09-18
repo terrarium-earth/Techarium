@@ -1,6 +1,6 @@
 package earth.terrarium.techarium.common.blocks.machines;
 
-import earth.terrarium.techarium.common.blockentities.base.DeployableBlock;
+import earth.terrarium.techarium.common.blocks.base.DeployableBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;

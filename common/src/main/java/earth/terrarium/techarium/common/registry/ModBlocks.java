@@ -4,7 +4,7 @@ import com.teamresourceful.resourcefullib.common.registry.RegistryEntry;
 import com.teamresourceful.resourcefullib.common.registry.ResourcefulRegistries;
 import com.teamresourceful.resourcefullib.common.registry.ResourcefulRegistry;
 import earth.terrarium.techarium.Techarium;
-import earth.terrarium.techarium.common.blockentities.BeamBlock;
+import earth.terrarium.techarium.common.blocks.BeamBlock;
 import earth.terrarium.techarium.common.blocks.machines.BotariumBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;

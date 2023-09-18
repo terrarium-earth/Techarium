@@ -1,4 +1,4 @@
-package earth.terrarium.techarium.common.blockentities.base;
+package earth.terrarium.techarium.common.blocks.base;
 
 import earth.terrarium.techarium.common.blocks.base.DoubleMachineBlock;
 import net.minecraft.core.Direction;

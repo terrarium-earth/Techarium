@@ -5,7 +5,6 @@ import earth.terrarium.botarium.common.menu.MenuHooks;
 import earth.terrarium.techarium.common.blockentities.base.ContainerMachineExtensionBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
