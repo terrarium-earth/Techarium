@@ -1,5 +1,9 @@
 package earth.terrarium.techarium.common.networking.messages;
 
+import com.teamresourceful.bytecodecs.base.ByteCodec;
+import com.teamresourceful.bytecodecs.base.object.ObjectByteCodec;
+import com.teamresourceful.resourcefullib.common.bytecodecs.ExtraByteCodecs;
+import com.teamresourceful.resourcefullib.common.networking.base.CodecPacketHandler;
 import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
@@ -8,7 +12,6 @@ import earth.terrarium.botarium.common.fluid.base.FluidContainer;
 import earth.terrarium.techarium.Techarium;
 import earth.terrarium.techarium.common.utils.ModUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public record ServerboundClearFluidTankPacket(
@@ -28,18 +31,13 @@ public record ServerboundClearFluidTankPacket(
         return HANDLER;
     }
 
-    private static class Handler implements PacketHandler<ServerboundClearFluidTankPacket> {
-        @Override
-        public void encode(ServerboundClearFluidTankPacket packet, FriendlyByteBuf buf) {
-            buf.writeBlockPos(packet.machine());
-            buf.writeByte(packet.tank());
-        }
-
-        @Override
-        public ServerboundClearFluidTankPacket decode(FriendlyByteBuf buf) {
-            return new ServerboundClearFluidTankPacket(
-                buf.readBlockPos(),
-                buf.readByte());
+    private static class Handler extends CodecPacketHandler<ServerboundClearFluidTankPacket> {
+        public Handler() {
+            super(ObjectByteCodec.create(
+                ExtraByteCodecs.BLOCK_POS.fieldOf(ServerboundClearFluidTankPacket::machine),
+                ByteCodec.INT.fieldOf(ServerboundClearFluidTankPacket::tank),
+                ServerboundClearFluidTankPacket::new
+            ));
         }
 
         @Override

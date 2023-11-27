@@ -23,7 +23,6 @@ val common: Configuration by configurations.creating {
     configurations["developmentForge"].extendsFrom(this)
 }
 
-
 dependencies {
     common(project(":common", configuration = "namedElements")) {
         isTransitive = false
@@ -42,6 +41,8 @@ dependencies {
 
     modLocalRuntime(group = "maven.modrinth", name = "jade", version = "2iRQrBk4")
 
-    // comment out if downloaded from source
-    modLocalRuntime(files("run/lol/secretmod.jar"))
+    modLocalRuntime(group = "maven.modrinth", name = "mekanism", version = "10.4.2.16")
+
+    forgeRuntimeLibrary("com.teamresourceful:yabn:1.0.3")
+    forgeRuntimeLibrary("com.teamresourceful:bytecodecs:1.0.2")
 }
