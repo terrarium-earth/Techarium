@@ -1,5 +1,10 @@
 [versions]
 
+# Minecraft
+minecraft = "1.21"
+neoforge = "21.0.79-beta"
+parchment = "2024.07.07"
+
 # Plugins
 moddev = "0.1.126"
 resourcefulgradle = "0.0.+"

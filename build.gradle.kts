@@ -10,24 +10,19 @@ plugins {
     alias(libs.plugins.moddev)
 }
 
-val minecraftVersion: String by project
 val modId = "techarium"
 
 base {
-    archivesName.set("$modId-$minecraftVersion")
+    archivesName.set("$modId-${libs.versions.minecraft.get()}")
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 neoForge {
-    val minecraftVersion: String by project
-    val neoforgeVersion: String by project
-    val parchmentVersion: String by project
+    version = libs.versions.neoforge.get()
 
-    version = neoforgeVersion
-
-    parchment.mappingsVersion = parchmentVersion
-    parchment.minecraftVersion = minecraftVersion
+    parchment.mappingsVersion = libs.versions.parchment.get()
+    parchment.minecraftVersion = libs.versions.minecraft.get()
 
     runs {
         register("client") {
@@ -94,7 +89,7 @@ kotlin {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifactId = "$modId-$minecraftVersion"
+            artifactId = "$modId-${libs.versions.minecraft.get()}"
             from(components["java"])
 
             pom {
@@ -123,14 +118,13 @@ publishing {
 resourcefulGradle {
     templates {
         register("embed") {
-            val minecraftVersion: String by project
             val version: String by project
             val changelog: String = file("changelog.md").readText(Charsets.UTF_8)
             val link: String? = System.getenv("RELEASE_URL")
 
             source.set(file("templates/embed.json.template"))
             injectedValues.set(mapOf(
-                "minecraft" to minecraftVersion,
+                "minecraft" to libs.versions.minecraft.get(),
                 "version" to version,
                 "changelog" to StringEscapeUtils.escapeJava(changelog),
                 "link" to link
