@@ -13,16 +13,16 @@ plugins {
 val modId = "techarium"
 
 base {
-    archivesName.set("$modId-${libs.versions.minecraft.get()}")
+    archivesName.set(libs.versions.minecraft.map { "$modId-$it" })
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 neoForge {
-    version = libs.versions.neoforge.get()
+    version = libs.versions.neoforge
 
-    parchment.mappingsVersion = libs.versions.parchment.get()
-    parchment.minecraftVersion = libs.versions.minecraft.get()
+    parchment.mappingsVersion = libs.versions.parchment
+    parchment.minecraftVersion = libs.versions.minecraft
 
     runs {
         register("client") {
