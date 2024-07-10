@@ -1,6 +1,0 @@
-{
-  "parent": "techarium:block/corn",
-  "textures": {
-    "stage": "techarium:block/corn/corn_stage_2"
-  }
-}

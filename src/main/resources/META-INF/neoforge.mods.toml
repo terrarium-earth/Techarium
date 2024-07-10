@@ -1,0 +1,41 @@
+modLoader = "kotlinforforge"
+loaderVersion = "[3,)"
+license = "ARR"
+issueTrackerURL = "https://github.com/terrarium-earth/Techarium/issues"
+
+[[mods]]
+modId = "techarium"
+version = "${version}"
+displayName = "Techarium"
+displayURL = "https://modrinth.com/mod/techarium"
+authors = ""
+credits = ""
+description = ""
+
+[[dependencies.techarium]]
+    modId = "neoforge"
+    type = "required"
+    versionRange = "[21.0,)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.techarium]]
+    modId = "minecraft"
+    type = "required"
+    versionRange = "[1.21,)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.techarium]]
+    modId = "resourcefullib"
+    type = "required"
+    versionRange = "[3.0.9,)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.techarium]]
+    modId = "resourcefulconfig"
+    type = "required"
+    versionRange = "[3.0.2,)"
+    ordering = "NONE"
+    side = "BOTH"

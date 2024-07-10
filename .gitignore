@@ -116,3 +116,6 @@ run/
 
 # Architectury Garbage
 *.architectury-transformer
+
+# Kotlin
+.kotlin
