@@ -6,8 +6,8 @@ plugins {
     idea
     kotlin("jvm") version "2.0.0"
     id("maven-publish")
-    id("com.teamresourceful.resourcefulgradle") version "0.0.+"
-    id("net.neoforged.moddev") version "0.1.126"
+    alias(libs.plugins.resourcefulgradle)
+    alias(libs.plugins.moddev)
 }
 
 val minecraftVersion: String by project
@@ -53,29 +53,20 @@ repositories {
 }
 
 dependencies {
-    val neoforgeVersion: String by project
-    val minecraftVersion: String by project
+    implementation(libs.resourcefulconfig)
 
-    val resourcefulConfigVersion: String by project
-    val resourcefulConfigKtVersion: String by project
-    val resourcefulLibVersion: String by project
-    val resourcefulLibKtVersion: String by project
-    val kotlinForForgeVersion: String by project
+    implementation(libs.resourcefullib)
+    compileOnly(libs.bytecodecs)
+    compileOnly(libs.yabn)
 
-    implementation("com.teamresourceful.resourcefulconfig:resourcefulconfig-neoforge-${minecraftVersion}:${resourcefulConfigVersion}")
-    implementation("com.teamresourceful.resourcefullib:resourcefullib-neoforge-${minecraftVersion}:${resourcefulLibVersion}")
-    compileOnly("com.teamresourceful:bytecodecs:1.1.0")
-    implementation("thedarkcolour:kotlinforforge-neoforge:${kotlinForForgeVersion}")
+    implementation(libs.kotlinforforge)
+    implementation(libs.geckolib)
 
-    val rlibKt = implementation("com.teamresourceful.resourcefullibkt:resourcefullibkt-neoforge-${minecraftVersion}:${resourcefulLibKtVersion}") {
-        isTransitive = false
-    }
-    val rconfigKt = implementation("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-neoforge-${minecraftVersion}:${resourcefulConfigKtVersion}") {
-        isTransitive = false
-    }
+    implementation(libs.resourcefullibkt) { isTransitive = false }
+    implementation(libs.resourcefulconfigkt) { isTransitive = false }
 
-    "jarJar"(rlibKt)
-    "jarJar"(rconfigKt)
+    "jarJar"(libs.resourcefullibkt)
+    "jarJar"(libs.resourcefulconfigkt)
 }
 
 java {
