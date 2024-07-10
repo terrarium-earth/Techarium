@@ -6,28 +6,23 @@ plugins {
     idea
     kotlin("jvm") version "2.0.0"
     id("maven-publish")
-    id("com.teamresourceful.resourcefulgradle") version "0.0.+"
-    id("net.neoforged.moddev") version "0.1.126"
+    alias(libs.plugins.resourcefulgradle)
+    alias(libs.plugins.moddev)
 }
 
-val minecraftVersion: String by project
 val modId = "techarium"
 
 base {
-    archivesName.set("$modId-$minecraftVersion")
+    archivesName.set(libs.versions.minecraft.map { "$modId-$it" })
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 neoForge {
-    val minecraftVersion: String by project
-    val neoforgeVersion: String by project
-    val parchmentVersion: String by project
+    version = libs.versions.neoforge
 
-    version = neoforgeVersion
-
-    parchment.mappingsVersion = parchmentVersion
-    parchment.minecraftVersion = minecraftVersion
+    parchment.mappingsVersion = libs.versions.parchment
+    parchment.minecraftVersion = libs.versions.minecraft
 
     runs {
         register("client") {
@@ -53,29 +48,20 @@ repositories {
 }
 
 dependencies {
-    val neoforgeVersion: String by project
-    val minecraftVersion: String by project
+    implementation(libs.resourcefulconfig)
 
-    val resourcefulConfigVersion: String by project
-    val resourcefulConfigKtVersion: String by project
-    val resourcefulLibVersion: String by project
-    val resourcefulLibKtVersion: String by project
-    val kotlinForForgeVersion: String by project
+    implementation(libs.resourcefullib)
+    compileOnly(libs.bytecodecs)
+    compileOnly(libs.yabn)
 
-    implementation("com.teamresourceful.resourcefulconfig:resourcefulconfig-neoforge-${minecraftVersion}:${resourcefulConfigVersion}")
-    implementation("com.teamresourceful.resourcefullib:resourcefullib-neoforge-${minecraftVersion}:${resourcefulLibVersion}")
-    compileOnly("com.teamresourceful:bytecodecs:1.1.0")
-    implementation("thedarkcolour:kotlinforforge-neoforge:${kotlinForForgeVersion}")
+    implementation(libs.kotlinforforge)
+    implementation(libs.geckolib)
 
-    val rlibKt = implementation("com.teamresourceful.resourcefullibkt:resourcefullibkt-neoforge-${minecraftVersion}:${resourcefulLibKtVersion}") {
-        isTransitive = false
-    }
-    val rconfigKt = implementation("com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-neoforge-${minecraftVersion}:${resourcefulConfigKtVersion}") {
-        isTransitive = false
-    }
+    implementation(libs.resourcefullibkt) { isTransitive = false }
+    implementation(libs.resourcefulconfigkt) { isTransitive = false }
 
-    "jarJar"(rlibKt)
-    "jarJar"(rconfigKt)
+    "jarJar"(libs.resourcefullibkt)
+    "jarJar"(libs.resourcefulconfigkt)
 }
 
 java {
@@ -103,7 +89,7 @@ kotlin {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            artifactId = "$modId-$minecraftVersion"
+            artifactId = "$modId-${libs.versions.minecraft.get()}"
             from(components["java"])
 
             pom {
@@ -132,14 +118,13 @@ publishing {
 resourcefulGradle {
     templates {
         register("embed") {
-            val minecraftVersion: String by project
             val version: String by project
             val changelog: String = file("changelog.md").readText(Charsets.UTF_8)
             val link: String? = System.getenv("RELEASE_URL")
 
             source.set(file("templates/embed.json.template"))
             injectedValues.set(mapOf(
-                "minecraft" to minecraftVersion,
+                "minecraft" to libs.versions.minecraft.get(),
                 "version" to version,
                 "changelog" to StringEscapeUtils.escapeJava(changelog),
                 "link" to link

@@ -1,0 +1,40 @@
+[versions]
+
+# Minecraft
+minecraft = "1.21"
+neoforge = "21.0.79-beta"
+parchment = "2024.07.07"
+
+# Plugins
+moddev = "0.1.126"
+resourcefulgradle = "0.0.+"
+
+# Dependencies
+resourcefulLib = "3.0.9"
+resourcefulLibKt = "2.0.1"
+resourcefulConfig = "3.0.2"
+resourcefulConfigKt = "3.0.2"
+
+# Needed for Resourceful Lib because Neo doesn't import them
+bytecodecs = "1.1.2"
+yabn = "1.0.3"
+
+geckolib = "4.5.6"
+kotlinForForge = "5.3.0"
+
+[libraries]
+
+resourcefullib = { module = "com.teamresourceful.resourcefullib:resourcefullib-neoforge-1.21", version.ref = "resourcefulLib" }
+resourcefullibkt = { module = "com.teamresourceful.resourcefullibkt:resourcefullibkt-neoforge-1.21", version.ref = "resourcefulLibKt" }
+resourcefulconfig = { module = "com.teamresourceful.resourcefulconfig:resourcefulconfig-neoforge-1.21", version.ref = "resourcefulConfig" }
+resourcefulconfigkt = { module = "com.teamresourceful.resourcefulconfigkt:resourcefulconfigkt-neoforge-1.21", version.ref = "resourcefulConfigKt" }
+bytecodecs = { module = "com.teamresourceful:bytecodecs", version.ref = "bytecodecs" }
+yabn = { module = "com.teamresourceful:yabn", version.ref = "yabn" }
+
+geckolib = { module = "software.bernie.geckolib:geckolib-neoforge-1.21", version.ref = "geckolib" }
+kotlinforforge = { module = "thedarkcolour:kotlinforforge-neoforge", version.ref = "kotlinForForge" }
+
+[plugins]
+
+moddev = { id = "net.neoforged.moddev", version.ref = "moddev" }
+resourcefulgradle = { id = "com.teamresourceful.resourcefulgradle", version.ref = "resourcefulgradle" }
