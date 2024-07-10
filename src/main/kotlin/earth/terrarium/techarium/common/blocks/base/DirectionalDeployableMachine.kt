@@ -27,19 +27,15 @@ abstract class DirectionalDeployableMachine(properties: Properties): DeployableM
         builder.add(FACING)
     }
 
-    override fun rotate(state: BlockState, level: LevelAccessor, pos: BlockPos, direction: Rotation): BlockState {
-        return state.setValue(FACING, direction.rotate(state.getValue(FACING)))
-    }
+    override fun rotate(state: BlockState, level: LevelAccessor, pos: BlockPos, direction: Rotation): BlockState =
+        state.setValue(FACING, direction.rotate(state.getValue(FACING)))
 
-    override fun mirror(state: BlockState, mirror: Mirror): BlockState {
-        return state.rotate(mirror.getRotation(state.getValue(FACING)))
-    }
+    override fun mirror(state: BlockState, mirror: Mirror): BlockState =
+        state.rotate(mirror.getRotation(state.getValue(FACING)))
 
-    override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
-        return super.getStateForPlacement(context)?.setValue(FACING, context.horizontalDirection.opposite)
-    }
+    override fun getStateForPlacement(context: BlockPlaceContext): BlockState? =
+        super.getStateForPlacement(context)?.setValue(FACING, context.horizontalDirection.opposite)
 
-    override fun getChildrenPositions(pos: BlockPos, state: BlockState): List<BlockPos> {
-        return super.getChildrenPositions(pos, state).map { it.rotate(state.getValue(FACING).toRotation()) }
-    }
+    override fun getChildrenPositions(pos: BlockPos, state: BlockState): List<BlockPos> =
+        super.getChildrenPositions(pos, state).map { it.rotate(state.getValue(FACING).toRotation()) }
 }
