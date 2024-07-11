@@ -1,0 +1,43 @@
+name: build
+
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+  workflow_dispatch:
+
+permissions: write-all
+
+jobs:
+    build:
+      name: Build
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+        - name: Setup Java
+          uses: actions/setup-java@v3
+          with:
+            distribution: 'temurin'
+            java-version: 21
+            cache: gradle
+        - uses: gradle/setup-gradle@v2
+        - name: Run Build
+          run: ./gradlew clean build -x test
+        - name: Upload artifact
+          uses: actions/upload-artifact@v3
+          with:
+              name: "Built Mod"
+              path: build/libs/*.jar
+        - name: Run Tests
+          run: ./gradlew test
+        - name: Upload Test Results
+          uses: actions/upload-artifact@v3
+          with:
+              name: "Test Results"
+              path: build/reports/tests/test
+
