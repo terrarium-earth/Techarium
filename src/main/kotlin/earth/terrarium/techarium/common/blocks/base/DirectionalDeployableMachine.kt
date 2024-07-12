@@ -1,6 +1,6 @@
 package earth.terrarium.techarium.common.blocks.base
 
-import earth.terrarium.techarium.common.util.toRotation
+import earth.terrarium.techarium.common.utils.toRotation
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.world.item.context.BlockPlaceContext
