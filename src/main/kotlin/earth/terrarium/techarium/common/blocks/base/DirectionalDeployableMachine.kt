@@ -36,6 +36,6 @@ abstract class DirectionalDeployableMachine(properties: Properties): DeployableM
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? =
         super.getStateForPlacement(context)?.setValue(FACING, context.horizontalDirection.opposite)
 
-    override fun getChildrenPositions(pos: BlockPos, state: BlockState): List<BlockPos> =
-        super.getChildrenPositions(pos, state).map { it.rotate(state.getValue(FACING).toRotation()) }
+    override fun getChildren(pos: BlockPos, state: BlockState): Map<BlockPos, BlockState> =
+        super.getChildren(pos, state).entries.associate { pos.rotate(state.getValue(FACING).toRotation()) to state }
 }
