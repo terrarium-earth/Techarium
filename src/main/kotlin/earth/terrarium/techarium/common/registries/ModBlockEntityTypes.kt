@@ -11,6 +11,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType
 object ModBlockEntityTypes {
     val registry: ResourcefulRegistry<BlockEntityType<*>> = ResourcefulRegistries.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, TechariumConstants.MOD_ID)
 
-    val basicDeployChildBlockEntity: BlockEntityType<BasicDeployChildBlockEntity> by registry.register("basicDeployChildBlockEntity") {BlockEntityType.Builder.of({pos, state -> BasicDeployChildBlockEntity(basicDeployChildBlockEntity, pos, state)
+    val basicDeployChildBlockEntity: BlockEntityType<BasicDeployChildBlockEntity> by registry.register("basic_deploy_child_blockentity") {BlockEntityType.Builder.of({pos, state -> BasicDeployChildBlockEntity(basicDeployChildBlockEntity, pos, state)
     }, ModBlocks.basicDeployChildBlock).build(null)}
 }

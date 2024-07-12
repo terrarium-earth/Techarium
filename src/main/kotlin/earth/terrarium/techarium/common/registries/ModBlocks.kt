@@ -13,5 +13,5 @@ import net.minecraft.world.level.material.PushReaction
 object ModBlocks {
     val registry: ResourcefulRegistry<Block> = ResourcefulRegistries.create(BuiltInRegistries.BLOCK, TechariumConstants.MOD_ID)
 
-    val basicDeployChildBlock: BasicDeployChildBlock by registry.register("basicDeployChildBlock") {BasicDeployChildBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().pushReaction(PushReaction.BLOCK)) }
+    val basicDeployChildBlock: BasicDeployChildBlock by registry.register("basic_deploy_child_block") {BasicDeployChildBlock(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().noOcclusion().pushReaction(PushReaction.BLOCK)) }
 }
