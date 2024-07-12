@@ -1,20 +1,19 @@
 package earth.terrarium.techarium.common.capabilities.blocks
 
 import earth.terrarium.techarium.common.registries.ModComponents
-import earth.terrarium.techarium.common.types.ComponentSlot
+import earth.terrarium.techarium.common.utils.ComponentSlot
 import net.minecraft.core.component.DataComponentHolder
 import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
-import java.util.*
 
-class ComponentTank(
+class ComponentFluidHandler(
     private val slot: ComponentSlot,
     private val components: DataComponentHolder,
     private val validator: (FluidStack) -> Boolean
 ) : IFluidHandler {
 
-    private val data: EnumMap<ComponentSlot, Int>
-        get() = components.get(ModComponents.tankCapacity) ?: EnumMap(ComponentSlot::class.java)
+    private val data: Map<ComponentSlot, Int>
+        get() = components.get(ModComponents.tankCapacity) ?: emptyMap()
 
     private val capacity: Int
         get() = data[slot] ?: 0

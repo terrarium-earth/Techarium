@@ -4,13 +4,16 @@ license = "ARR"
 issueTrackerURL = "https://github.com/terrarium-earth/Techarium/issues"
 
 [[mods]]
-modId = "techarium"
-version = "${version}"
-displayName = "Techarium"
-displayURL = "https://modrinth.com/mod/techarium"
-authors = ""
-credits = ""
-description = ""
+    modId = "techarium"
+    version = "${version}"
+    displayName = "Techarium"
+    displayURL = "https://modrinth.com/mod/techarium"
+    authors = ""
+    credits = ""
+    description = ""
+
+[[mixins]]
+    config = "techarium.mixins.json"
 
 [[dependencies.techarium]]
     modId = "neoforge"

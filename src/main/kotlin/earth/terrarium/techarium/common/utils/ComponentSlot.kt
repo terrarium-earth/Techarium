@@ -1,4 +1,4 @@
-package earth.terrarium.techarium.common.types
+package earth.terrarium.techarium.common.utils
 
 import com.mojang.serialization.Codec
 import com.teamresourceful.bytecodecs.base.ByteCodec
