@@ -1,0 +1,66 @@
+package earth.terrarium.techarium.common.capabilities.blocks
+
+import earth.terrarium.techarium.common.registries.ModComponents
+import earth.terrarium.techarium.common.types.ComponentSlot
+import net.minecraft.core.component.DataComponentHolder
+import net.neoforged.neoforge.fluids.FluidStack
+import net.neoforged.neoforge.fluids.capability.IFluidHandler
+import java.util.*
+
+class ComponentTank(
+    private val slot: ComponentSlot,
+    private val components: DataComponentHolder,
+    private val validator: (FluidStack) -> Boolean
+) : IFluidHandler {
+
+    private val data: EnumMap<ComponentSlot, Int>
+        get() = components.get(ModComponents.tankCapacity) ?: EnumMap(ComponentSlot::class.java)
+
+    private val capacity: Int
+        get() = data[slot] ?: 0
+    private val amount: Int
+        get() = fluid.amount
+    private val remaining: Int
+        get() = capacity - amount
+
+    private var fluid: FluidStack = FluidStack.EMPTY
+
+    override fun getTanks() = 1
+    override fun getTankCapacity(tank: Int) = capacity
+    override fun getFluidInTank(tank: Int) = fluid
+    override fun isFluidValid(tank: Int, stack: FluidStack) = validator(stack)
+
+    override fun fill(resource: FluidStack, action: IFluidHandler.FluidAction): Int {
+        if (resource.isEmpty || !isFluidValid(0, resource)) return 0
+        val amount = resource.amount.coerceAtMost(remaining)
+        if (amount == 0) return 0
+        if (fluid.isEmpty) {
+            if (action.execute()) {
+                fluid = resource.copyWithAmount(amount)
+            }
+            return amount
+        }
+        if (FluidStack.isSameFluidSameComponents(fluid, resource)) {
+            if (action.execute()) {
+                fluid.amount += amount
+            }
+            return amount
+        }
+        return 0
+    }
+
+    override fun drain(resource: FluidStack, action: IFluidHandler.FluidAction): FluidStack {
+        if (resource.isEmpty || !FluidStack.isSameFluidSameComponents(fluid, resource)) return FluidStack.EMPTY
+        return drain(resource.amount, action)
+    }
+
+    override fun drain(maxDrain: Int, action: IFluidHandler.FluidAction): FluidStack {
+        val amount = maxDrain.coerceAtMost(amount)
+        if (amount == 0) return FluidStack.EMPTY
+        val fluid = fluid.copyWithAmount(amount)
+        if (action.execute()) {
+            fluid.amount -= amount
+        }
+        return fluid
+    }
+}
