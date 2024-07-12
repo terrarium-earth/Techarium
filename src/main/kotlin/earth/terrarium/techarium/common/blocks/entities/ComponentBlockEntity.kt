@@ -1,7 +1,10 @@
 package earth.terrarium.techarium.common.blocks.entities
 
 import net.minecraft.core.BlockPos
-import net.minecraft.core.component.*
+import net.minecraft.core.component.DataComponentMap
+import net.minecraft.core.component.DataComponentPatch
+import net.minecraft.core.component.DataComponentType
+import net.minecraft.core.component.PatchedDataComponentMap
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
@@ -13,9 +16,7 @@ abstract class ComponentBlockEntity(
     state: BlockState
 ) : BlockEntity(type, pos, state), MutableDataComponentHolder {
 
-    private val initialComponents: DataComponentMap = DataComponentMap.builder().apply(::createDefaultComponents).build()
-
-    abstract fun createDefaultComponents(builder: DataComponentMap.Builder)
+    abstract val initialComponents: DataComponentMap
 
     override fun getComponents(): DataComponentMap = this.components()
 
