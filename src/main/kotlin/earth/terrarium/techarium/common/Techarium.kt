@@ -1,13 +1,19 @@
 package earth.terrarium.techarium.common
 
+import earth.terrarium.techarium.common.registries.ModBlockEntityTypes
+import earth.terrarium.techarium.common.registries.ModBlocks
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.common.Mod
+import software.bernie.geckolib.GeckoLib
 
 @Mod(TechariumConstants.MOD_ID)
 class Techarium(modBus: IEventBus, mod: ModContainer) {
 
     init {
         println("Hello, ${mod.modInfo.displayName} v${mod.modInfo.version} (common)")
+
+        ModBlocks.registry.init()
+        ModBlockEntityTypes.registry.init()
     }
 }
