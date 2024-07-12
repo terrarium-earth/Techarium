@@ -5,6 +5,7 @@ import earth.terrarium.techarium.common.registries.ModBlocks
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
 import net.neoforged.fml.common.Mod
+import software.bernie.geckolib.GeckoLib
 
 @Mod(TechariumConstants.MOD_ID)
 class Techarium(modBus: IEventBus, mod: ModContainer) {

@@ -1,5 +1,6 @@
 package earth.terrarium.techarium.common.blocks.base
 
+import earth.terrarium.techarium.common.registries.ModBlocks
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.LevelAccessor
@@ -7,25 +8,27 @@ import net.minecraft.world.level.LevelReader
 import net.minecraft.world.level.block.state.BlockState
 
 abstract class DeployableMachine(properties: Properties) : MachineBlock(properties) {
-    abstract val relativeChildBlocks: Map<BlockPos, BlockState>
+    abstract val relativeChildPositions: Set<BlockPos>
 
-    open fun getChildren(pos: BlockPos, state: BlockState) = relativeChildBlocks.mapKeys { pos.offset(it.key) }
+    open fun getChildrenPositions(pos: BlockPos, state: BlockState): Set<BlockPos> =
+        relativeChildPositions.mapTo(hashSetOf()) { pos.offset(it) }
 
     override fun canSurvive(state: BlockState, level: LevelReader, pos: BlockPos) =
-        getChildren(pos, state).all { level.getBlockState(pos).canBeReplaced() }
+        getChildrenPositions(pos, state).all { level.getBlockState(pos).canBeReplaced() }
 
     override fun onPlace(state: BlockState, level: Level, pos: BlockPos, oldState: BlockState, movedByPiston: Boolean) {
         super.onPlace(state, level, pos, oldState, movedByPiston)
-        for ((blockPos, blockState) in getChildren(pos, state)) {
-            level.setBlockAndUpdate(blockPos, blockState)
+        for (blockPos in getChildrenPositions(pos, state)) {
+            level.setBlockAndUpdate(blockPos, ModBlocks.basicDeployChildBlock.defaultBlockState())
         }
     }
 
     override fun destroy(level: LevelAccessor, pos: BlockPos, state: BlockState) {
         super.destroy(level, pos, state)
-        for ((blockPos, blockState) in getChildren(pos, state)) {
-            if (level.getBlockState(blockPos).`is`(blockState.block))
-            level.destroyBlock(blockPos, false)
+        for (blockPos in getChildrenPositions(pos, state)) {
+            if (level.getBlockState(blockPos).`is`(ModBlocks.basicDeployChildBlock.defaultBlockState().block)) {
+                level.destroyBlock(blockPos, false)
+            }
         }
     }
 }
