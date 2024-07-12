@@ -35,9 +35,15 @@ neoForge {
     }
 
     mods {
-        register("techarium") {
+        register(modId) {
             sourceSet(sourceSets.main.get())
         }
+    }
+
+    unitTest {
+        enable()
+
+        testedMod = mods[modId]
     }
 }
 
@@ -62,14 +68,14 @@ dependencies {
 
     "jarJar"(libs.resourcefullibkt)
     "jarJar"(libs.resourcefulconfigkt)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.testframework)
+    testRuntimeOnly(libs.junitplatform)
 }
 
 java {
     withSourcesJar()
-}
-
-tasks.jar {
-    archiveClassifier.set("dev")
 }
 
 tasks.processResources {
@@ -84,6 +90,10 @@ kotlin {
         jvmTarget.set(JvmTarget.JVM_21)
         freeCompilerArgs.add("-Xjvm-default=all")
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 publishing {
