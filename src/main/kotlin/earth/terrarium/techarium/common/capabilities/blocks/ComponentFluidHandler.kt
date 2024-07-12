@@ -3,16 +3,20 @@ package earth.terrarium.techarium.common.capabilities.blocks
 import earth.terrarium.techarium.common.registries.ModComponents
 import earth.terrarium.techarium.common.utils.ComponentSlot
 import earth.terrarium.techarium.common.utils.default
+import net.neoforged.neoforge.attachment.AttachmentType
+import net.neoforged.neoforge.attachment.IAttachmentHolder
 import net.neoforged.neoforge.common.MutableDataComponentHolder
 import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
-import kotlin.reflect.KMutableProperty
 
-class ComponentFluidHandler(
+typealias FluidValidator = (FluidStack) -> Boolean
+
+open class ComponentFluidHandler protected constructor(
     private val slot: ComponentSlot,
-    private val getSet: KMutableProperty<FluidStack>,
+    private val getter: () -> FluidStack,
+    private val setter: (FluidStack) -> Unit,
     holder: MutableDataComponentHolder,
-    private val validator: (FluidStack) -> Boolean
+    private val validator: FluidValidator = { true }
 ) : IFluidHandler {
 
     private val data: Map<ComponentSlot, Int> by ModComponents.tankCapacity.default(emptyMap(), holder)
@@ -22,8 +26,8 @@ class ComponentFluidHandler(
     private val remaining: Int get() = capacity - amount
 
     private var fluid: FluidStack
-        get() = getSet.getter.call()
-        set(value) = getSet.setter.call(value)
+        get() = getter()
+        set(value) = setter(value)
 
     override fun getTanks() = 1
     override fun getTankCapacity(tank: Int) = capacity
@@ -62,5 +66,25 @@ class ComponentFluidHandler(
             fluid.amount -= amount
         }
         return fluid
+    }
+
+    companion object {
+
+        fun create(
+            slot: ComponentSlot,
+            getter: () -> FluidStack,
+            setter: (FluidStack) -> Unit,
+            holder: MutableDataComponentHolder,
+            validator: FluidValidator = { true }
+        ) = ComponentFluidHandler(slot, getter, setter, holder, validator)
+
+        fun <T> create(
+            slot: ComponentSlot,
+            type: AttachmentType<FluidStack>,
+            holder: T,
+            validator: FluidValidator = { true }
+        )
+                where T : MutableDataComponentHolder, T : IAttachmentHolder =
+            create(slot, { holder.getData(type) }, { holder.setData(type, it) }, holder, validator)
     }
 }
