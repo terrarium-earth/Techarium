@@ -13,12 +13,12 @@ abstract class ComponentBlockEntity(
     state: BlockState
 ) : BlockEntity(type, pos, state), MutableDataComponentHolder {
 
-    val initialComponents: DataComponentMap = DataComponentMap.builder().apply(::createDefaultComponents).build()
+    private val initialComponents: DataComponentMap = DataComponentMap.builder().apply(::createDefaultComponents).build()
 
     abstract fun createDefaultComponents(builder: DataComponentMap.Builder)
 
     private fun getPatchedComponents(): PatchedDataComponentMap =
-        components as? PatchedDataComponentMap ?: PatchedDataComponentMap(initialComponents)
+        components as? PatchedDataComponentMap ?: PatchedDataComponentMap(initialComponents).apply { setAll(components) }
 
     override fun getComponents(): DataComponentMap = this.components()
 
