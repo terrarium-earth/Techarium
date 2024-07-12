@@ -2,27 +2,28 @@ package earth.terrarium.techarium.common.capabilities.blocks
 
 import earth.terrarium.techarium.common.registries.ModComponents
 import earth.terrarium.techarium.common.utils.ComponentSlot
-import net.minecraft.core.component.DataComponentHolder
+import earth.terrarium.techarium.common.utils.default
+import net.neoforged.neoforge.common.MutableDataComponentHolder
 import net.neoforged.neoforge.fluids.FluidStack
 import net.neoforged.neoforge.fluids.capability.IFluidHandler
+import kotlin.reflect.KMutableProperty
 
 class ComponentFluidHandler(
     private val slot: ComponentSlot,
-    private val components: DataComponentHolder,
+    private val getSet: KMutableProperty<FluidStack>,
+    holder: MutableDataComponentHolder,
     private val validator: (FluidStack) -> Boolean
 ) : IFluidHandler {
 
-    private val data: Map<ComponentSlot, Int>
-        get() = components.get(ModComponents.tankCapacity) ?: emptyMap()
+    private val data: Map<ComponentSlot, Int> by ModComponents.tankCapacity.default(emptyMap(), holder)
 
-    private val capacity: Int
-        get() = data[slot] ?: 0
-    private val amount: Int
-        get() = fluid.amount
-    private val remaining: Int
-        get() = capacity - amount
+    private val capacity: Int get() = data[slot] ?: 0
+    private val amount: Int get() = fluid.amount
+    private val remaining: Int get() = capacity - amount
 
-    private var fluid: FluidStack = FluidStack.EMPTY
+    private var fluid: FluidStack
+        get() = getSet.getter.call()
+        set(value) = getSet.setter.call(value)
 
     override fun getTanks() = 1
     override fun getTankCapacity(tank: Int) = capacity

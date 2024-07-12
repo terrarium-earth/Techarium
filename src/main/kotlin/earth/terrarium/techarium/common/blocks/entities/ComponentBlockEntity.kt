@@ -17,34 +17,27 @@ abstract class ComponentBlockEntity(
 
     abstract fun createDefaultComponents(builder: DataComponentMap.Builder)
 
-    private fun getPatchedComponents(): PatchedDataComponentMap =
-        components as? PatchedDataComponentMap ?: PatchedDataComponentMap(initialComponents).apply { setAll(components) }
-
     override fun getComponents(): DataComponentMap = this.components()
 
-    override fun <T : Any?> set(componentType: DataComponentType<in T>, value: T?): T? {
-        val patched = getPatchedComponents()
-        val oldValue = patched.set(componentType, value)
-        super.setComponents(patched)
-        return oldValue
-    }
-
-    override fun <T : Any?> remove(type: DataComponentType<out T>): T? {
-        val patched = getPatchedComponents()
-        val value = patched.remove(type)
+    private fun <R> editComponents(action: PatchedDataComponentMap.() -> R): R {
+        val patched = components as? PatchedDataComponentMap ?: PatchedDataComponentMap(initialComponents).apply { setAll(components) }
+        val value = patched.let(action)
         super.setComponents(patched)
         return value
     }
 
-    override fun applyComponents(patch: DataComponentPatch) {
-        super.setComponents(getPatchedComponents().apply { applyPatch(patch) })
-    }
+    override fun <T> set(componentType: DataComponentType<in T>, value: T?): T? =
+        editComponents { set(componentType, value) }
 
-    override fun applyComponents(components: DataComponentMap) {
-        super.setComponents(getPatchedComponents().apply { setAll(components) })
-    }
+    override fun <T> remove(type: DataComponentType<out T>): T? =
+        editComponents { remove(type) }
 
-    override fun setComponents(components: DataComponentMap) {
-        super.setComponents(getPatchedComponents().apply { setAll(components) })
-    }
+    override fun applyComponents(patch: DataComponentPatch) =
+        editComponents { applyPatch(patch) }
+
+    override fun applyComponents(components: DataComponentMap) =
+        editComponents { setAll(components) }
+
+    override fun setComponents(components: DataComponentMap) =
+        editComponents { setAll(components) }
 }
