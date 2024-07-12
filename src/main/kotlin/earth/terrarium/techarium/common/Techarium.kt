@@ -1,5 +1,7 @@
 package earth.terrarium.techarium.common
 
+import earth.terrarium.techarium.common.registries.ModBlockEntityTypes
+import earth.terrarium.techarium.common.registries.ModBlocks
 import earth.terrarium.techarium.common.registries.initializeRegistries
 import net.neoforged.bus.api.IEventBus
 import net.neoforged.fml.ModContainer
@@ -12,5 +14,8 @@ class Techarium(modBus: IEventBus, mod: ModContainer) {
         println("Hello, ${mod.modInfo.displayName} v${mod.modInfo.version} (common)")
 
         initializeRegistries()
+
+        ModBlocks.registry.init()
+        ModBlockEntityTypes.registry.init()
     }
 }
