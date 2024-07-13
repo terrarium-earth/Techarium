@@ -11,7 +11,7 @@ resourcefulgradle = "0.0.+"
 
 # Dependencies
 resourcefulLib = "3.0.9"
-resourcefulLibKt = "2.0.1"
+resourcefulLibKt = "2.0.2"
 resourcefulConfig = "3.0.2"
 resourcefulConfigKt = "3.0.2"
 bytecodecs = "1.1.2"

@@ -1,0 +1,12 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "earth.terrarium.techarium.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "client": [
+    ],
+    "mixins": [ "common.BlockEntityMixin" ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}
