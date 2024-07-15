@@ -8,6 +8,7 @@ plugins {
     id("maven-publish")
     alias(libs.plugins.resourcefulgradle)
     alias(libs.plugins.moddev)
+    alias(libs.plugins.ksp)
 }
 
 val modId = "techarium"
@@ -54,6 +55,8 @@ repositories {
 }
 
 dependencies {
+    compileOnly(ksp(project(":annotations"))!!)
+
     implementation(libs.resourcefulconfig)
 
     implementation(libs.resourcefullib)

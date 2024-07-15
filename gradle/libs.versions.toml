@@ -22,6 +22,10 @@ kotlinForForge = "5.3.0"
 # Test Dependencies
 junit = "5.7.1"
 
+# Annotation Processing
+ksp = "2.0.0-1.0.22"
+poet = "1.13.0"
+
 [libraries]
 
 resourcefullib = { module = "com.teamresourceful.resourcefullib:resourcefullib-neoforge-1.21", version.ref = "resourcefulLib" }
@@ -37,7 +41,12 @@ junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 junitplatform = { module = "org.junit.platform:junit-platform-launcher" }
 testframework = { module = "net.neoforged:testframework", version.ref = "neoforge" }
 
+ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+ktpoet = { module = "com.squareup:kotlinpoet", version.ref = "poet" }
+ksppoet = { module = "com.squareup:kotlinpoet-ksp", version.ref = "poet" }
+
 [plugins]
 
 moddev = { id = "net.neoforged.moddev", version.ref = "moddev" }
 resourcefulgradle = { id = "com.teamresourceful.resourcefulgradle", version.ref = "resourcefulgradle" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
