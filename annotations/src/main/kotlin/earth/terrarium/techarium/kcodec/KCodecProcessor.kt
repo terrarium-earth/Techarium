@@ -18,11 +18,16 @@ class KCodecProcessor(
         if (ran) return emptyList()
         ran = true
 
-        val codecs = DefaultCodecs.getCodecs(resolver)
         val annotated = resolver.getSymbolsWithAnnotation(GenerateCodec::class.qualifiedName!!).toList()
+        val generatedCodecs = annotated
+            .filter { RecordCodecGenerator.isValid(it, logger) }
+            .map { RecordCodecGenerator.generateCodec(it) }
+        val codecs = DefaultCodecs.getCodecs(resolver)
 
         val file = FileSpec.builder("earth.terrarium.techarium.kcodec.generated", "KCodec")
             .addType(TypeSpec.objectBuilder("KCodec").apply {
+                this.addProperties(generatedCodecs)
+
                 this.addFunction(FunSpec.builder("getCodec").apply {
                     this.addModifiers(KModifier.INLINE)
                     this.addTypeVariable(TypeVariableName("T").copy(reified = true))
