@@ -32,6 +32,15 @@ neoForge {
             server()
             programArgument("--nogui")
         }
+        register("data") {
+            data()
+            programArguments.addAll(
+                "--mod", modId,
+                "--all",
+                "--output", file("src/generated/resources/").absolutePath,
+                "--existing", file("src/main/resources/").absolutePath
+            )
+        }
     }
 
     mods {
