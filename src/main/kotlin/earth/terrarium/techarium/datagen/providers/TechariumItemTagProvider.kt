@@ -8,7 +8,12 @@ import net.minecraft.world.level.block.Block
 import net.neoforged.neoforge.common.data.ExistingFileHelper
 import java.util.concurrent.CompletableFuture
 
-class TechariumItemTagProvider(output: PackOutput, lookupProvider: CompletableFuture<HolderLookup.Provider>, blockTags: CompletableFuture<TagLookup<Block>>, fileHelper: ExistingFileHelper): ItemTagsProvider(output, lookupProvider, blockTags, TechariumConstants.MOD_ID, fileHelper) {
+class TechariumItemTagProvider(
+    output: PackOutput,
+    lookupProvider: CompletableFuture<HolderLookup.Provider>,
+    blockTags: CompletableFuture<TagLookup<Block>>,
+    fileHelper: ExistingFileHelper
+) : ItemTagsProvider(output, lookupProvider, blockTags, TechariumConstants.MOD_ID, fileHelper) {
     override fun addTags(holderLookup: HolderLookup.Provider) {
 
     }
