@@ -1,32 +1,44 @@
 package earth.terrarium.techarium.kcodec
 
-import com.google.devtools.ksp.getClassDeclarationByName
-import com.google.devtools.ksp.processing.Resolver
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.ksp.toClassName
 
 object DefaultCodecs {
 
-    fun getCodecs(resolver: Resolver): Map<TypeName, String> = Builder(resolver).apply {
-        this.add("kotlin.String", "com.mojang.serialization.Codec.STRING")
-        this.add("kotlin.Boolean", "com.mojang.serialization.Codec.BOOL")
-        this.add("kotlin.Byte", "com.mojang.serialization.Codec.BYTE")
-        this.add("kotlin.Short", "com.mojang.serialization.Codec.SHORT")
-        this.add("kotlin.Int", "com.mojang.serialization.Codec.INT")
-        this.add("kotlin.Long", "com.mojang.serialization.Codec.LONG")
-        this.add("kotlin.Float", "com.mojang.serialization.Codec.FLOAT")
-        this.add("kotlin.Double", "com.mojang.serialization.Codec.DOUBLE")
-    }.build()
+    val codecs: MutableMap<TypeName, String> = mutableMapOf()
+    val stringCodecs: MutableSet<TypeName> = mutableSetOf()
 
-}
+    init {
+        this.add("kotlin", "String", "com.mojang.serialization.Codec.STRING") { isString = true }
+        this.add("kotlin", "Boolean", "com.mojang.serialization.Codec.BOOL")
+        this.add("kotlin", "Byte", "com.mojang.serialization.Codec.BYTE")
+        this.add("kotlin", "Short", "com.mojang.serialization.Codec.SHORT")
+        this.add("kotlin", "Int", "com.mojang.serialization.Codec.INT")
+        this.add("kotlin", "Long", "com.mojang.serialization.Codec.LONG")
+        this.add("kotlin", "Float", "com.mojang.serialization.Codec.FLOAT")
+        this.add("kotlin", "Double", "com.mojang.serialization.Codec.DOUBLE")
+        this.add("java.util", "UUID", "net.minecraft.core.UUIDUtil.STRING_CODEC") { isString = true }
+        this.add("net.minecraft.resources", "ResourceLocation") { isString = true }
 
-private class Builder(private val resolver: Resolver) {
+        this.add("net.minecraft.world.item", "ItemStack")
+        this.add("net.minecraft.world.item", "Item", "net.minecraft.core.registries.BuiltInRegistries.ITEM.byNameCodec()") { isString = true }
 
-    private val map = mutableMapOf<TypeName, String>()
-
-    fun add(type: String, codec: String) {
-        map[resolver.getClassDeclarationByName(type)!!.asStarProjectedType().toClassName()] = codec
+        this.add("net.neoforged.neoforge.fluids", "FluidStack")
+        this.add("net.minecraft.world.level.material", "Fluid", "net.minecraft.core.registries.BuiltInRegistries.FLUID.byNameCodec()") { isString = true }
     }
 
-    fun build(): Map<TypeName, String> = map
+    private fun add(packageName: String, className: String, arguments: Arguments.() -> Unit = {}) {
+        add(packageName, className, "$packageName.$className.CODEC", arguments)
+    }
+
+    private fun add(packageName: String, className: String, codec: String, arguments: Arguments.() -> Unit = {}) {
+        codecs[ClassName(packageName, className)] = codec
+        val args = Arguments().apply(arguments)
+        if (args.isString) stringCodecs.add(ClassName(packageName, className))
+    }
+
+    private class Arguments {
+        var isString: Boolean = false
+    }
+
 }

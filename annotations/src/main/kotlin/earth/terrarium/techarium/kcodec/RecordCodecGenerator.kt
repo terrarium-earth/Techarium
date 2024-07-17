@@ -7,6 +7,7 @@ import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
+import earth.terrarium.techarium.utils.CodeLineBuilder
 import java.util.*
 
 object RecordCodecGenerator {
@@ -15,6 +16,22 @@ object RecordCodecGenerator {
     private val CODEC_TYPE = ClassName("com.mojang.serialization", "Codec")
     private val RECORDCODEC_TYPE = ClassName("com.mojang.serialization.codecs", "RecordCodecBuilder")
     private val CODECEXTRAS_TYPE = ClassName("com.teamresourceful.resourcefullib.common.codecs", "CodecExtras")
+    private val EITHER_TYPE = ClassName("com.mojang.datafixers.util", "Either")
+
+    private fun isValid(parameter: KSValueParameter, logger: KSPLogger): Boolean {
+        val ksType = parameter.type.resolve()
+        val name = parameter.name!!.asString()
+        if (parameter.isVararg) {
+            logger.error("parameter $name is a vararg")
+        } else if (parameter.hasDefault && ksType.isMarkedNullable) {
+            logger.error("parameter $name is nullable and has a default value")
+        } else if (ksType.starProjection().toClassName() == Map::class.asClassName() && ksType.arguments.getType(0) !in DefaultCodecs.stringCodecs) {
+            logger.error("parameter $name is a map with a key type that is not a string")
+        } else {
+            return true
+        }
+        return false
+    }
 
     fun isValid(declaration: KSAnnotated?, logger: KSPLogger): Boolean {
         if (declaration !is KSClassDeclaration) {
@@ -31,10 +48,8 @@ object RecordCodecGenerator {
             logger.error("@GenerateCodec can only be applied to classes with a primary constructor that has parameters")
         } else if (declaration.primaryConstructor!!.parameters.size > MAX_PARAMETERS) {
             logger.error("@GenerateCodec can only be applied to classes with a primary constructor that has at most $MAX_PARAMETERS parameters")
-        } else if (declaration.primaryConstructor!!.parameters.any { it.isVararg }) {
-            logger.error("@GenerateCodec can only be applied to classes with a primary constructor that does not have varargs")
-        } else if (declaration.primaryConstructor!!.parameters.any { it.hasDefault && it.type.resolve().isMarkedNullable }) {
-            logger.error("@GenerateCodec can only be applied to classes with a primary constructor that does not have nullable parameters with default values")
+        } else if (!declaration.primaryConstructor!!.parameters.all { isValid(it, logger) }) {
+            logger.error("@GenerateCodec can only be applied to classes with a primary constructor that has valid parameters, view the error above for more information")
         } else {
             return true
         }
@@ -47,54 +62,55 @@ object RecordCodecGenerator {
         val ksType = parameter.type.resolve()
         val type = ksType.toTypeName().copy(nullable = false)
 
-        val builder: StringBuilder = StringBuilder()
-        val args = mutableListOf<Any>()
+        val builder = CodeLineBuilder()
 
         when(ksType.starProjection().toClassName()) {
             List::class.asClassName() -> {
-                builder.append("getCodec<%T>().listOf()")
-                args.add(ksType.arguments.getType(0))
+                builder.add("getCodec<%T>().listOf()", ksType.arguments.getType(0))
             }
             Set::class.asClassName() -> {
-                builder.append("%T.set(getCodec<%T>())")
-                args.add(CODECEXTRAS_TYPE)
-                args.add(ksType.arguments.getType(0))
+                builder.add("%T.set(getCodec<%T>())", CODECEXTRAS_TYPE, ksType.arguments.getType(0))
             }
             Map::class.asClassName() -> {
-                builder.append("%T.unboundedMap(getCodec<%T>(), getCodec<%T>())")
-                args.add(CODEC_TYPE)
-                args.add(ksType.arguments.getType(0))
-                args.add(ksType.arguments.getType(1))
+                builder.add(
+                    "%T.unboundedMap(getCodec<%T>(), getCodec<%T>())",
+                    CODEC_TYPE, ksType.arguments.getType(0), ksType.arguments.getType(1)
+                )
+            }
+            EITHER_TYPE -> {
+                builder.add(
+                    "%T.either(getCodec<%T>(), getCodec<%T>())",
+                    CODEC_TYPE, ksType.arguments.getType(0), ksType.arguments.getType(1)
+                )
             }
             else -> {
-                builder.append("getCodec<%T>()")
-                args.add(type)
+                builder.add("getCodec<%T>()", type)
             }
         }
 
         return when {
             parameter.hasDefault -> {
-                builder.append(".optionalFieldOf(\"%L\").forGetter { getter -> %T.of(getter.%L) },\n")
-                args.add(name)
-                args.add(Optional::class.java)
-                args.add(name)
-                add(builder.toString(), *args.toTypedArray())
+                builder.add(
+                    ".optionalFieldOf(\"%L\").forGetter { getter -> %T.of(getter.%L) },\n",
+                    name, Optional::class.java, name
+                )
+                builder.build(this)
                 name to Type.DEFAULT
             }
             nullable -> {
-                builder.append(".optionalFieldOf(\"%L\").forGetter { getter -> %T.ofNullable(getter.%L) },\n")
-                args.add(name)
-                args.add(Optional::class.java)
-                args.add(name)
-                add(builder.toString(), *args.toTypedArray())
+                builder.add(
+                    ".optionalFieldOf(\"%L\").forGetter { getter -> %T.ofNullable(getter.%L) },\n",
+                    name, Optional::class.java, name
+                )
+                builder.build(this)
                 name to Type.NULLABLE
             }
             else -> {
-                builder.append(".fieldOf(\"%L\").forGetter(%T::%L),\n")
-                args.add(name)
-                args.add(declaration.toClassName())
-                args.add(name)
-                add(builder.toString(), *args.toTypedArray())
+                builder.add(
+                    ".fieldOf(\"%L\").forGetter(%T::%L),\n",
+                    name, declaration.toClassName(), name
+                )
+                builder.build(this)
                 name to Type.NORMAL
             }
         }

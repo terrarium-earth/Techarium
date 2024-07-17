@@ -22,7 +22,6 @@ class KCodecProcessor(
         val generatedCodecs = annotated
             .filter { RecordCodecGenerator.isValid(it, logger) }
             .map { RecordCodecGenerator.generateCodec(it) }
-        val codecs = DefaultCodecs.getCodecs(resolver)
 
         val file = FileSpec.builder("earth.terrarium.techarium.kcodec.generated", "KCodec")
             .addType(TypeSpec.objectBuilder("KCodec").apply {
@@ -42,7 +41,7 @@ class KCodecProcessor(
                     this.addParameter("clazz", ClassName("java.lang", "Class").parameterizedBy(STAR))
                     this.returns(ClassName("com.mojang.serialization", "Codec").parameterizedBy(STAR))
                     this.addCode("return when (clazz) {\n")
-                    for ((type, codec) in codecs) {
+                    for ((type, codec) in DefaultCodecs.codecs) {
                         this.addCode("    %T::class.java -> ${codec}\n", type)
                     }
                     this.addCode("    else -> throw IllegalArgumentException(\"Unknown codec for class: \$clazz\")\n")
