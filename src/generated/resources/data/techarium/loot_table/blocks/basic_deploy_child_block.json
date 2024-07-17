@@ -1,0 +1,4 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "techarium:blocks/basic_deploy_child_block"
+}

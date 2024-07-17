@@ -1,5 +1,6 @@
 import groovy.json.StringEscapeUtils
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.utils.loadPropertyFromResources
 
 plugins {
     java
@@ -32,6 +33,15 @@ neoForge {
             server()
             programArgument("--nogui")
         }
+        register("data") {
+            data()
+            programArguments.addAll(
+                "--mod", modId,
+                "--all",
+                "--output", file("src/generated/resources/").absolutePath,
+                "--existing", file("src/main/resources/").absolutePath
+            )
+        }
     }
 
     mods {
@@ -46,6 +56,8 @@ neoForge {
         testedMod = mods[modId]
     }
 }
+
+sourceSets.main.get().resources { srcDir("src/generated/resources") }
 
 repositories {
     maven(url = "https://maven.neoforged.net/releases")
