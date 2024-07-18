@@ -9,6 +9,18 @@ enum class ComponentSlot {
     OUTPUT,
     ;
 
+    fun canInput(): Boolean {
+        return this == INPUT
+    }
+
+    fun canOutput(): Boolean {
+        return this == OUTPUT
+    }
+
+    fun asComponent(amount: Int): Map<ComponentSlot, Int> {
+        return mapOf(this to amount)
+    }
+
     companion object {
         val CODEC: Codec<ComponentSlot> = EnumCodec.of(ComponentSlot::class.java)
         val BYTE_CODEC: ByteCodec<ComponentSlot> = ByteCodec.ofEnum(ComponentSlot::class.java)

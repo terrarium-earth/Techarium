@@ -35,6 +35,11 @@ open class ComponentFluidHandler protected constructor(
     override fun isFluidValid(tank: Int, stack: FluidStack) = validator(stack)
 
     override fun fill(resource: FluidStack, action: IFluidHandler.FluidAction): Int {
+        return fill(resource, action, false)
+    }
+
+    fun fill(resource: FluidStack, action: IFluidHandler.FluidAction, force: Boolean): Int {
+        if (!slot.canInput() && !force) return 0
         if (resource.isEmpty || !isFluidValid(0, resource)) return 0
         val amount = resource.amount.coerceAtMost(remaining)
         if (amount == 0) return 0
@@ -54,16 +59,22 @@ open class ComponentFluidHandler protected constructor(
     }
 
     override fun drain(resource: FluidStack, action: IFluidHandler.FluidAction): FluidStack {
+        if (!slot.canOutput()) return FluidStack.EMPTY
         if (resource.isEmpty || !FluidStack.isSameFluidSameComponents(fluid, resource)) return FluidStack.EMPTY
-        return drain(resource.amount, action)
+        return drain(resource.amount, action, false)
     }
 
     override fun drain(maxDrain: Int, action: IFluidHandler.FluidAction): FluidStack {
+        return drain(maxDrain, action, false)
+    }
+
+    fun drain(maxDrain: Int, action: IFluidHandler.FluidAction, force: Boolean): FluidStack {
+        if (!slot.canOutput() && !force) return FluidStack.EMPTY
         val amount = maxDrain.coerceAtMost(amount)
         if (amount == 0) return FluidStack.EMPTY
         val fluid = fluid.copyWithAmount(amount)
         if (action.execute()) {
-            fluid.amount -= amount
+            this.fluid.amount -= amount
         }
         return fluid
     }
