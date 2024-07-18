@@ -3,7 +3,6 @@ package earth.terrarium.techarium.common.registries
 import com.teamresourceful.resourcefullib.common.registry.ResourcefulRegistries
 import com.teamresourceful.resourcefullib.common.registry.ResourcefulRegistry
 import com.teamresourceful.resourcefullibkt.common.getValue
-import com.teamresourceful.resourcefullibkt.common.properties
 import earth.terrarium.techarium.common.TechariumConstants
 import earth.terrarium.techarium.common.blocks.machines.deploying.BasicDeployChildBlock
 import earth.terrarium.techarium.common.blocks.machines.farming.SprinklerBlock

@@ -7,7 +7,6 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Rotation
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.entity.BlockEntityType
-import net.neoforged.neoforge.capabilities.BlockCapability
 import org.joml.Vector3f
 import kotlin.math.absoluteValue
 
