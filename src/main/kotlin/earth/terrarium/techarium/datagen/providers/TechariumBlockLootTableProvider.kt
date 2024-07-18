@@ -15,5 +15,7 @@ class TechariumBlockLootTableProvider(
 
     override fun generate() {
         add(ModBlocks.basicDeployChildBlock, noDrop())
+        add(ModBlocks.stableFarmland, noDrop())
+        dropSelf(ModBlocks.sprinkler)
     }
 }

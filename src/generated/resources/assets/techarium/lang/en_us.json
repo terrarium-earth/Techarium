@@ -1,3 +1,5 @@
 {
-  "block.techarium.basic_deploy_child_block": "Basic Deploy Child Block"
+  "block.techarium.basic_deploy_child_block": "Basic Deploy Child Block",
+  "block.techarium.sprinkler": "Sprinkler",
+  "block.techarium.stable_farmland": "Stable Farmland"
 }
