@@ -13,10 +13,6 @@ import java.util.*
 object RecordCodecGenerator {
 
     private const val MAX_PARAMETERS = 16
-    private val CODEC_TYPE = ClassName("com.mojang.serialization", "Codec")
-    private val RECORDCODEC_TYPE = ClassName("com.mojang.serialization.codecs", "RecordCodecBuilder")
-    private val CODECEXTRAS_TYPE = ClassName("com.teamresourceful.resourcefullib.common.codecs", "CodecExtras")
-    private val EITHER_TYPE = ClassName("com.mojang.datafixers.util", "Either")
 
     private fun isValid(parameter: KSValueParameter, logger: KSPLogger): Boolean {
         val ksType = parameter.type.resolve()
@@ -25,7 +21,7 @@ object RecordCodecGenerator {
             logger.error("parameter $name is a vararg")
         } else if (parameter.hasDefault && ksType.isMarkedNullable) {
             logger.error("parameter $name is nullable and has a default value")
-        } else if (ksType.starProjection().toClassName() == Map::class.asClassName() && ksType.arguments.getType(0) !in DefaultCodecs.stringCodecs) {
+        } else if (ksType.starProjection().toClassName() == Map::class.asClassName() && !DefaultCodecs.isStringType(ksType.arguments.getRef(0))) {
             logger.error("parameter $name is a map with a key type that is not a string")
         } else {
             return true
@@ -69,7 +65,7 @@ object RecordCodecGenerator {
                 builder.add("getCodec<%T>().listOf()", ksType.arguments.getType(0))
             }
             Set::class.asClassName() -> {
-                builder.add("%T.set(getCodec<%T>())", CODECEXTRAS_TYPE, ksType.arguments.getType(0))
+                builder.add("%T.set(getCodec<%T>())", CODEC_EXTRAS_TYPE, ksType.arguments.getType(0))
             }
             Map::class.asClassName() -> {
                 builder.add(
@@ -125,7 +121,7 @@ object RecordCodecGenerator {
             .addModifiers(KModifier.PRIVATE)
             .initializer(
                 CodeBlock.builder().apply {
-                    add("%T.create {\n", RECORDCODEC_TYPE)
+                    add("%T.create {\n", RECORD_CODEC_BUILDER_TYPE)
                     indent()
                     add("it.group(\n")
                     val args = mutableListOf<Pair<String, Type>>()
@@ -164,7 +160,11 @@ object RecordCodecGenerator {
         NORMAL
     }
 
+    private fun List<KSTypeArgument>.getRef(index: Int): KSTypeReference {
+        return this[index].type!!
+    }
+
     private fun List<KSTypeArgument>.getType(index: Int): TypeName {
-        return this[index].type!!.resolve().toTypeName().copy(nullable = false)
+        return getRef(index).resolve().toTypeName().copy(nullable = false)
     }
 }

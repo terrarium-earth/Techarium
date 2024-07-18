@@ -2,8 +2,10 @@ package earth.terrarium.techarium.kcodec
 
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.writeTo
 import earth.terrarium.techarium.kcodec.annotations.GenerateCodec
 
@@ -19,13 +21,21 @@ class KCodecProcessor(
         ran = true
 
         val annotated = resolver.getSymbolsWithAnnotation(GenerateCodec::class.qualifiedName!!).toList()
-        val generatedCodecs = annotated
-            .filter { RecordCodecGenerator.isValid(it, logger) }
-            .map { RecordCodecGenerator.generateCodec(it) }
+        val validGeneratedCodecs = annotated.filter { RecordCodecGenerator.isValid(it, logger) }
+        val generatedCodecs = validGeneratedCodecs.map { RecordCodecGenerator.generateCodec(it) }
 
         val file = FileSpec.builder("earth.terrarium.techarium.kcodec.generated", "KCodec")
             .addType(TypeSpec.objectBuilder("KCodec").apply {
                 this.addProperties(generatedCodecs)
+
+                this.addFunction(FunSpec.builder("castAs").apply {
+                    this.addModifiers(KModifier.PRIVATE)
+                    this.addTypeVariable(TypeVariableName("I"))
+                    this.addTypeVariable(TypeVariableName("O"))
+                    this.addParameter("input", TypeVariableName("I"))
+                    this.returns(TypeVariableName("O"))
+                    this.addCode("return input as O")
+                }.build())
 
                 this.addFunction(FunSpec.builder("getCodec").apply {
                     this.addModifiers(KModifier.INLINE)
@@ -40,9 +50,17 @@ class KCodecProcessor(
                 this.addFunction(FunSpec.builder("getCodec").apply {
                     this.addParameter("clazz", ClassName("java.lang", "Class").parameterizedBy(STAR))
                     this.returns(ClassName("com.mojang.serialization", "Codec").parameterizedBy(STAR))
-                    this.addCode("return when (clazz) {\n")
+                    this.addCode("return when {\n")
                     for ((type, codec) in DefaultCodecs.codecs) {
-                        this.addCode("    %T::class.java -> ${codec}\n", type)
+                        this.addCode("    clazz == %T::class.java -> ${codec}\n", type)
+                    }
+                    this.addCode("    clazz.isEnum -> %T.of(castAs(clazz))\n", ENUM_CODEC_TYPE)
+                    for (codec in validGeneratedCodecs) {
+                        this.addCode(
+                            "    clazz == %T::class.java -> %L\n",
+                            (codec as KSClassDeclaration).toClassName(),
+                            "${codec.simpleName.asString()}Codec"
+                        )
                     }
                     this.addCode("    else -> throw IllegalArgumentException(\"Unknown codec for class: \$clazz\")\n")
                     this.addCode("}\n")
