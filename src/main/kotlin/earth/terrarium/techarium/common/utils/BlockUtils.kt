@@ -33,8 +33,8 @@ fun BlockPos.getArchimedeanSpiralPoints(radius: Double): Sequence<Vector3f> {
         val b = 10 / 2 / Mth.PI
         var i = 0.0f
         while (i < Mth.TWO_PI * radius) {
-            val x = b * i * Mth.cos(i * 57.2958f)
-            val z = b * i * Mth.sin(i * 57.2958f)
+            val x = b * i * Mth.cos(i * Mth.RAD_TO_DEG)
+            val z = b * i * Mth.sin(i * Mth.RAD_TO_DEG)
             yield(Vector3f(blockPos.x.toFloat() + x, blockPos.y.toFloat(), blockPos.z.toFloat() + z))
             i += 0.01f
         }
