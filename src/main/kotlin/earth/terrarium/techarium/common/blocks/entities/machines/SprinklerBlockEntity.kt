@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.LevelEvent
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.block.state.properties.BlockStateProperties.POWERED
 import net.neoforged.neoforge.fluids.FluidType
-import net.neoforged.neoforge.fluids.capability.IFluidHandler
 import software.bernie.geckolib.animation.AnimatableManager
 import software.bernie.geckolib.animation.PlayState
 import software.bernie.geckolib.animation.RawAnimation
@@ -57,7 +56,7 @@ class SprinklerBlockEntity(
                 if (level?.isClientSide == false) return true
 
                 val radius = type / 8.0
-                for (archimedeanSpiralPoint in this.blockPos.getArchimedeanSpiralPoints(radius = radius)) {
+                for (archimedeanSpiralPoint in this.blockPos.getArchimedeanSpiralPoints(radius)) {
                     level?.addAlwaysVisibleParticle(
                         ParticleTypes.SPLASH,
                         false,
@@ -75,19 +74,12 @@ class SprinklerBlockEntity(
         }
     }
 
-    private fun tryDrain(): Boolean {
-        if (tank.drain(DRAIN_AMOUNT, IFluidHandler.FluidAction.SIMULATE, true).amount < DRAIN_AMOUNT) {
-            return false
-        }
-        return tank.drain(DRAIN_AMOUNT, IFluidHandler.FluidAction.EXECUTE, true).amount == DRAIN_AMOUNT
-    }
-
     override fun serverTick(level: ServerLevel, pos: BlockPos, state: BlockState) {
         if (!isWorking) return
         workTicks++
 
         val radius = this[ModComponents.sprinklerRadius] ?: return
-        if (!tryDrain()) return
+        if (!tank.tryDrainInternal(DRAIN_AMOUNT)) return
 
         val center = this.blockPos
         val position = MutableBlockPos()

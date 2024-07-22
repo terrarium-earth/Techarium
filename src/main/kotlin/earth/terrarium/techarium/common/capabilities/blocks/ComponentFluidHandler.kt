@@ -35,11 +35,11 @@ open class ComponentFluidHandler protected constructor(
     override fun isFluidValid(tank: Int, stack: FluidStack) = validator(stack)
 
     override fun fill(resource: FluidStack, action: IFluidHandler.FluidAction): Int {
-        return fill(resource, action, false)
+        if (!slot.canInput()) return 0
+        return fillInternal(resource, action)
     }
 
-    fun fill(resource: FluidStack, action: IFluidHandler.FluidAction, force: Boolean): Int {
-        if (!slot.canInput() && !force) return 0
+    fun fillInternal(resource: FluidStack, action: IFluidHandler.FluidAction): Int {
         if (resource.isEmpty || !isFluidValid(0, resource)) return 0
         val amount = resource.amount.coerceAtMost(remaining)
         if (amount == 0) return 0
@@ -58,18 +58,31 @@ open class ComponentFluidHandler protected constructor(
         return 0
     }
 
+    fun tryFill(resource: FluidStack): Boolean {
+        if (!slot.canInput()) return false
+        return tryFillInternal(resource)
+    }
+
+    fun tryFillInternal(resource: FluidStack): Boolean {
+        if (fillInternal(resource, IFluidHandler.FluidAction.SIMULATE) < resource.amount) {
+            return false
+        }
+        return fillInternal(resource, IFluidHandler.FluidAction.EXECUTE) == resource.amount
+    }
+
     override fun drain(resource: FluidStack, action: IFluidHandler.FluidAction): FluidStack {
         if (!slot.canOutput()) return FluidStack.EMPTY
         if (resource.isEmpty || !FluidStack.isSameFluidSameComponents(fluid, resource)) return FluidStack.EMPTY
-        return drain(resource.amount, action, false)
+        return drainInternal(resource.amount, action)
     }
 
     override fun drain(maxDrain: Int, action: IFluidHandler.FluidAction): FluidStack {
-        return drain(maxDrain, action, false)
+        if (!slot.canOutput()) return FluidStack.EMPTY
+        return drainInternal(maxDrain, action)
     }
 
-    fun drain(maxDrain: Int, action: IFluidHandler.FluidAction, force: Boolean): FluidStack {
-        if (!slot.canOutput() && !force) return FluidStack.EMPTY
+    fun drainInternal(maxDrain: Int, action: IFluidHandler.FluidAction): FluidStack {
+        if (!slot.canOutput()) return FluidStack.EMPTY
         val amount = maxDrain.coerceAtMost(amount)
         if (amount == 0) return FluidStack.EMPTY
         val fluid = fluid.copyWithAmount(amount)
@@ -77,6 +90,18 @@ open class ComponentFluidHandler protected constructor(
             this.fluid.amount -= amount
         }
         return fluid
+    }
+
+    fun tryDrain(maxDrain: Int): Boolean {
+        if (!slot.canOutput()) return false
+        return tryDrainInternal(maxDrain)
+    }
+
+    fun tryDrainInternal(maxDrain: Int): Boolean {
+        if (drainInternal(maxDrain, IFluidHandler.FluidAction.SIMULATE).amount < maxDrain) {
+            return false
+        }
+        return drainInternal(maxDrain, IFluidHandler.FluidAction.EXECUTE).amount == maxDrain
     }
 
     companion object {
