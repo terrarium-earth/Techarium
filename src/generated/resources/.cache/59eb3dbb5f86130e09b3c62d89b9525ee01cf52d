@@ -1,2 +1,4 @@
-// 1.21	2024-07-16T21:16:17.5915544	Loot Tables
+// 1.21	2024-07-17T02:09:39.6492598	Loot Tables
+1fe3d6208d6b93e4963781552c90ebf944d9eb4d data/minecraft/loot_table/blocks/farmland.json
 21e41bc3df14e22048e4353330bdcd863d767df4 data/techarium/loot_table/blocks/basic_deploy_child_block.json
+6f46abc9ac76b46204b6f86013e890a41c4e94c4 data/techarium/loot_table/blocks/sprinkler.json

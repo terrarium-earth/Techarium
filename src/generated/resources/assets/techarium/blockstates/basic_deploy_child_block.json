@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "techarium:block/basic_deploy_child_block"
+    }
+  }
+}

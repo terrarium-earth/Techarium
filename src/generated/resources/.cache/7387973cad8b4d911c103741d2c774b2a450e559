@@ -1,1 +1,3 @@
-// 1.21	2024-07-16T21:16:17.5875595	Tags for minecraft:block mod id techarium
+// 1.21	2024-07-18T03:43:15.0047603	Tags for minecraft:block mod id techarium
+b63d2cc920b075c74e6c43acf0ecd8cd53880051 data/minecraft/tags/block/mineable/pickaxe.json
+b63d2cc920b075c74e6c43acf0ecd8cd53880051 data/minecraft/tags/block/needs_stone_tool.json

@@ -24,4 +24,11 @@ object ModComponents {
             synced = ByteCodec.mapOf(ComponentSlot.BYTE_CODEC, ByteCodec.INT)
         }
     }
+
+    val sprinklerRadius: DataComponentType<Int> by registry.register("sprinkler_radius") {
+        component {
+            persistent = Codec.intRange(1, 16)
+            synced = ByteCodec.VAR_INT
+        }
+    }
 }
